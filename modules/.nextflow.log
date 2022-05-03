@@ -1,0 +1,11 @@
+May-02 22:06:15.265 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -profile docker --input Example.csv cat 77/bbc824
+May-02 22:06:15.394 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 21.09.1-edge
+May-02 22:06:15.452 [main] DEBUG nextflow.cli.Launcher - Operation aborted
+nextflow.exception.AbortOperationException: Not a valid project name: main.nf
+	at nextflow.scm.AssetManager.resolveName(AssetManager.groovy:261)
+	at nextflow.scm.AssetManager.build(AssetManager.groovy:131)
+	at nextflow.scm.AssetManager.<init>(AssetManager.groovy:109)
+	at nextflow.cli.CmdRun.getScriptFile(CmdRun.groovy:367)
+	at nextflow.cli.CmdRun.run(CmdRun.groovy:266)
+	at nextflow.cli.Launcher.run(Launcher.groovy:480)
+	at nextflow.cli.Launcher.main(Launcher.groovy:639)
