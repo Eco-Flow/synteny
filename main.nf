@@ -20,15 +20,17 @@ nextflow.enable.dsl = 2
  
 params.outdir = "Results"
 params.input = "data/Example.csv"
-params.seqids = "data/seqids"
-params.layout = "data/layout"
+params.seqids = "data/default1"
+params.layout = "data/default2"
 params.test=0
 
 
 log.info """\
  ===================================
  input file                           : ${params.input}
- out directory                        : ${params.outdir}
+ output directory                     : ${params.outdir}
+ seqids file (optional)               : ${params.seqids}
+ layout file (optional)               : ${params.layout}
  """
 
 //================================================================================
@@ -39,11 +41,11 @@ include { GFFREAD } from './modules/gffread.nf'
 include { JCVI } from './modules/jcvi.nf'
 include { SYNTENY } from './modules/synteny.nf'
 include { MACRO } from './modules/macro.nf'
+include { CREATE_SEQIDS } from './modules/create_seqids.nf'
 
 Channel
 	.fromPath(params.input)
     .splitCsv()
-    .view () { row -> "${row[0]},${row[1]}" }
     .set { in_file }
 
 Channel
@@ -52,15 +54,20 @@ Channel
 
 Channel
     .fromPath(params.layout)
-    .set { in_layout }
+    .set { in_layout }   
+
 
 workflow {
     GFFREAD ( in_file )
-	JCVI ( GFFREAD.out.proteins )
-    SYNTENY ( JCVI.out.collect() )
-    MACRO ( in_seqids , in_layout , SYNTENY.out.anchors, JCVI.out.collect() )
+	JCVI ( GFFREAD.out.proteins , in_seqids )
+    JCVI.out.reformatted.collect().view()
+    
+
+
+    SYNTENY ( JCVI.out.reformatted.collect() )
+    MACRO ( JCVI.out.seqids_out.collect() , in_layout , SYNTENY.out.anchors, JCVI.out.reformatted.collect() )
 }
 
 workflow.onComplete {
-	println ( workflow.success ? "\nDone! Open your report in your browser --> $params.outdir/report.html (if you added -with-report flag)\n" : "Hmmm .. something went wrong" )
+    println ( workflow.success ? "\nDone! Check results in $params.outdir/ \n" : "Hmmm .. something went wrong\n" )
 }

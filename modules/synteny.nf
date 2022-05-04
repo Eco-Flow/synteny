@@ -1,7 +1,7 @@
 process SYNTENY {
     label 'syn'
     tag 'syn'
-    publishDir "$params.outdir/Jcvi_results/"
+    publishDir "$params.outdir/Jcvi_results" , mode: "copy"
     container = 'chriswyatt/jcvi'
              
     input:
@@ -10,7 +10,7 @@ process SYNTENY {
 
     output:
         
-	path("${sample_id}.${sample_id2}.anchors"), emit: anchors
+    path("${sample_id}.${sample_id2}.anchors"), emit: anchors
     path("*.pdf"), emit: pdf
 
     script:

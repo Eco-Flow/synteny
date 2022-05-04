@@ -1,0 +1,39 @@
+May-04 21:20:47.807 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -bg -profile docker -resume --input data/Example.2.csv
+May-04 21:20:48.066 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 21.09.1-edge
+May-04 21:20:48.123 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [lonely_curran] - revision: 54e268d25f
+May-04 21:20:48.145 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /Users/cwyatt/Desktop/jcvi-nextflow/nextflow.config
+May-04 21:20:48.146 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/cwyatt/Desktop/jcvi-nextflow/nextflow.config
+May-04 21:20:48.199 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `docker`
+May-04 21:20:49.744 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [myriad, docker]
+May-04 21:20:49.806 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/Users/cwyatt/.nextflow/plugins
+May-04 21:20:49.813 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-04 21:20:49.813 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins local root: .nextflow/plr/empty
+May-04 21:20:49.826 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-04 21:20:49.828 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-04 21:20:49.833 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+May-04 21:20:49.847 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-04 21:20:49.925 [main] DEBUG nextflow.Session - Session uuid: 57a2cd97-891f-411b-8644-6f9bef863215
+May-04 21:20:49.925 [main] DEBUG nextflow.Session - Run name: lonely_curran
+May-04 21:20:49.926 [main] DEBUG nextflow.Session - Executor pool size: 4
+May-04 21:20:59.949 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 21.09.1-edge build 5636
+  Created: 28-10-2021 15:20 UTC (17:20 CEST)
+  System: Mac OS X 10.16
+  Runtime: Groovy 3.0.9 on Java HotSpot(TM) 64-Bit Server VM 1.8.0_291-b10
+  Encoding: UTF-8 (UTF-8)
+  Process: 83406@Chriss-MacBook-Pro.local [192.168.18.29]
+  CPUs: 4 - Mem: 16 GB (926.7 MB) - Swap: 11 GB (1.2 GB)
+May-04 21:21:00.009 [main] DEBUG nextflow.Session - Work-dir: /Users/cwyatt/Desktop/jcvi-nextflow/work [Mac OS X]
+May-04 21:21:00.038 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-04 21:21:00.058 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-04 21:21:00.111 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 5; maxThreads: 1000
+May-04 21:21:00.255 [main] DEBUG nextflow.Session - Session start invoked
+May-04 21:21:00.663 [main] ERROR nextflow.cli.Launcher - Script compilation error
+- file : /Users/cwyatt/Desktop/jcvi-nextflow/main.nf
+- cause: you tried to assign a value to the class 'nextflow.Channel'
+ @ line 63, column 5.
+       channel = JCVI.out.reformatted.collect().view()
+       ^
+
+1 error
+

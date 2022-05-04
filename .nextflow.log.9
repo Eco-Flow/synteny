@@ -1,0 +1,173 @@
+May-04 20:06:28.306 [main] DEBUG nextflow.cli.Launcher - $> nextflow run main.nf -bg -profile docker -resume --input data/Example.2.csv
+May-04 20:06:28.537 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 21.09.1-edge
+May-04 20:06:28.571 [main] INFO  nextflow.cli.CmdRun - Launching `main.nf` [curious_kalman] - revision: d2c7326a9a
+May-04 20:06:28.594 [main] DEBUG nextflow.config.ConfigBuilder - Found config local: /Users/cwyatt/Desktop/jcvi-nextflow/nextflow.config
+May-04 20:06:28.595 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/cwyatt/Desktop/jcvi-nextflow/nextflow.config
+May-04 20:06:28.638 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `docker`
+May-04 20:06:29.936 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [myriad, docker]
+May-04 20:06:29.988 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; plugins-dir=/Users/cwyatt/.nextflow/plugins
+May-04 20:06:29.991 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+May-04 20:06:29.991 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins local root: .nextflow/plr/empty
+May-04 20:06:30.005 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+May-04 20:06:30.006 [main] INFO  org.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+May-04 20:06:30.011 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.4.1 in 'deployment' mode
+May-04 20:06:30.025 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+May-04 20:06:30.095 [main] DEBUG nextflow.Session - Session uuid: 57a2cd97-891f-411b-8644-6f9bef863215
+May-04 20:06:30.095 [main] DEBUG nextflow.Session - Run name: curious_kalman
+May-04 20:06:30.096 [main] DEBUG nextflow.Session - Executor pool size: 4
+May-04 20:06:40.120 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 21.09.1-edge build 5636
+  Created: 28-10-2021 15:20 UTC (17:20 CEST)
+  System: Mac OS X 10.16
+  Runtime: Groovy 3.0.9 on Java HotSpot(TM) 64-Bit Server VM 1.8.0_291-b10
+  Encoding: UTF-8 (UTF-8)
+  Process: 82567@Chriss-MacBook-Pro.local [192.168.18.29]
+  CPUs: 4 - Mem: 16 GB (1023 MB) - Swap: 11 GB (1.2 GB)
+May-04 20:06:40.157 [main] DEBUG nextflow.Session - Work-dir: /Users/cwyatt/Desktop/jcvi-nextflow/work [Mac OS X]
+May-04 20:06:40.193 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+May-04 20:06:40.213 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+May-04 20:06:40.267 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 5; maxThreads: 1000
+May-04 20:06:40.415 [main] DEBUG nextflow.Session - Session start invoked
+May-04 20:06:40.924 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+May-04 20:06:40.949 [main] INFO  nextflow.Nextflow -  ===================================
+ input file                           : data/Example.2.csv
+ out directory                        : Results
+ 
+May-04 20:06:41.742 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 5; maxThreads: 1000
+May-04 20:06:41.899 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:gffread` matches labels `gffread` for process with name GFFREAD
+May-04 20:06:41.908 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-04 20:06:41.909 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-04 20:06:41.916 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+May-04 20:06:41.923 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=4; memory=16 GB; capacity=4; pollInterval=100ms; dumpInterval=5m
+May-04 20:06:42.041 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:jcvi` matches labels `jcvi` for process with name JCVI
+May-04 20:06:42.042 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-04 20:06:42.043 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-04 20:06:42.065 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:syn` matches labels `syn` for process with name SYNTENY
+May-04 20:06:42.070 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-04 20:06:42.070 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-04 20:06:42.092 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+May-04 20:06:42.092 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+May-04 20:06:42.102 [main] DEBUG nextflow.Session - Workflow process names [dsl2]: SYNTENY, GFFREAD, MACRO, CREATE_SEQIDS, JCVI
+May-04 20:06:42.103 [main] DEBUG nextflow.Session - Ignite dataflow network (7)
+May-04 20:06:42.126 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > GFFREAD
+May-04 20:06:42.127 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > JCVI
+May-04 20:06:42.131 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > SYNTENY
+May-04 20:06:42.135 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > MACRO
+May-04 20:06:42.136 [main] DEBUG nextflow.script.ScriptRunner - > Await termination 
+May-04 20:06:42.136 [main] DEBUG nextflow.Session - Session await
+May-04 20:06:42.585 [Actor Thread 3] INFO  nextflow.processor.TaskProcessor - [74/313c0e] Cached process > GFFREAD (gffread)
+May-04 20:06:42.589 [Actor Thread 4] INFO  nextflow.processor.TaskProcessor - [ba/0d1760] Cached process > GFFREAD (gffread)
+May-04 20:06:42.630 [Actor Thread 1] INFO  nextflow.processor.TaskProcessor - [f9/94f7a6] Cached process > JCVI (jcvi)
+May-04 20:06:42.641 [Actor Thread 11] INFO  nextflow.processor.TaskProcessor - [18/54e80e] Cached process > JCVI (jcvi)
+May-04 20:06:42.680 [Actor Thread 5] INFO  nextflow.processor.TaskProcessor - [5c/1cb43f] Cached process > SYNTENY (syn)
+May-04 20:06:42.707 [Actor Thread 5] DEBUG n.util.BlockingThreadExecutorFactory - Thread pool name=FileTransfer; maxThreads=12; maxQueueSize=36; keepAlive=1m
+May-04 20:06:42.781 [Task submitter] DEBUG nextflow.executor.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+May-04 20:06:42.786 [Task submitter] INFO  nextflow.Session - [8f/f113c1] Submitted process > MACRO (mac)
+May-04 20:06:53.819 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 6; name: MACRO (mac); status: COMPLETED; exit: 1; error: -; workDir: /Users/cwyatt/Desktop/jcvi-nextflow/work/8f/f113c1906738a12f0aa1cc475dfe52]
+May-04 20:06:53.889 [Task monitor] ERROR nextflow.processor.TaskProcessor - Error executing process > 'MACRO (mac)'
+
+Caused by:
+  Process `MACRO (mac)` terminated with an error exit status (1)
+
+Command executed:
+
+  python -m jcvi.compara.synteny screen --minspan=30 --simple B_impatiens.B_terrestris.anchors B_impatiens.B_terrestris.anchors.new 
+  
+          #Make a default layout file
+          echo "# y, xstart, xend, rotation, color, label, va,  bed
+   .6,     .1,    .8,       0,      , B_impatiens, top, B_impatiens.bed
+  .4,     .1,    .8,       0,      , B_terrestris, top, B_terrestris.bed
+  # edges
+  e, 0, 1, B_impatiens.B_terrestris.anchors.simple" > layout_default
+  
+          #Make a default seqids file
+          grep '>' B_impatiens.cds  | head -n 10 | cut -c 2- | tr '
+  ' ',' | sed 's/.$//' >> seqids_default
+          grep '>' B_terrestris.cds | head -n 10 | cut -c 2- | tr '
+  ' ',' | sed 's/.$//' >> seqids_default        
+  
+          #Check which files to run and execute karyotype analysis
+          if [ data/default1 = 'data/default1' ]; then 
+              if [ data/default2 = 'data/default2' ]; then
+                  python -m jcvi.graphics.karyotype seqids_default layout_default
+              else 
+                  python -m jcvi.graphics.karyotype seqids_default default2 
+              fi
+          else 
+              if [ data/default2 = 'data/default2' ]; then
+                  python -m jcvi.graphics.karyotype default1 layout_default
+              else 
+                  python -m jcvi.graphics.karyotype default1 default2 
+              fi
+          fi
+  
+          mv karyotype.pdf B_impatiens.B_terrestris.macro.pdf
+
+Command exit status:
+  1
+
+Command output:
+  (empty)
+
+Command error:
+  [18:06:53] ERROR    Size of `g2.t1 CDS=1-651` is empty. Please  karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g3.t2 CDS=1-1188` is empty. Please karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g3.t1 CDS=1-1356` is empty. Please karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g4.t1 CDS=1-231` is empty. Please  karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g5.t1 CDS=1-732` is empty. Please  karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g6.t1 CDS=1-270` is empty. Please  karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g7.t1 CDS=1-366` is empty. Please  karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g8.t1 CDS=1-429` is empty. Please  karyotype.py:383
+                      check                                                       
+             ERROR    Size of `g9.t1 CDS=1-225rna-XM_012316519.2  karyotype.py:383
+                      CDS=1109-2581` is empty. Please check                       
+             ERROR    Size of `rna-XM_003392857.3 CDS=470-1723`   karyotype.py:383
+                      is empty. Please check                                      
+             ERROR    Size of `rna-XM_003392856.3 CDS=1416-2570`  karyotype.py:383
+                      is empty. Please check                                      
+             ERROR    Size of `rna-XM_003392855.3 CDS=505-1527`   karyotype.py:383
+                      is empty. Please check                                      
+             ERROR    Size of `rna-XM_003392854.3 CDS=1057-2556`  karyotype.py:383
+                      is empty. Please check                                      
+             ERROR    Size of `rna-XM_020868627.1 CDS=256-567` is karyotype.py:383
+                      empty. Please check                                         
+             ERROR    Size of `rna-XM_012315933.2 CDS=163-2490`   karyotype.py:383
+                      is empty. Please check                                      
+             ERROR    Size of `rna-XM_020863580.1 CDS=386-2404`   karyotype.py:383
+                      is empty. Please check                                      
+             ERROR    Size of `rna-XM_020863582.1 CDS=379-2394`   karyotype.py:383
+                      is empty. Please check                                      
+             ERROR    Size of `rna-XM_012315683.2 CDS=379-2793`   karyotype.py:383
+                      is empty. Please check                                      
+  Traceback (most recent call last):
+    File "/opt/conda/lib/python3.9/runpy.py", line 197, in _run_module_as_main
+      return _run_code(code, main_globals, None,
+    File "/opt/conda/lib/python3.9/runpy.py", line 87, in _run_code
+      exec(code, run_globals)
+    File "/opt/conda/lib/python3.9/site-packages/jcvi/graphics/karyotype.py", line 464, in <module>
+      main()
+    File "/opt/conda/lib/python3.9/site-packages/jcvi/graphics/karyotype.py", line 443, in main
+      Karyotype(
+    File "/opt/conda/lib/python3.9/site-packages/jcvi/graphics/karyotype.py", line 390, in __init__
+      tr = Track(root, lo, gap=gap, height=height, lw=lw, draw=False)
+    File "/opt/conda/lib/python3.9/site-packages/jcvi/graphics/karyotype.py", line 174, in __init__
+      ratio = span / total
+  ZeroDivisionError: float division by zero
+
+Work dir:
+  /Users/cwyatt/Desktop/jcvi-nextflow/work/8f/f113c1906738a12f0aa1cc475dfe52
+
+Tip: when you have fixed the problem you can continue the execution adding the option `-resume` to the run command line
+May-04 20:06:53.895 [main] DEBUG nextflow.Session - Session await > all process finished
+May-04 20:06:53.897 [Task monitor] DEBUG nextflow.Session - Session aborted -- Cause: Process `MACRO (mac)` terminated with an error exit status (1)
+May-04 20:06:53.921 [main] DEBUG nextflow.Session - Session await > all barriers passed
+May-04 20:06:53.944 [main] DEBUG nextflow.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=0; failedCount=1; ignoredCount=0; cachedCount=5; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=0ms; failedDuration=11s; cachedDuration=11m 25s;loadCpus=0; loadMemory=0; peakRunning=1; peakCpus=1; peakMemory=0; ]
+May-04 20:06:53.956 [main] DEBUG nextflow.CacheDB - Closing CacheDB done
+May-04 20:06:53.977 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye
