@@ -1,3 +1,0 @@
-[19:30:39] DEBUG    Load file `B_impatiens.gff3`                      base.py:33
-[19:30:54] DEBUG    Extracted 19839 features (type=mRNA id=ID        gff.py:3063
-                    parent=Parent)                                              
