@@ -1,17 +1,11 @@
 /*
- * Copyright (c) 2021
+ * Copyright (c) 2022
  */
- 
 
  /*
  * Authors:
  * - Chris Wyatt <chris.wyatt@seqera.io>
  */
-
-/* 
- * enable modules 
- */
-nextflow.enable.dsl = 2
 
 /*
  * Default pipeline parameters (on test data). They can be overriden on the command line eg.
@@ -41,12 +35,20 @@ include { GFFREAD } from './modules/gffread.nf'
 include { JCVI } from './modules/jcvi.nf'
 include { SYNTENY } from './modules/synteny.nf'
 include { MACRO } from './modules/macro.nf'
-include { CREATE_SEQIDS } from './modules/create_seqids.nf'
+include { CONFIG } from './modules/default_config.nf'
+include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
 
 Channel
 	.fromPath(params.input)
     .splitCsv()
     .set { in_file }
+
+Channel
+    .fromPath(params.input)
+    .splitCsv()
+    .collect()
+    .view()
+    .set { in_file_config }
 
 Channel
     .fromPath(params.seqids)
@@ -58,14 +60,17 @@ Channel
 
 
 workflow {
+
     GFFREAD ( in_file )
-	JCVI ( GFFREAD.out.proteins , in_seqids )
-    JCVI.out.reformatted.collect().view()
-    
 
+	JCVI ( GFFREAD.out.proteins )
+    //JCVI.out.collect().view()
 
-    SYNTENY ( JCVI.out.reformatted.collect() )
-    MACRO ( JCVI.out.seqids_out.collect() , in_layout , SYNTENY.out.anchors, JCVI.out.reformatted.collect() )
+    CONFIG ( in_seqids , in_layout , in_file_config )
+
+    SYNTENY ( JCVI.out.collect() )
+    MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors, JCVI.out.collect() )
+
 }
 
 workflow.onComplete {
