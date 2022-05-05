@@ -1,28 +1,39 @@
-# MCScanX-nf 
-Nextflow pipeline to run MCScanX
+# JCVI-nextflow 
+
+Nextflow pipeline to run JCVI
 
 # General information
 
-Using the docker container found here: 
-Using this version: 
+This is a developmental workflow running JCVI, to look at gene synteny. 
 
-To run on different platforms, you need to create a profile. Docker (local), and myriad (ucl cliuster) are already avaialble, please ask and I can create a profile for your env. Use the flag `-profile` to request this (essential) 
+All you need is a genome in fasta and a annotation file in gff3 (or gff augustus).
 
-# How to run test
+To run on different platforms, you need to create a profile. We recommend using the Docker (local) one, though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
 
-Will attempt to run the basic example script:
+# How to run locally
 
-`cactus jobStore examples/evolverMammals.txt examples/evolverMammals.hal --root mr`
+Prerequistites : Docker account and Docker installed on your machine. Nextflow installed (https://www.nextflow.io/), plus java at at least 1.8.
 
-To do this we use Nextflow (locally wiht docker installed):
+To run Nextflow (locally with docker installed), use the following command:
 
-`nextflow run main.nf -profile docker --trial 1`
+`nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
 
-#`trial 1` activates the trail version of the nextflow pipeline
 #Notice one - for Nextflow options, and two -- for pipeline options.
+
+
+# Run with Gitpod
+
+Prerequistites : A browser (Ideally, Chrome or Firefox \[tested\]) and a Github account.
+
+The simplest way to run the pipeline is to use Gitpod. This is a free (up to 50 hours a month) cloud environment, which has been loaded with all the tools you need.
+
+Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-nextflow
+
+Then login in to Github, which will open up an environment to run the code, using the same command listed above (nextflow...) .
+
 
 # How to run with local wasp genomes.
 
 INPUT: Two whole genomes (e.g. Polistes dominula and Vespa crabro)
 
-nextflow run chriswyatt1/mcsanx-nf --genomes "Polistes_canadensis,Vespa_crabro" -with-singularity ?
+nextflow run chriswyatt1/jcvi-nextflow -profile docker -bg -resume --input "Polistes_canadensis,Vespa_crabro"
