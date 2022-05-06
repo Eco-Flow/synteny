@@ -8,8 +8,8 @@ process GFFREAD {
         tuple val(sample_id), path(fasta), path(gff)
 
     output:
-        
-	   tuple val(sample_id), path( "${sample_id}.prot.fa" ), path( "gff_for_jvci.gff3" ), emit: proteins
+
+        tuple val(sample_id), path( "${sample_id}.prot.fa" ), path( "gff_for_jvci.gff3" ), emit: proteins
 
     script:
     """
@@ -17,7 +17,6 @@ process GFFREAD {
     #Convert Augustus gff files if found, then do gffread to print out the nucleotide files for each gene.
     head -n 1 $gff > tbd
     if grep -q AUGUSTUS tbd; then 
-        pip3 install biocode
         python3 $projectDir/bin/convert_augustus_to_gffs.py -i ${gff} -o gff_for_jvci.gff3
         gffread -w ${sample_id}.prot.fa -g ${fasta} gff_for_jvci.gff3
     else

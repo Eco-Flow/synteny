@@ -47,7 +47,6 @@ Channel
     .fromPath(params.input)
     .splitCsv()
     .collect()
-    .view()
     .set { in_file_config }
 
 Channel
@@ -59,16 +58,32 @@ Channel
     .set { in_layout }   
 
 
+Channel
+    .fromPath(params.input)
+    .splitCsv()
+    .branch { 
+        ncbi: it.size() == 2 
+        local: it.size() == 3
+    }
+    .set { input_type }
+    
+// input_type.ncbi.view { "$it is small" }
+// input_type.local.view { "$it is large" }
+
+
+
 workflow {
 
-    GFFREAD ( in_file )
+    DOWNLOAD_NCBI ( input_type.ncbi )
 
-	JCVI ( GFFREAD.out.proteins )
-    //JCVI.out.collect().view()
+    GFFREAD ( DOWNLOAD_NCBI.out.genome.mix(input_type.local) )
 
-    CONFIG ( in_seqids , in_layout , in_file_config )
+    JCVI ( GFFREAD.out.proteins )
+
+    CONFIG ( in_seqids , in_layout , DOWNLOAD_NCBI.out.genome.mix(input_type.local).collect() )
 
     SYNTENY ( JCVI.out.collect() )
+
     MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors, JCVI.out.collect() )
 
 }
@@ -76,3 +91,4 @@ workflow {
 workflow.onComplete {
     println ( workflow.success ? "\nDone! Check results in $params.outdir/ \n" : "Hmmm .. something went wrong\n" )
 }
+

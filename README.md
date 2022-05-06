@@ -2,13 +2,15 @@
 
 Nextflow pipeline to run JCVI
 
+Please cite "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science" if you use this Nextflow wrapper of JCVI MCSxanX software.
+
 # General information
 
 This is a developmental workflow running JCVI, to look at gene synteny. 
 
 All you need is a genome in fasta and a annotation file in gff3 (or gff augustus).
 
-To run on different platforms, you need to create a profile. We recommend using the Docker (local) one, though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
+To run on different platforms, you need to create a profile. We recommend using Gitpod or Docker (locally), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
 
 # How to run locally
 

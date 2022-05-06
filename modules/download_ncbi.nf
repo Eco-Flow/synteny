@@ -1,27 +1,24 @@
 process DOWNLOAD_NCBI {
     label 'download'
-    tag 'download'
+    tag "$sample_id via $accension_id"
              
     input:
-    val(accension_id)
+        tuple val(sample_id), val(accension_id)
 
     output:    
-    tuple val(accension_id), path("genome.fna"), path("genomic.gff")
+        tuple val(sample_id), path("genome.fna"), path("genomic.gff"), emit: genome
 
     script:
     """
+
     #Get a genome and GFF assembly from NCBI using their datasets scripts
 
-    conda create -n ncbi_datasets
-    conda activate ncbi_datasets
-    conda install -c conda-forge ncbi-datasets-cli
-
-    datasets download genome accession GCF_003254395.2
+    datasets download genome accession ${accension_id}
     unzip ncbi_dataset.zip 
-    cd ncbi_dataset/data/${accension_id}
 
-    cat chr*.fna > genome.fna
-    cat unplaced.scaf.fna >> genome.fna 
+    cat ncbi_dataset/data/${accension_id}/chr*.fna > genome.fna
+    cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> genome.fna 
+    cat ncbi_dataset/data/${accension_id}/genomic.gff > genomic.gff
 
     """
 }

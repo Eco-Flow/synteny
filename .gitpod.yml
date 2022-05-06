@@ -1,0 +1,31 @@
+github:
+  prebuilds:
+    # enable for the master/default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
+    addComment: true
+    # add a "Review in Gitpod" button to pull requests (defaults to false)
+    addBadge: false
+    # add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: prebuilt-in-gitpod
+
+# List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
+tasks:    
+  - name: Download Nextflow Tutorial
+    init: |
+      echo 'init script' # runs during prebuild
+      curl -s https://get.nextflow.io | bash
+    command: |
+      export PATH=/workspace/jcvi-nextflow:$PATH
+      nextflow info
+      unset JAVA_TOOL_OPTIONS
+      echo 'Starting workspace !'
+# List the ports to expose. Learn more https://www.gitpod.io/docs/config-ports/
+ports:
+  - port: 8000
