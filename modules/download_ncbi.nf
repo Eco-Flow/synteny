@@ -6,7 +6,7 @@ process DOWNLOAD_NCBI {
         tuple val(sample_id), val(accension_id)
 
     output:    
-        tuple val(sample_id), path("genome.fna"), path("genomic.gff"), emit: genome
+        tuple val(sample_id), path("${sample_id}.genome.fna"), path("${sample_id}.genomic.gff"), emit: genome
 
     script:
     """
@@ -16,9 +16,13 @@ process DOWNLOAD_NCBI {
     datasets download genome accession ${accension_id}
     unzip ncbi_dataset.zip 
 
-    cat ncbi_dataset/data/${accension_id}/chr*.fna > genome.fna
-    cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> genome.fna 
-    cat ncbi_dataset/data/${accension_id}/genomic.gff > genomic.gff
+    
+    if ls ncbi_dataset/data/${accension_id}/chr*.fna 1> /dev/null 2>&1; then
+        cat ncbi_dataset/data/${accension_id}/chr*.fna > ${sample_id}.genome.fna
+    fi
+
+    cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> ${sample_id}.genome.fna 
+    cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
 
     """
 }
