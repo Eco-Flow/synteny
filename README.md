@@ -14,7 +14,7 @@ To run on different platforms, you may need to create a profile. We recommend us
 
 # How to run locally
 
-Prerequistites : Docker account and Docker installed on your machine. Nextflow installed (https://www.nextflow.io/), plus java at at least 1.8.
+Prerequistites : Docker account and Docker installed on your machine. Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2]), plus java at at least 1.8.
 
 To run Nextflow (locally with docker installed), use the following command:
 
@@ -30,7 +30,7 @@ A_mellifera,GCF_003254395.2`
 
 You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:\
 
-`B_impatiens,/Users/cwyatt/Desktop/B_impatiens_Genome.fasta,/Users/cwyatt/Desktop/B_impatiens.gff
+`B_impatiens,/Users/cwyatt/Desktop/B_impatiens_Genome**.fasta**,/Users/cwyatt/Desktop/B_impatiens**.gff**
 A_mellifera,GCF_003254395.2`
 
 Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file).
@@ -47,9 +47,3 @@ Then login in to Github, which will open up an environment to run the code, usin
 
 `nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
 
-
-# How to run with local wasp genomes.
-
-INPUT: Two whole genomes (e.g. Polistes dominula and Vespa crabro)
-
-nextflow run chriswyatt1/jcvi-nextflow -profile docker -bg -resume --input "Polistes_canadensis,Vespa_crabro"
