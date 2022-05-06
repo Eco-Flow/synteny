@@ -12,7 +12,7 @@ All you need is either a genome in fasta format with an annotation file in gff3 
 
 To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (tp run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
 
-# How to run locally
+# Run locally
 
 Prerequistites : Docker account and Docker installed on your machine. Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2]), plus java at at least 1.8.
 
@@ -47,3 +47,10 @@ Then login in to Github, which will open up an environment to run the code, usin
 
 `nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
 
+# Results
+
+Once completed, you should have a folder called Results, in which there should be a:
+
+1. Dot plot (<Species1><Species2>.pdf)
+2. Chromosome synteny plot (<Species1><Species2>.macro.pdf)
+3. Depth plot (<Species1><Species2>.depth.pdf)
