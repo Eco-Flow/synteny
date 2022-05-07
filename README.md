@@ -39,6 +39,8 @@ Where NCBI input has two comma separated columns and your own data has three col
 
 Prerequistites : A browser (Ideally, Chrome or Firefox \[tested\]) and a Github account.
 
+Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`. 
+
 The simplest way to run the pipeline is to use Gitpod. This is a free (up to 50 hours a month) cloud environment, which has been loaded with all the tools you need.
 
 Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-nextflow
@@ -54,3 +56,20 @@ Once completed, you should have a folder called Results, in which there should b
 1. Dot plot (<Species1><Species2>.pdf)
 2. Chromosome synteny plot (<Species1><Species2>.macro.pdf)
 3. Depth plot (<Species1><Species2>.depth.pdf)
+
+
+# Testing scripts in Docker 
+
+To try out the individual scripts used in this workflow, check out the various containers used in conf/docker.config.
+
+Then you can enter the container by typing the following:
+
+`docker run -it chriswyatt/jcvi bash`
+
+e.g. in the above container you should have jcvi, so you can execute the following line:
+
+`python -m jcvi.formats.gff ACTION`
+
+use exit to leave the container:
+
+`exit`
