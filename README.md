@@ -73,3 +73,7 @@ e.g. in the above container you should have jcvi, so you can execute the followi
 use exit to leave the container:
 
 `exit`
+
+You can also enter docker with the same filesystem using:
+
+`docker run -it -v "$PWD":"$PWD" chriswyatt/jcvi bash`
