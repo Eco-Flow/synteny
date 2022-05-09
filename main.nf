@@ -37,6 +37,7 @@ include { SYNTENY } from './modules/synteny.nf'
 include { MACRO } from './modules/macro.nf'
 include { CONFIG } from './modules/default_config.nf'
 include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
+include { CHROMOPAINT } from './modules/chromo.nf'
 
 Channel
 	.fromPath(params.input)
@@ -86,6 +87,8 @@ workflow {
 
     MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors, JCVI.out.collect() )
 
+    CHROMOPAINT ( SYNTENY.out.anchors , JCVI.out.collect() )
+    
 }
 
 workflow.onComplete {
