@@ -56,6 +56,7 @@ Once completed, you should have a folder called Results, in which there should b
 1. Dot plot (<Species1><Species2>.pdf)
 2. Chromosome synteny plot (<Species1><Species2>.macro.pdf)
 3. Depth plot (<Species1><Species2>.depth.pdf)
+4. Chromosome painted mappings ()
 
 
 # Testing scripts in Docker 
