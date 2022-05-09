@@ -6,7 +6,7 @@ Please cite "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Scien
 
 # General information
 
-This is a developmental workflow running JCVI, to look at gene synteny. 
+This is a developmental Nextflow ls workflow running JCVI, to look at gene synteny. 
 
 All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). OR you can supply a NCBI genome reference ID (which will be automatically downloaded).
 

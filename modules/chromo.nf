@@ -16,6 +16,6 @@ process CHROMOPAINT {
     script:
     """
         anchor.pl ${bed1} ${bed2} ${anchors} 
-        python -m jcvi.graphics.chromosome ${anchors}_chromopaint\.txt
+        python -m jcvi.graphics.chromosome Chromopaint.txt
     """
 }

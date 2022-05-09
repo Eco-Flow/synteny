@@ -14,7 +14,7 @@ open(my $BED2, "<", $BED_file2) or die "Could not open $BED_file2\n";
 my $anchor=$ARGV[2];
 open(my $ANC, "<", $anchor) or die "Could not open $anchor\n";
 
-my $outfile="$anchor\_chromopaint\.txt";
+my $outfile="Chromopaint.txt";
 open(my $out, "> $outfile") or die "error opening $outfile. $!";
 
 
@@ -64,7 +64,7 @@ while (my $line3=<$ANC>) {
 	}
 	else{
 		$sp1_bed=$SP1{$spl[0]};
-        print "Here $spl[0]  :  $sp1_bed\n";
+        #print "Here $spl[0]  :  $sp1_bed\n";
 		my @split_1=split("\t", $sp1_bed);
 		$chrome1=$split_1[0];
 
