@@ -47,16 +47,19 @@ Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-n
 
 Then login in to Github, which will open up an environment to run the code, using the same command listed above (nextflow...).
 
+To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified. The example run is below:
+
 `nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
 
 # Results
 
-Once completed, you should have a folder called Results, in which there should be a:
+Once completed, you should have a folder called Results/Jcvi_results, in which there should be a:
 
-1. Dot plot (<Species1><Species2>.pdf)
-2. Chromosome synteny plot (<Species1><Species2>.macro.pdf)
-3. Depth plot (<Species1><Species2>.depth.pdf)
-4. Chromosome painted mappings ()
+1. Dot plot (<Species1><Species2>.pdf). Showing the chromosome synteny as a dot plot.
+2. Chromosome synteny plot (<Species1><Species2>.macro.pdf). Showing a 1 to 1 chromosome mapping with lines drawn between syntenic chromosomes.
+3. Depth plot (<Species1><Species2>.depth.pdf). Number of 1to1 or 1toMany orthologs detected.
+4. Chromosome painted mappings (). Showing on graphic chromosomes, which sections are syntenic between two species.
+5. Anchors. (<Species1><Species2>.anchors). This shows the syntenic blocks, gene by gene.
 
 
 # Testing scripts in Docker 
