@@ -17,6 +17,6 @@ process CHROMOPAINT {
     """
         anchor.pl ${bed1} ${bed2} ${anchors} 
         python -m jcvi.graphics.chromosome Chromopaint.txt
-        mv Chromopoaint.pdf ${sample_id}${sample_id2}.chromo.pdf
+        mv Chromopaint.pdf ${sample_id}${sample_id2}.chromo.pdf
     """
 }
