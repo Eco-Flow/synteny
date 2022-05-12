@@ -20,8 +20,10 @@ process DOWNLOAD_NCBI {
     if ls ncbi_dataset/data/${accension_id}/chr*.fna 1> /dev/null 2>&1; then
         cat ncbi_dataset/data/${accension_id}/chr*.fna > ${sample_id}.genome.fna
     fi
-
-    cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> ${sample_id}.genome.fna 
+    if ls ncbi_dataset/data/${accension_id}/unplaced.scaf.fna 1> /dev/null 2>&1; then
+        cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> ${sample_id}.genome.fna 
+    fi
+    
     cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
 
     """
