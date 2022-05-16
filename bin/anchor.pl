@@ -18,6 +18,19 @@ my $outfile="Chromopaint.txt";
 open(my $out, "> $outfile") or die "error opening $outfile. $!";
 
 
+#read in the colour hex list
+my $colours="/workspace/jcvi-nextflow/data/unique_hex2";
+open(my $COL, "<", $colours) or die "Could not open $colours\n";
+my $col_outfile="colour.idmap";
+open(my $col_out, ">", $col_outfile) or die "Could not open $col_outfile\n";
+
+my @colour_board;
+while (my $line4=<$COL>) {
+    chomp $line4;
+	push(@colour_board, "$line4");
+}
+
+#read in the first bed file
 my %SP1;
 while (my $line=<$BED1>) {
     chomp $line;
@@ -28,7 +41,7 @@ while (my $line=<$BED1>) {
 
 
 #print "We got here\n";
-
+#read in the second bed file.
 my %SP2;
 while (my $line2=<$BED2>) {
     chomp $line2;
@@ -44,6 +57,8 @@ my $sp2_bed;
 my $chrome1;
 my $chrome2;
 
+my %colour_chrome;
+
 while (my $line3=<$ANC>) {
     chomp $line3;
 	my @spl=split ("\t", $line3);
@@ -54,6 +69,7 @@ while (my $line3=<$ANC>) {
 	if ($line3=~ m/###/g){
         if($sp1_bed){
             print $out "$chrome2\t$temp_lo\t$temp_hi\t$chrome1\t0\t\+\n";
+            $colour_chrome{"$chrome1"}="done";
             $sp1_bed=();
             $temp_lo=();
             $temp_hi=();
@@ -96,3 +112,11 @@ while (my $line3=<$ANC>) {
 }
 
 print "Script has completed\n";
+
+#Now make the chrome idmap
+
+my $count=0;
+foreach my $chr_id ( keys %colour_chrome) {
+    print $col_out "$chr_id\t$chr_id\t$colour_board[$count]\n";
+    $count++;
+}
