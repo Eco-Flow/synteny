@@ -32,13 +32,17 @@ To run Nextflow (locally with docker installed), use the following command:
 
 This is what the input template looks like (Example.csv):
 
-`D_melanogaster,GCF_000001215.4
-A_mellifera,GCF_003254395.2`
+```
+D_melanogaster,GCF_000001215.4
+A_mellifera,GCF_003254395.2
+```
 
 You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:\
 
-`B_impatiens,/path/to/Desktop/B_impatiens_Genome**.fasta**,/path/to/Desktop/B_impatiens**.gff**
-A_mellifera,GCF_003254395.2`
+```
+B_impatiens,/path/to/Desktop/B_impatiens_Genome**.fasta**,/path/to/Desktop/B_impatiens**.gff**
+A_mellifera,GCF_003254395.2
+```
 
 Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file).
 
