@@ -13,6 +13,9 @@ process SYNTENY {
     path("${sample_id}.${sample_id2}.anchors"), emit: anchors
     path("*.pdf"), emit: pdf
 
+    when: 
+    $sample_id !~ $sample_id2
+
     script:
     """
         python -m jcvi.compara.catalog ortholog ${sample_id} ${sample_id2} --no_strip_names
