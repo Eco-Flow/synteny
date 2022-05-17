@@ -10,18 +10,25 @@ This is a developmental Nextflow ls workflow running JCVI, to look at gene synte
 
 All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). OR you can supply a NCBI genome reference ID (which will be automatically downloaded).
 
-To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (tp run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
+To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (to run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
 
 # Run locally
 
-Prerequistites : Docker account and Docker installed on your machine. Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2]), plus java at at least 1.8.
+Prerequistites : 
+- Docker. Make sure it is active log in on your machine.
+- Java at least 1.8.
+- Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2].
+- Git.
+
+To clone the repo: `git clone https://github.com/chriswyatt1/jcvi-nextflow.git`
+
+Then `cd` into the repository on your machine.
 
 To run Nextflow (locally with docker installed), use the following command:
 
 `nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
 
-#Notice one - for Nextflow options, and two -- for pipeline options.
-
+#Notice, we use one `-` for Nextflow options, and two `--` for pipeline options.
 
 This is what the input template looks like (Example.csv):
 
@@ -30,14 +37,16 @@ A_mellifera,GCF_003254395.2`
 
 You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:\
 
-`B_impatiens,/Users/cwyatt/Desktop/B_impatiens_Genome**.fasta**,/Users/cwyatt/Desktop/B_impatiens**.gff**
+`B_impatiens,/path/to/Desktop/B_impatiens_Genome**.fasta**,/path/to/Desktop/B_impatiens**.gff**
 A_mellifera,GCF_003254395.2`
 
 Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file).
 
 # Run with Gitpod
 
-Prerequistites : A browser (Ideally, Chrome or Firefox \[tested\]) and a Github account.
+Prerequistites : 
+- A browser (Ideally, Chrome or Firefox \[tested\]).
+- Github account.
 
 Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`. 
 
