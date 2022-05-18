@@ -81,15 +81,15 @@ workflow {
 
     JCVI ( GFFREAD.out.proteins )
 
-    JCVI.out.new_format.combine(JCVI.out.new_format).view()
+    //JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] }.view()
 
     //CONFIG ( in_seqids , in_layout , DOWNLOAD_NCBI.out.genome.mix(input_type.local).collect() )
 
-    SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format) )
+    SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
 
     //MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors, JCVI.out.collect() )
 
-    //CHROMOPAINT ( SYNTENY.out.anchors , JCVI.out.collect() )
+    CHROMOPAINT ( SYNTENY.out.anchors , JCVI.out.collect() )
     
 }
 
