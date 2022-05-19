@@ -10,6 +10,8 @@ This is a developmental Nextflow ls workflow running JCVI, to look at gene synte
 
 All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). OR you can supply a NCBI genome reference ID (which will be automatically downloaded).
 
+There are two branches, 'main': which runs two samples against eachother, producing dotplots, chromosome plots and macrosynteny connection plots. And 'pairwise': which can run 2 or more samples against eachother pairwise, producing dotplots and chromosome plots, along with species wise statistics and gene statistics.
+
 To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (to run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
 
 # Run locally
