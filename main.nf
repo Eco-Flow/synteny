@@ -16,6 +16,7 @@ params.outdir = "Results"
 params.input = "data/Example.csv"
 params.seqids = "data/default1"
 params.layout = "data/default2"
+params.hex = "data/unique_hex2"
 params.test=0
 
 
@@ -40,7 +41,7 @@ include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
 include { CHROMOPAINT } from './modules/chromo.nf'
 
 Channel
-	.fromPath(params.input)
+    .fromPath(params.input)
     .splitCsv()
     .set { in_file }
 
@@ -58,6 +59,9 @@ Channel
     .fromPath(params.layout)
     .set { in_layout }   
 
+Channel
+    .fromPath(params.hex)
+    .set { in_hex } 
 
 Channel
     .fromPath(params.input)
@@ -67,6 +71,7 @@ Channel
         local: it.size() == 3
     }
     .set { input_type }
+
     
 // input_type.ncbi.view { "$it is small" }
 // input_type.local.view { "$it is large" }
@@ -81,13 +86,23 @@ workflow {
 
     JCVI ( GFFREAD.out.proteins )
 
-    CONFIG ( in_seqids , in_layout , DOWNLOAD_NCBI.out.genome.mix(input_type.local).collect() )
+    //JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] }.view()
 
-    SYNTENY ( JCVI.out.collect() )
+    //CONFIG ( in_seqids , in_layout , DOWNLOAD_NCBI.out.genome.mix(input_type.local).collect() )
 
-    MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors, JCVI.out.collect() )
+    SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
 
-    CHROMOPAINT ( SYNTENY.out.anchors , JCVI.out.collect() )
+    //MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors, JCVI.out.collect() )
+
+    //SYNTENY.out.anchors.view()
+
+    //in_hex.view()
+
+    //JCVI.out.beds.collect().view()
+
+    //JCVI.out.collect().view()
+
+    CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect().first() )
     
 }
 
