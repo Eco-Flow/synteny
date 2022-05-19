@@ -39,7 +39,7 @@ foreach my $chrome_sp1 ( keys %SP1) {
         if ($score >= $best_score){
             $best_chromo{$chrome_sp1}=$chrome_sp2;
             $best_score=$score;
-            print "$chrome_sp1 to $chrome_sp2  score $best_score\n";
+            #print "$chrome_sp1 to $chrome_sp2  score $best_score\n";
         }
     }
 }
