@@ -1,15 +1,13 @@
-process SCORES {
+process SCORE {
     label 'score'
     tag "$sample_id"
     container = 'chriswyatt/jcvi'
-             
-    input:
 
-        tuple val(sample_id), path(fasta), path(gff)
+    input:
+    path(anchors)
 
     output:
-        
-        tuple val(sample_id), path( "${sample_id}.cds" ), path( "${sample_id}.bed" ) , emit: new_format
+    path("My_scores.tsv"), emit: score_combine
 
     script:
     """
@@ -18,8 +16,7 @@ process SCORES {
 
     #Run score for genome X in terms of size of syntenic blacks to species Y.
 
-    
+    summarise_anchors.pl 
 
     """
 }
-

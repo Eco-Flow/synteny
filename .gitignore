@@ -3,3 +3,6 @@ Results/
 .nextflow*
 tbd
 nextflow
+*.gff3
+*.fa
+*.fasta

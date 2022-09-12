@@ -39,6 +39,7 @@ include { MACRO } from './modules/macro.nf'
 include { CONFIG } from './modules/default_config.nf'
 include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
 include { CHROMOPAINT } from './modules/chromo.nf'
+include { SCORE } from './modules/score.nf'
 
 Channel
     .fromPath(params.input)
@@ -103,6 +104,8 @@ workflow {
     //JCVI.out.collect().view()
 
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect().first() )
+
+    SCORE ( SYNTENY.out.anchors.collect() )
     
 }
 
