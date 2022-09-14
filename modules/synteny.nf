@@ -19,7 +19,7 @@ process SYNTENY {
         python -m jcvi.compara.catalog ortholog ${sample_id} ${sample_id2} --no_strip_names
         python -m jcvi.compara.synteny depth --histogram ${sample_id}.${sample_id2}.anchors
 
-        cut -f 3 work/c2/5a7eb6cb839c0a496008025bb4dfc5/Vespula_vulgaris.Dolichovespula_media.last.filtered  | awk '{ sum += \$1; n++ } END { if (n > 0) print sum / n; }' > ${sample_id}.${sample_id2}.percent.similarity
+        cut -f 3 ${sample_id}.${sample_id2}.last.filtered  | awk '{ sum += \$1; n++ } END { if (n > 0) print sum / n; }' > ${sample_id}.${sample_id2}.percent.similarity
     """
 }
 
