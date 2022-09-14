@@ -105,7 +105,7 @@ workflow {
 
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect().first() )
 
-    SCORE ( SYNTENY.out.anchors.collect() )
+    SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim )
     
 }
 

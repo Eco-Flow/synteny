@@ -30,6 +30,11 @@ To run Nextflow (locally with docker installed), use the following command:
 
 `nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
 
+
+or with (if you download these three datasets manually- e.g. http://ftp.ensembl.org/pub/rapid-release/species/Vespula_germanica/GCA_905340365.1/genome/)
+
+`--input data/Example.2.threeInputs.csv `
+
 #Notice, we use one `-` for Nextflow options, and two `--` for pipeline options.
 
 This is what the input template looks like (Example.csv):

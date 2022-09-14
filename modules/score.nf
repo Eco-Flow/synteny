@@ -2,9 +2,11 @@ process SCORE {
     label 'score'
     tag "$sample_id"
     container = 'chriswyatt/jcvi'
+    publishDir "$params.outdir/Jcvi_results" , mode: "copy"
 
     input:
     path(anchors)
+    path(simularity)
 
     output:
     path("My_scores.tsv"), emit: score_combine
@@ -17,6 +19,8 @@ process SCORE {
     #Run score for genome X in terms of size of syntenic blacks to species Y.
 
     summarise_anchors.pl 
+
+    
 
     """
 }
