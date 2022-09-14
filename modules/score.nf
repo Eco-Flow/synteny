@@ -10,6 +10,7 @@ process SCORE {
 
     output:
     path("My_scores.tsv"), emit: score_combine
+    path("My_sim_cores.tsv"), emit: simil_combine
 
     script:
     """
@@ -20,7 +21,7 @@ process SCORE {
 
     summarise_anchors.pl 
 
-    
+    summarise_simularity.pl
 
     """
 }
