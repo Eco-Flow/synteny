@@ -1,6 +1,6 @@
 process CHROMOPAINT {
     label 'chromo'
-    tag 'chromo'
+    tag "${sample_id}_VS_${sample_id2}"
     publishDir "$params.outdir/Jcvi_results" , mode: "copy"
     container = 'chriswyatt/jcvi'
              

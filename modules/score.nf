@@ -12,6 +12,7 @@ process SCORE {
     path("My_scores.tsv"), emit: score_combine
     path("My_sim_cores.tsv"), emit: simil_combine
     path("My_pair_synteny_identity.pdf"), emit: pairwiseplot
+    path("My_comp_synteny_similarity.tsv"), emit: pairdata
 
     script:
     """
