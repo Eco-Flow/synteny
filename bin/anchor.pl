@@ -19,7 +19,7 @@ open(my $out, "> $outfile") or die "error opening $outfile. $!";
 
 
 #read in the colour hex list
-my $colours="/workspace/jcvi-nextflow/data/unique_hex2";
+my $colours="unique_hex2";
 open(my $COL, "<", $colours) or die "Could not open $colours\n";
 my $col_outfile="colour.idmap";
 open(my $col_out, ">", $col_outfile) or die "Could not open $col_outfile\n";

@@ -5,7 +5,7 @@ process CHROMOPAINT {
     container = 'chriswyatt/jcvi'
              
     input:
-
+	path(hex)
         path(anchors)
         tuple val(sample_id), path(fasta1), path(bed1), val(sample_id2), path(fasta2), path(bed2)
     
