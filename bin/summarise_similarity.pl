@@ -28,14 +28,14 @@ foreach my $file (@files){
     $sim_hash{$sp1}{$sp2}=$similarity;
 }
 
-foreach my $sp1 (keys %sim_hash ){
+foreach my $sp1 (sort keys %sim_hash ){
     print $outhandle "\t$sp1";
 }
 print $outhandle "\n";
 
-foreach my $sp1 (keys %sim_hash ){
+foreach my $sp1 (sort keys %sim_hash ){
     print $outhandle "$sp1";
-    foreach my $sp2 (keys %sim_hash ){
+    foreach my $sp2 (sort keys %sim_hash ){
         if ($sp1 eq $sp2){
             print $outhandle "\tNA";
         }

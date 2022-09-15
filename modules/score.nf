@@ -23,5 +23,7 @@ process SCORE {
 
     summarise_simularity.pl
 
+    syntenicVSsimilarity.pl
+
     """
 }
