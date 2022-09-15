@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-use Getopt::Std;
 
 
 print "Please be in folder with all the similarity and synteny files\n";
@@ -101,7 +100,7 @@ print $outhandle3 "
 mydata <- read.csv(\"PairwisePlotData.tsv\", h=T, row.names=1, sep=\"\t\")
 pdf (\"My_pair_synteny_identity.pdf\")
 plot(mydata)
-text(mydata$Syntenous.genes, mydata$Percent.protein.similarity, labels=rownames(mydata))
+text(mydata\$Syntenous.genes, mydata\$Percent.protein.similarity, labels=rownames(mydata))
 dev.off()
 ";
 
@@ -110,5 +109,6 @@ dev.off()
 close $outhandle;
 close $outhandle2;
 close $outhandle3;
+
 
 

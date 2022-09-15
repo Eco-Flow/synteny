@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use warnings;
 use strict;
-use Getopt::Std;
 
 
 print "Please be in folder with all the anchor files\n";

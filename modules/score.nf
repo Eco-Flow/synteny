@@ -22,7 +22,7 @@ process SCORE {
 
     summarise_anchors.pl 
 
-    summarise_simularity.pl
+    summarise_similarity.pl
 
     syntenicVSsimilarity.pl
 
