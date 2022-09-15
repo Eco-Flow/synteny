@@ -1,7 +1,7 @@
 process SCORE {
     label 'score'
     tag "$sample_id"
-    container = 'chriswyatt/jcvi'
+    container = 'chriswyatt/perl_r_e1071'
     publishDir "$params.outdir/Jcvi_results" , mode: "copy"
 
     input:
@@ -11,6 +11,7 @@ process SCORE {
     output:
     path("My_scores.tsv"), emit: score_combine
     path("My_sim_cores.tsv"), emit: simil_combine
+    path("My_pair_synteny_identity.pdf"), emit: pairwiseplot
 
     script:
     """
