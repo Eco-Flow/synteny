@@ -23,6 +23,9 @@ process DOWNLOAD_NCBI {
     if ls ncbi_dataset/data/${accension_id}/unplaced.scaf.fna 1> /dev/null 2>&1; then
         cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> ${sample_id}.genome.fna 
     fi
+    if ls ncbi_dataset/data/${accension_id}/*_genomic.fna 1> /dev/null 2>&1; then
+        ncbi_dataset/data/${accension_id}/*_genomic.fna >> ${sample_id}.genome.fna 
+    fi
     
     cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
 
