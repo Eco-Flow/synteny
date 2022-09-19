@@ -13,21 +13,21 @@ process DOWNLOAD_NCBI {
 
     #Get a genome and GFF assembly from NCBI using their datasets scripts
 
-    datasets download genome accession ${accension_id}
-    unzip ncbi_dataset.zip 
+        datasets download genome accession ${accension_id}
+        unzip ncbi_dataset.zip 
 
-    
-    if ls ncbi_dataset/data/${accension_id}/chr*.fna 1> /dev/null 2>&1; then
-        cat ncbi_dataset/data/${accension_id}/chr*.fna > ${sample_id}.genome.fna
-    fi
-    if ls ncbi_dataset/data/${accension_id}/unplaced.scaf.fna 1> /dev/null 2>&1; then
-        cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> ${sample_id}.genome.fna 
-    fi
-    if ls ncbi_dataset/data/${accension_id}/*_genomic.fna 1> /dev/null 2>&1; then
-        ncbi_dataset/data/${accension_id}/*_genomic.fna >> ${sample_id}.genome.fna 
-    fi
-    
-    cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
+        
+        if ls ncbi_dataset/data/${accension_id}/chr*.fna 1> /dev/null 2>&1; then
+            cat ncbi_dataset/data/${accension_id}/chr*.fna > ${sample_id}.genome.fna
+        fi
+        if ls ncbi_dataset/data/${accension_id}/unplaced.scaf.fna 1> /dev/null 2>&1; then
+            cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> ${sample_id}.genome.fna 
+        fi
+        if ls ncbi_dataset/data/${accension_id}/*_genomic.fna 1> /dev/null 2>&1; then
+            cat ncbi_dataset/data/${accension_id}/*_genomic.fna >> ${sample_id}.genome.fna 
+        fi
+        
+        cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
 
     """
 }
