@@ -14,7 +14,10 @@ if ($ARGV[1] =~ m/.gz$/){
 
 if ($ARGV[2] =~ m/.gz$/){
 	`zcat $ARGV[2] > sample.gff3`;
+	`cp sample.gff3 $sample\.gff_for_jvci.gff3`
 }
-
+else{
+	`cp $ARGV[2] $sample\.gff_for_jvci.gff3`
+}
 
 `gffread -w $sample\.prot.fa -g genome.fa sample.gff3`

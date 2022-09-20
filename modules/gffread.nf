@@ -13,9 +13,7 @@ process GFFREAD {
 
     script:
     """
-	cp ${gff} ${sample_id}.gff_for_jvci.gff3    
-	gffread_unzip.pl ${sample_id} ${fasta} ${gff}
-	
+	gffread_unzip.pl ${sample_id} ${fasta} ${gff}	
     """
 }
 
