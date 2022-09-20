@@ -11,6 +11,9 @@ my $sample=$ARGV[0];
 if ($ARGV[1] =~ m/.gz$/){
 	`zcat $ARGV[1] > genome.fa`;
 }
+else{
+	`cp  $ARGV[1] genome.fa`
+}
 
 if ($ARGV[2] =~ m/.gz$/){
 	`zcat $ARGV[2] > sample.gff3`;
