@@ -23,4 +23,4 @@ else{
 	`cp $ARGV[2] $sample\.gff_for_jvci.gff3`
 }
 
-`gffread -w $sample\.prot.fa -g genome.fa sample.gff3`
+`gffread -w $sample\.nucl.fa -g genome.fa sample.gff3`
