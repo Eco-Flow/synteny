@@ -21,6 +21,7 @@ if ($ARGV[2] =~ m/.gz$/){
 }
 else{
 	`cp $ARGV[2] $sample\.gff_for_jvci.gff3`
+
 }
 
-`gffread -w $sample\.nucl.fa -g genome.fa sample.gff3`
+`gffread -w $sample\.nucl.fa -g genome.fa $sample\.gff_for_jvci.gff3`

@@ -16,15 +16,7 @@ process DOWNLOAD_NCBI {
     datasets download genome accession ${accension_id}
     unzip ncbi_dataset.zip 
 
-    
-    if ls ncbi_dataset/data/${accension_id}/chr*.fna 1> /dev/null 2>&1; then
-        cat ncbi_dataset/data/${accension_id}/chr*.fna > ${sample_id}.genome.fna
-    fi
-    if ls ncbi_dataset/data/${accension_id}/unplaced.scaf.fna 1> /dev/null 2>&1; then
-        cat ncbi_dataset/data/${accension_id}/unplaced.scaf.fna >> ${sample_id}.genome.fna 
-    fi
-    
-    cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
+    download_collect.pl ${accension_id} ${sample_id}
 
     """
 }
