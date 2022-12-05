@@ -19,6 +19,7 @@ my $sample_id=$ARGV[1];
 my @txtfiles = glob "ncbi_dataset/data/$accension_id\/*";
 my $chr_split=0;
 my $chromsome=0;
+my $chromosome_alt=0;
 foreach my $txtfile (@txtfiles){
     #print "$txtfile\n";
     if($txtfile=~ m/chr(.*?).fna/){
@@ -26,6 +27,9 @@ foreach my $txtfile (@txtfiles){
     }
     if($txtfile=~ m/scale_assembly_genomic.fna/){
         $chromsome=$txtfile;
+    }
+    if($txtfile=~m/$accension_id\*genomic.fna/){
+	$chromsome_alt=$txtfile;
     }
 }
 
@@ -40,6 +44,10 @@ if ($chr_split) {
 elsif ($chromsome){
     my $file = `ls ncbi_dataset/data/$accension_id\/*scale_assembly_genomic.fna`;
     `cp $chromsome $sample_id\.genome.fna`;
+}
+elsif ($chromsome_alt){
+    my $file = `ls ncbi_dataset/data/$accension_id\*genomic.fna`
+    `cp $chromsome_alt $sample_id\.genome.fna`;
 }
 else{
     print "ncbi_dataset/data/$accension_id\/*scale_assembly_genomic.fna\n";
