@@ -1,7 +1,10 @@
 process SYNTENY {
     label 'syn'
     tag "${sample_id}_VS_${sample_id2}"
-    publishDir "$params.outdir/Jcvi_results" , mode: "copy"
+    publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.anchors"
+    publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.pdf"
+    publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.percent.similarity"
+    publishDir "$params.outdir/Last" , mode: "copy", pattern: "*last.filtered"
     container = 'chriswyatt/jcvi'
              
     input:
@@ -13,6 +16,7 @@ process SYNTENY {
     path("${sample_id}.${sample_id2}.anchors"), emit: anchors
     path("*.pdf"), emit: pdf
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
+    path("*.last.filtered"), emit: last
 
     script:
     """

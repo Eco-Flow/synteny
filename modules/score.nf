@@ -2,7 +2,12 @@ process SCORE {
     label 'score'
     tag "$sample_id"
     container = 'chriswyatt/perl_r_e1071'
-    publishDir "$params.outdir/Jcvi_results" , mode: "copy"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_pair_synteny_identity.pdf"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Synteny_matrix.tsv"
+    publishDir "$params.outdir/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
 
     input:
     path(anchors)
@@ -13,6 +18,8 @@ process SCORE {
     path("My_sim_cores.tsv"), emit: simil_combine
     path("My_pair_synteny_identity.pdf"), emit: pairwiseplot
     path("My_comp_synteny_similarity.tsv"), emit: pairdata
+    path("Synteny_matrix.tsv"), emit:synmat
+    path("*geneScore.tsv"), emit: pairedgenescores
 
     script:
     """
@@ -27,5 +34,6 @@ process SCORE {
 
     syntenicVSsimilarity.pl
 
+    Synteny_gene_score.pl
     """
 }
