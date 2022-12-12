@@ -85,10 +85,8 @@ workflow {
     DOWNLOAD_NCBI ( input_type.ncbi )
 
     GFFREAD ( DOWNLOAD_NCBI.out.genome.mix(input_type.local) )
-
-    LONGEST ( GFFREAD.out.proteins )
-
-    JCVI ( LONGEST.out.longest_proteins )
+    
+    JCVI ( GFFREAD.out.proteins )
 
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
 

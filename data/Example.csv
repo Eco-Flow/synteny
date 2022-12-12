@@ -1,2 +1,4 @@
 Cotesia_congregata,GCA_905319865.3
 A_mellifera,GCF_003254395.2
+V_crabro,/workspace/jcvi-nextflow/data/Vespa_crabroGenome.fasta,/workspace/jcvi-nextflow/data/Vespa_crabro.gff3 
+
