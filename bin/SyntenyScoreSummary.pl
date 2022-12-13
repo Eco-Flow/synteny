@@ -56,7 +56,7 @@ foreach my $file (@files){
 
 
 foreach my $species (keys %score) {
-    my $outname="$species\_geneScoreSummary.txt";
+    my $outname="$species\.SpeciesScoreSummary.txt";
     open(my $outhandle, ">", $outname)   or die "Could not open $outname\n";
     print $outhandle "Species\tgene\ttotal_score\tcount\taverage_score\n";
     foreach my $gene (keys %{$score{$species}}) {

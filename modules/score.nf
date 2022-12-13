@@ -20,6 +20,7 @@ process SCORE {
     path("My_comp_synteny_similarity.tsv"), emit: pairdata
     path("Synteny_matrix.tsv"), emit:synmat
     path("*geneScore.tsv"), emit: pairedgenescores
+    path("*SpeciesScoreSummary.txt"), emit:speciesSummary 
 
     script:
     """
@@ -35,5 +36,7 @@ process SCORE {
     syntenicVSsimilarity.pl
 
     Synteny_gene_score.pl
+
+    SyntenyScoreSummary.pl 
     """
 }

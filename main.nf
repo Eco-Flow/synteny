@@ -17,6 +17,7 @@ params.input = "data/Example.csv"
 params.seqids = "data/default1"
 params.layout = "data/default2"
 params.hex = "data/unique_hex2"
+params.go = null
 params.test=0
 
 
@@ -41,6 +42,7 @@ include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
 include { CHROMOPAINT } from './modules/chromo.nf'
 include { SCORE } from './modules/score.nf'
 include { LONGEST } from './modules/longest_orf.nf'
+include { GO } from './modules/go.nf'
 
 Channel
     .fromPath(params.input)
@@ -93,6 +95,14 @@ workflow {
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect().first() )
 
     SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() )
+
+    if (params.go){
+
+	go_datasets = Channel.fromPath(params.go)
+
+	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() )
+
+    }
     
 }
 
