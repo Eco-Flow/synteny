@@ -3,6 +3,7 @@ process CHROMOPAINT {
     tag "$anchors"
     publishDir "$params.outdir/Jcvi_results" , mode: "copy"
     container = 'chriswyatt/jcvi'
+    errorStrategy = 'ignore'
              
     input:
 
