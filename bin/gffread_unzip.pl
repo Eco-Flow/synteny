@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 
-die "Needs the input sampleid, gff3 file and the fasta file\n" if (@ARGV!=3); 
+die "Needs the input sample_id, gff3 file and the fasta file\n" if (@ARGV!=3); 
 
 #print "Script is running\n";
 
@@ -22,6 +22,13 @@ if ($ARGV[2] =~ m/.gz$/){
 else{
 	`cp $ARGV[2] $sample\.gff_for_jvci.gff3`
 
+}
+
+my $gff_head=`head -n 1 $sample\.gff_for_jvci.gff3 | cut -f 2`;
+chomp $gff_head;
+if ($gff_head=~  m/AUGUSTUS/g){
+	`GFF3_to_SingleLongest_mRNA.pl $sample\.gff_for_jvci.gff3`;
+	`cp $sample\.gff_for_jvci.gff3\_single.longest.gene.gff3 $sample\.gff_for_jvci.gff3`;
 }
 
 `gffread -w $sample\.nucl.fa -g genome.fa $sample\.gff_for_jvci.gff3`

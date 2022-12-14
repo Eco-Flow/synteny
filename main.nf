@@ -17,6 +17,7 @@ params.input = "data/Example.csv"
 params.seqids = "data/default1"
 params.layout = "data/default2"
 params.hex = "data/unique_hex2"
+params.go = null
 params.test=0
 
 
@@ -40,6 +41,8 @@ include { CONFIG } from './modules/default_config.nf'
 include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
 include { CHROMOPAINT } from './modules/chromo.nf'
 include { SCORE } from './modules/score.nf'
+include { LONGEST } from './modules/longest_orf.nf'
+include { GO } from './modules/go.nf'
 
 Channel
     .fromPath(params.input)
@@ -84,28 +87,22 @@ workflow {
     DOWNLOAD_NCBI ( input_type.ncbi )
 
     GFFREAD ( DOWNLOAD_NCBI.out.genome.mix(input_type.local) )
-
+    
     JCVI ( GFFREAD.out.proteins )
 
-    //JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] }.view()
-
-    //CONFIG ( in_seqids , in_layout , DOWNLOAD_NCBI.out.genome.mix(input_type.local).collect() )
-
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
-
-    //MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors, JCVI.out.collect() )
-
-    //SYNTENY.out.anchors.view()
-
-    //in_hex.view()
-
-    //JCVI.out.beds.collect().view()
-
-    //JCVI.out.collect().view()
 
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect().first() )
 
     SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() )
+
+    if (params.go){
+
+	go_datasets = Channel.fromPath(params.go)
+
+	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() )
+
+    }
     
 }
 
