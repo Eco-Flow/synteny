@@ -6,6 +6,7 @@ process SYNTENY {
     publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.percent.similarity"
     publishDir "$params.outdir/Last" , mode: "copy", pattern: "*last.filtered"
     container = 'chriswyatt/jcvi'
+    errorStrategy = 'ignore'    
              
     input:
 

@@ -92,9 +92,9 @@ workflow {
 
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
 
-    CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect().first() )
+    CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect() )
 
-    SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() )
+    SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
 
     if (params.go){
 

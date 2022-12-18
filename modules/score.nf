@@ -8,10 +8,12 @@ process SCORE {
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_pair_synteny_identity.pdf"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Synteny_matrix.tsv"
     publishDir "$params.outdir/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Trans_location_version.out.txt"
 
     input:
     path(anchors)
     path(simularity)
+    path(gffs)
 
     output:
     path("My_scores.tsv"), emit: score_combine
@@ -21,6 +23,7 @@ process SCORE {
     path("Synteny_matrix.tsv"), emit:synmat
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary 
+    path("Trans_location_version.out.txt"), emit:trans_inver_summary
 
     script:
     """
@@ -38,5 +41,7 @@ process SCORE {
     Synteny_gene_score.pl
 
     SyntenyScoreSummary.pl 
+
+    Trans_location_Inversion_score.pl
     """
 }
