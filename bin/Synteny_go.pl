@@ -91,11 +91,12 @@ while (my $line = <$filein>){
 }
 
 #Now run Chopgo
+print "Now run ChopGO : e.g. : ChopGO_VTS.pl -i $species\.top.txt --GO_file $go_key{$species}\n";
 
-`ChopGO_VTS.pl -i $species\.top.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS.pl -i $species\.bot.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS.pl -i $species\.high.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS.pl -i $species\.low.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.top.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.bot.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.high.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.low.txt --GO_file $go_key{$species}`;
 
 
 close $out1;

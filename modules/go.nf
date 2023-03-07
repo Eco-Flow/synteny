@@ -1,8 +1,9 @@
 process GO {
     label 'go'
-    tag "$sample_id"
+    tag "$speciessummaries"
     container = 'chriswyatt/chopgo'
     publishDir "$params.outdir/GO_results" , mode: "copy"
+    errorStrategy = 'ignore'
              
     input:
 
