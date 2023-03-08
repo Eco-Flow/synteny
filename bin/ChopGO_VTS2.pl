@@ -289,6 +289,10 @@ while (my $line=<$IN>){
     #print "$line\n";
     my @linesplit= split("\t", $line);
     my $gene=$linesplit[0];
+    $gene=~s/-/_/g;
+    $gene=~s/:/_/g;
+
+
     if ($linesplit[1]){
 	my $GROUP=$linesplit[1];
 	if ($Gene_Go_Hash{$GROUP}){

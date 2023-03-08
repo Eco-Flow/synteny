@@ -67,7 +67,7 @@ while (my $line = <$filein>){
     }
     my @low;
     if ($score <= 5){
-        push (@high, $gene);
+        push (@low, $gene);
     }
 
     
