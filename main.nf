@@ -100,7 +100,7 @@ workflow {
 
 	go_datasets = Channel.fromPath(params.go)
 
-	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() )
+	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
 
     }
     

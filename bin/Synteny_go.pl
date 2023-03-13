@@ -5,7 +5,7 @@ use strict;
 
 print "Please be in folder with all the SpeciesScoreSummary and the Go folder\n";
 
-
+#For each species in your Go hash folder work out species name
 my %go_key;
 my @gos=`ls Go/*`;
 foreach my $sp (@gos){
@@ -15,24 +15,46 @@ foreach my $sp (@gos){
     #print "$sp_folder[1] $sp\n";
 }
 
-
+#Read in the species score summary and work out the species being tested.
 my $file=`ls *SpeciesScoreSummary.txt`;
 chomp $file;
 print "FILE: $file\n";
 my @split=split(/\./, $file);
 my $species=$split[0];
 
+
+#import original bed used, to estimate # of zeros.
+my $bed=`ls $species\.bed`;
+chomp $bed;
+my %all_genes;
+my @hit_genes;
+open(my $bedin, "<", $bed)   or die "Could not open $bed\n";
+while (my $lineB = <$bedin>){
+    chomp $lineB;
+    my @splbed=split("\t",$lineB);
+    $all_genes{$splbed[3]}="YES";
+}
+
+
+
+
 print "We run with species $species\n";
 
 
-my $outname1="$species\.top.txt";
+my $outname1="$species\.topSynteny.txt";
 open(my $out1, ">", $outname1)   or die "Could not open $outname1\n";
-my $outname2="$species\.bot.txt";
+my $outname2="$species\.botSynteny.txt";
 open(my $out2, ">", $outname2)   or die "Could not open $outname2\n";
-my $outname3="$species\.high.txt";
+my $outname3="$species\.highScore.txt";
 open(my $out3, ">", $outname3)   or die "Could not open $outname3\n";
-my $outname4="$species\.low.txt";
+my $outname4="$species\.lowScore.txt";
 open(my $out4, ">", $outname4)   or die "Could not open $outname4\n";
+my $outname5="$species\.averhigh.txt";
+open(my $out5, ">", $outname5)   or die "Could not open $outname5\n";
+my $outname6="$species\.averlow.txt";
+open(my $out6, ">", $outname6)   or die "Could not open $outname6\n";
+my $outname7="$species\.zeros.txt";
+open(my $out7, ">", $outname7)   or die "Could not open $outname7\n";
 
 open(my $filein, "<", $file)   or die "Could not open $file\n";
 my $header=<$filein>;
@@ -41,9 +63,11 @@ while (my $line = <$filein>){
     print "$line\n";
     my @splitl=split("\t", $line);
     my $gene=$splitl[1];
-    my $count=$splitl[3];
+    push (@hit_genes, $gene);
     my $score=$splitl[2];
-    
+    my $count=$splitl[3];
+    my $average=$splitl[4];
+
     #print "HERE: $gene $count $score \n";
     #Rename gene to gene, not transcript with .
     if($gene =~ m/\./){
@@ -69,7 +93,14 @@ while (my $line = <$filein>){
     if ($score <= 5){
         push (@low, $gene);
     }
-
+    my @averhigh;
+    if ($average >= 10){
+        push (@averhigh, $gene);
+    }
+    my @averlow;
+    if ($average <= 5){
+        push (@averlow, $gene);
+    }
     
     foreach my $ele1 (@top){
         print $out1 "$ele1\n";
@@ -88,19 +119,57 @@ while (my $line = <$filein>){
         print $out4 "$ele4\n";
     }
 
+    foreach my $ele5 (@averhigh){
+        print $out5 "$ele5\n";
+    }
+
+    foreach my $ele6 (@averlow){
+        print $out6 "$ele6\n";
+    }
+
 }
+
+#My zero calculate:
+my $score=0;
+my $zscore=0;
+my $zhit;
+
+foreach my $geneall (keys %all_genes){
+	$zhit=0;
+	foreach my $hit_gen (@hit_genes){
+		if ($hit_gen eq $geneall){
+			$zhit=1;
+			$score++;
+		}
+	}
+	if ($zhit){
+		#DONT PRINT, as this gene matched
+		#print $out7 "$geneall\n";
+	}
+	else{
+		$zscore++;
+		print $out7 "$geneall\n";
+	}
+}
+print "$score matches and $zscore zeros\n";
+
 
 #Now run Chopgo
 print "Now run ChopGO : e.g. : ChopGO_VTS.pl -i $species\.top.txt --GO_file $go_key{$species}\n";
 
-`ChopGO_VTS2.pl -i $species\.top.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.bot.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.high.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.low.txt --GO_file $go_key{$species}`;
-
+`ChopGO_VTS2.pl -i $species\.topSynteny.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.botSynteny.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.highScore.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.lowScore.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.averhigh.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.averlow.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.zeros.txt --GO_file $go_key{$species}`;
 
 close $out1;
 close $out2;
 close $out3;
 close $out4;
+close $out5;
+close $out6;
+close $out7;
 close $filein;

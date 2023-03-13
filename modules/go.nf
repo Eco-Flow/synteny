@@ -9,6 +9,7 @@ process GO {
 
 	path(go)
 	path(speciessummaries)
+	path(beds)
 
     output:
 
