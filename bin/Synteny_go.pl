@@ -55,6 +55,8 @@ my $outname6="$species\.averlow.txt";
 open(my $out6, ">", $outname6)   or die "Could not open $outname6\n";
 my $outname7="$species\.zeros.txt";
 open(my $out7, ">", $outname7)   or die "Could not open $outname7\n";
+my $background="$species\.bg.txt";
+open(my $out8, ">", $background)   or die "Could not open $background\n";
 
 open(my $filein, "<", $file)   or die "Could not open $file\n";
 my $header=<$filein>;
@@ -63,18 +65,22 @@ while (my $line = <$filein>){
     print "$line\n";
     my @splitl=split("\t", $line);
     my $gene=$splitl[1];
+    print $out8 "$gene\n";
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/\a-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
     push (@hit_genes, $gene);
     my $score=$splitl[2];
     my $count=$splitl[3];
     my $average=$splitl[4];
 
-    #print "HERE: $gene $count $score \n";
-    #Rename gene to gene, not transcript with .
-    if($gene =~ m/\./){
-        my @sp1=split(/\./, $gene);
-        $gene=$sp1[0];
-        #print "HERE2: $gene $count $score \n";
-    }
     my @top;
     if ($count >= 5){
         print "HERE3: $count $score $gene\n";
@@ -129,6 +135,8 @@ while (my $line = <$filein>){
 
 }
 
+close $out8;
+
 #My zero calculate:
 my $score=0;
 my $zscore=0;
@@ -157,13 +165,13 @@ print "$score matches and $zscore zeros\n";
 #Now run Chopgo
 print "Now run ChopGO : e.g. : ChopGO_VTS.pl -i $species\.top.txt --GO_file $go_key{$species}\n";
 
-`ChopGO_VTS2.pl -i $species\.topSynteny.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.botSynteny.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.highScore.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.lowScore.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.averhigh.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.averlow.txt --GO_file $go_key{$species}`;
-`ChopGO_VTS2.pl -i $species\.zeros.txt --GO_file $go_key{$species}`;
+`ChopGO_VTS2.pl -i $species\.topSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.botSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.highScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.lowScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.averhigh.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.averlow.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.zeros.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
 
 close $out1;
 close $out2;
