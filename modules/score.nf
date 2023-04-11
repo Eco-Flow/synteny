@@ -1,7 +1,7 @@
 process SCORE {
     label 'score'
     tag "$sample_id"
-    container = 'chriswyatt/perl_r_e1071'
+    container = 'chriswyatt/r_perl_jcvi'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
@@ -24,6 +24,7 @@ process SCORE {
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary 
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
+    path("*-all.pdf"), emit:emeline_plots
 
     script:
     """
