@@ -1,5 +1,0 @@
-# y, xstart, xend, rotation, color, label, va,  bed
- .6,     .1,    .8,       0,      , P_dominula, top, P_dominula.bed
- .4,     .1,    .8,       0,      , B_impatiens, top, B_impatiens.bed
-# edges
-e, 0, 1, P_dominula.B_impatiens.anchors.simple

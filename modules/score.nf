@@ -9,6 +9,7 @@ process SCORE {
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Synteny_matrix.tsv"
     publishDir "$params.outdir/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Trans_location_version.out.txt"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"*-all.pdf"
 
     input:
     path(anchors)
