@@ -19,7 +19,7 @@ params.layout = "data/default2"
 params.hex = "data/unique_hex2"
 params.go = null
 params.test=0
-
+params.tree= false
 
 log.info """\
  ===================================
@@ -43,6 +43,7 @@ include { CHROMOPAINT } from './modules/chromo.nf'
 include { SCORE } from './modules/score.nf'
 include { LONGEST } from './modules/longest_orf.nf'
 include { GO } from './modules/go.nf'
+include { SCORE_TREE } from './modules/score_tree.nf'
 
 Channel
     .fromPath(params.input)
@@ -94,7 +95,18 @@ workflow {
 
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect() )
 
-    SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
+    if (params.tree){
+
+	tree_in = Channel.fromPath(params.tree)
+
+	SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
+    }
+
+    else{
+
+        SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
+
+    }  
 
     if (params.go){
 
