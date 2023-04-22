@@ -112,8 +112,16 @@ workflow {
 
 	go_datasets = Channel.fromPath(params.go)
 
-	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
+    	if (params.tree){
 
+		GO ( go_datasets.collect() , SCORE_TREE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
+
+    	}
+    	else{
+
+        	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
+
+    	}
     }
     
 }

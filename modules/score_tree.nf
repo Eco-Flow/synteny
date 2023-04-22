@@ -1,4 +1,4 @@
-process SCORE {
+process SCORE_TREE {
     label 'score'
     tag "$sample_id"
     container = 'chriswyatt/r_perl_jcvi'
