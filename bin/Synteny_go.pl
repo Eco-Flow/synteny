@@ -72,7 +72,7 @@ while (my $line = <$filein>){
         $gene=$sp1[1];
     }
     # Rename weird NCBI id rna- prefix
-    if($gene =~ m/\a-/){
+    if($gene =~ m/rna-/){
         my @sp1=split(/\-/, $gene);
         $gene=$sp1[1];
     }
