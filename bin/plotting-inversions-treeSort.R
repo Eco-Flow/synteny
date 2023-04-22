@@ -34,7 +34,7 @@ ggplot(Bee_inver_trans_prot, aes(perc_identity, Trans_mimimum_count)) +
   theme(legend.text = 
           element_text(size = 8),
         legend.title = element_text(size = 8)) 
-ggsave(filename = "translocationVSprot-all.pdf", width= 6, height=8 , device = "pdf")
+ggsave(filename = "translocationVSprot-all_treesort.pdf", width= 6, height=8 , device = "pdf")
 
 
 
@@ -48,7 +48,7 @@ ggplot(Bee_inver_trans_prot, aes(perc_identity, Inversion_estimate)) +
   theme(legend.text = 
           element_text(size = 8),
         legend.title = element_text(size = 8)) 
-ggsave(filename = "inversionVSprot-all.pdf", width= 6, height=8 , device = "pdf")
+ggsave(filename = "inversionVSprot-all_treesort.pdf", width= 6, height=8 , device = "pdf")
 
 # plot 3: Trans_mimimum_count versus Inversion_estimate
 ggplot(Bee_inver_trans_prot, aes(Trans_mimimum_count, Inversion_estimate)) +    
@@ -60,5 +60,5 @@ ggplot(Bee_inver_trans_prot, aes(Trans_mimimum_count, Inversion_estimate)) +
   theme(legend.text = 
           element_text(size = 8),
         legend.title = element_text(size = 8)) 
-ggsave(filename = "translocationVSinversion-all.pdf", width= 8, height=8 , device = "pdf")
+ggsave(filename = "translocationVSinversion-all_treesort.pdf", width= 8, height=8 , device = "pdf")
 
