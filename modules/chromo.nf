@@ -1,13 +1,13 @@
 process CHROMOPAINT {
     label 'chromo'
     tag "$anchors"
-    publishDir "$params.outdir/Jcvi_results" , mode: "copy"
+    publishDir "$params.outdir/Chromosome_plots" , mode: "copy"
     container = 'chriswyatt/jcvi'
     errorStrategy = 'ignore'
              
     input:
 
-        path (hex)
+	path (hex)
         each (anchors)
         path ('*')
     
