@@ -11,7 +11,15 @@ This is a developmental Nextflow ls workflow running JCVI, to look at gene synte
 All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). 
 OR you can supply a NCBI genome reference ID (which will be automatically downloaded; e.g. GCF_000001215.4).
 
-To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (to run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`
+There are two branches, 
+'main': which can run 2 or more samples against eachother pairwise, producing dotplots and chromosome plots, along with species wise statistics and gene statistics.
+'pair': (currently in development) which runs just two samples against eachother, producing dotplots, chromosome plots and macrosynteny connection plots.
+
+
+
+To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (to run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`.
+
+*For UCL myriad users, see conf/myriad.config* : this runs a SunGridEngine configuration.
 
 # Run with Gitpod (recommended)
 
@@ -37,7 +45,7 @@ The example run is below (using two public genomes):
 Prerequistites : 
 - Docker. Make sure it is active log in on your machine.
 - Java at least 1.8.
-- Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2].
+- Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2].)
 - Git.
 
 To clone the repo: `git clone https://github.com/chriswyatt1/jcvi-nextflow.git`
@@ -46,18 +54,25 @@ Then `cd` into the repository on your machine.
 
 To run Nextflow (locally with docker installed), use the following command:
 
-`nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
+`nextflow run main.nf -profile docker -bg -resume --input example.csv`
+
+
+or with (if you download these three datasets manually- e.g. http://ftp.ensembl.org/pub/rapid-release/species/Vespula_germanica/GCA_905340365.1/genome/)
+
+`--input example.csv`
 
 #Notice, we use one `-` for Nextflow options, and two `--` for pipeline options.
-
 
 # Changing the input 
 
 Our example input template looks like this (Example.csv):
 
 ```
-D_melanogaster,GCF_000001215.4
-A_mellifera,GCF_003254395.2
+Anopheles_albimanus,GCF_013758885.1
+Anopheles_coluzzii,GCF_016920705.1
+Anopheles_maculipalpis,GCF_943734695.1
+Anopheles_marshallii,GCF_943734725.1
+Anopheles_merus,GCF_017562075.2
 ```
 
 You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:
@@ -69,6 +84,32 @@ A_mellifera,GCF_003254395.2
 
 Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file). To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified (or mix and match them). 
 
+#To run with Gene Ontology information:
+
+You need to provide the transcript Gene Ontology annotations from GOATEE. These should be in the results/Go folder output of Goatee, and are the ones labelled *transcript*.
+Copy these into a folder called Go, and then point to them with the flag `--go`.e.g. :
+ 
+`nextflow run main.nf -profile myriad -resume -bg --input example.csv --go /home/ucbtcdr/Scratch/GOTITS_jcvi/jcvi-nextflow_run15_lepidoptera/Go`
+
+
+
+# Run with Gitpod (for development of the pipeline). *For admins*
+
+Prerequistites : 
+- A browser (Ideally, Chrome or Firefox \[tested\]).
+- Github account.
+
+Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`. 
+
+The simplest way to run the pipeline is to use Gitpod. This is a free (up to 50 hours a month) cloud environment, which has been loaded with all the tools you need.
+
+Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-nextflow
+
+Then login in to Github, which will open up an environment to run the code, using the same command listed above (nextflow...).
+
+To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified. The example run is below:
+
+`nextflow run main.nf -profile docker -bg -resume --input example.csv`
 
 # Results
 

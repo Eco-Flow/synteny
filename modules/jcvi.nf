@@ -9,7 +9,8 @@ process JCVI {
 
     output:
         
-        tuple val(sample_id), path( "${sample_id}.cds" ), path( "${sample_id}.bed" )
+        tuple val(sample_id), path( "${sample_id}.cds" ), path( "${sample_id}.bed" ) , emit: new_format
+        path( "${sample_id}.bed" ) , emit: beds
 
     script:
     """

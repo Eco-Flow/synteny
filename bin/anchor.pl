@@ -5,7 +5,7 @@ use strict;
 
 die "need three inputs :sp1 bed file (followed by a space), sp2 bed file, followed by the anchor file\n" if (@ARGV!=3); 
 
-print "Script is running\n";
+#print "Script is running\n";
 
 my $BED_file1 = $ARGV[0];
 open(my $BED1, "<", $BED_file1) or die "Could not open $BED_file1\n";
@@ -17,6 +17,7 @@ open(my $ANC, "<", $anchor) or die "Could not open $anchor\n";
 my $outfile="Chromopaint.txt";
 open(my $out, "> $outfile") or die "error opening $outfile. $!";
 
+#print "1 $BED_file1 2 $BED_file2 anchor $ANC\n";
 
 #read in the colour hex list
 my $colours="unique_hex2";
@@ -111,7 +112,7 @@ while (my $line3=<$ANC>) {
 	}	
 }
 
-print "Script has completed\n";
+# print "Script has completed\n";
 
 #Now make the chrome idmap
 

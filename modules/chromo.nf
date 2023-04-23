@@ -1,13 +1,15 @@
 process CHROMOPAINT {
     label 'chromo'
-    tag 'chromo'
+    tag "$anchors"
     publishDir "$params.outdir/Jcvi_results" , mode: "copy"
     container = 'chriswyatt/jcvi'
+    errorStrategy = 'ignore'
              
     input:
-	path(hex)
-        path(anchors)
-        tuple val(sample_id), path(fasta1), path(bed1), val(sample_id2), path(fasta2), path(bed2)
+
+        path (hex)
+        each (anchors)
+        path ('*')
     
     output:
         
@@ -17,9 +19,12 @@ process CHROMOPAINT {
 
     script:
     """
-        anchor.pl ${bed1} ${bed2} ${anchors} 
+        echo '${anchors}' | rev | cut -d'/' -f 1 | rev > Name
+
+        A="\$(cut -d'.' -f1 Name)"
+        B="\$(cut -d'.' -f2 Name)"
+        anchor.pl \$A.bed \$B.bed ${anchors} 
         python -m jcvi.graphics.chromosome Chromopaint.txt colour.idmap
-        mv Chromopaint.pdf ${sample_id}${sample_id2}.chromo.pdf
-        chromo_equiv.pl Chromopaint.txt 
+        mv Chromopaint.pdf "\$A.\$B.chromo.pdf"
     """
 }
