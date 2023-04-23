@@ -9,7 +9,7 @@ process SCORE_TREE {
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Synteny_matrix.tsv"
     publishDir "$params.outdir/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Trans_location_version.out.txt"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"*-all.pdf"
+    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"*-all_treesort.pdf"
 
     input:
     path(anchors)
@@ -26,7 +26,7 @@ process SCORE_TREE {
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary 
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
-    path("*-all.pdf"), emit:emeline_plots
+    path("*-all_treesort.pdf"), emit:emeline_plots
 
     script:
     """

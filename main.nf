@@ -2,7 +2,7 @@
  * Copyright (c) 2022
  */
 
- /*
+/*
  * Authors:
  * - Chris Wyatt <chris.wyatt@seqera.io>
  */
@@ -23,10 +23,13 @@ params.tree= false
 
 log.info """\
  ===================================
+
+ Nextflow Jcvi Workflow (v1.0)
+
+ ===================================
  input file                           : ${params.input}
  output directory                     : ${params.outdir}
- seqids file (optional)               : ${params.seqids}
- layout file (optional)               : ${params.layout}
+ running go ?                         : ${params.go}
  """
 
 //================================================================================
@@ -44,6 +47,8 @@ include { SCORE } from './modules/score.nf'
 include { LONGEST } from './modules/longest_orf.nf'
 include { GO } from './modules/go.nf'
 include { SCORE_TREE } from './modules/score_tree.nf'
+include { GO_SUMMARISE } from './modules/go_summarise.nf'
+
 
 Channel
     .fromPath(params.input)
@@ -122,6 +127,9 @@ workflow {
         	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
 
     	}
+
+	GO_SUMMARISE ( GO.out.go_table.collect() )
+ 
     }
     
 }
