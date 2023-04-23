@@ -6,9 +6,10 @@ Please cite "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Scien
 
 # General information
 
-This is a developmental Nextflow ls workflow running JCVI, to look at gene synteny. 
+This is a developmental Nextflow ls workflow running JCVI, to look at gene synteny with chromosome level assemblies (less than 40 chromosomes or scaffolds ideally- for better visualisation). We will paint chromosomes from one species to another, translate scaffolds between species, and produce dot plots and basic statistics.
 
-All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). OR you can supply a NCBI genome reference ID (which will be automatically downloaded).
+All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). 
+OR you can supply a NCBI genome reference ID (which will be automatically downloaded; e.g. GCF_000001215.4).
 
 There are two branches, 
 'main': which can run 2 or more samples against eachother pairwise, producing dotplots and chromosome plots, along with species wise statistics and gene statistics.
@@ -19,6 +20,25 @@ There are two branches,
 To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (to run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`.
 
 *For UCL myriad users, see conf/myriad.config* : this runs a SunGridEngine configuration.
+
+# Run with Gitpod (recommended)
+
+Prerequistites : 
+- A browser (Ideally, Chrome or Firefox \[tested\]).
+- Github account.
+
+Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`. 
+
+The simplest way to run the pipeline is to use Gitpod. This is a free (up to 50 hours a month) cloud environment, which has been loaded with all the tools you need.
+
+Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-nextflow
+
+Then login in to Github, which will open up an environment to run the code, using the same command listed above (nextflow...).
+
+The example run is below (using two public genomes):
+
+`nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
+
 
 # Run locally
 
@@ -43,7 +63,9 @@ or with (if you download these three datasets manually- e.g. http://ftp.ensembl.
 
 #Notice, we use one `-` for Nextflow options, and two `--` for pipeline options.
 
-This is what the input template looks like (example.csv):
+# Changing the input 
+
+Our example input template looks like this (Example.csv):
 
 ```
 Anopheles_albimanus,GCF_013758885.1
@@ -53,14 +75,14 @@ Anopheles_marshallii,GCF_943734725.1
 Anopheles_merus,GCF_017562075.2
 ```
 
-You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:\
+You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:
 
 ```
 B_impatiens,/path/to/Desktop/B_impatiens_Genome**.fasta**,/path/to/Desktop/B_impatiens**.gff**
 A_mellifera,GCF_003254395.2
 ```
 
-Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file).
+Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file). To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified (or mix and match them). 
 
 #To run with Gene Ontology information:
 

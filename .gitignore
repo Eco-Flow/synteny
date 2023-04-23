@@ -7,3 +7,5 @@ nextflow
 *.fa
 *.fasta
 Go/
+*fna
+*.gff

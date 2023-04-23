@@ -14,6 +14,8 @@ process CHROMOPAINT {
     output:
         
         path("*.pdf"), emit: pdf
+        path("Chromo_equivalent.txt"), emit: chromosome_equivalents
+        path("Chromopaint.txt"), emit: chromopaint
 
     script:
     """
