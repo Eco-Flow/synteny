@@ -2,24 +2,22 @@
 
 Nextflow pipeline to run JCVI
 
-Please cite "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science" if you use this Nextflow wrapper of JCVI MCSxanX software.
+Please cite : "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science",
+if you use this Nextflow wrapper of JCVI MCSxanX software.
 
 # General information
 
-This is a developmental Nextflow ls workflow running JCVI, to look at gene synteny with chromosome level assemblies (less than 40 chromosomes or scaffolds ideally- for better visualisation). We will paint chromosomes from one species to another, translate scaffolds between species, and produce dot plots and basic statistics.
+This is a developmental Nextflow workflow running JCVI, to look at gene synteny with chromosome level assemblies (less than 40 chromosomes or scaffolds ideally- for better visualisation). We will paint chromosomes from one species to another, translate scaffolds between species, and produce dot plots and basic statistics.
 
 All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). 
 OR you can supply a NCBI genome reference ID (which will be automatically downloaded; e.g. GCF_000001215.4).
 
-There are two branches, 
+There is one main branch.
 'main': which can run 2 or more samples against eachother pairwise, producing dotplots and chromosome plots, along with species wise statistics and gene statistics.
-'pair': (currently in development) which runs just two samples against eachother, producing dotplots, chromosome plots and macrosynteny connection plots.
-
-
 
 To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker profile (to run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`.
 
-*For UCL myriad users, see conf/myriad.config* : this runs a SunGridEngine configuration.
+*For UCL myriad users, see conf/myriad.config* : this runs a SunGridEngine configuration with `-profile myriad`.
 
 # Run with Gitpod (recommended)
 
@@ -27,7 +25,7 @@ Prerequistites :
 - A browser (Ideally, Chrome or Firefox \[tested\]).
 - Github account.
 
-Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`. 
+Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`.
 
 The simplest way to run the pipeline is to use Gitpod. This is a free (up to 50 hours a month) cloud environment, which has been loaded with all the tools you need.
 
@@ -35,10 +33,9 @@ Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-n
 
 Then login in to Github, which will open up an environment to run the code, using the same command listed above (nextflow...).
 
-The example run is below (using two public genomes):
+The example run is below (using three public Drosophila genomes):
 
 `nextflow run main.nf -profile docker -bg -resume --input data/Example.csv`
-
 
 # Run locally
 
@@ -68,11 +65,9 @@ or with (if you download these three datasets manually- e.g. http://ftp.ensembl.
 Our example input template looks like this (Example.csv):
 
 ```
-Anopheles_albimanus,GCF_013758885.1
-Anopheles_coluzzii,GCF_016920705.1
-Anopheles_maculipalpis,GCF_943734695.1
-Anopheles_marshallii,GCF_943734725.1
-Anopheles_merus,GCF_017562075.2
+Vespa_velutina,GCF_912470025.1
+Vespa_crabro,GCF_910589235.1 
+Vespula_vulgaris,GCF_905475345.1 
 ```
 
 You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:

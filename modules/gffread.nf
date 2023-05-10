@@ -11,11 +11,11 @@ process GFFREAD {
     output:
 
         tuple val(sample_id), path( "${sample_id}.nucl.fa" ), path( "${sample_id}.gff_for_jvci.gff3" ), emit: proteins
-	path( "${sample_id}.gff_for_jvci.gff3" ), emit: gff
+	    path( "${sample_id}.gff_for_jvci.gff3" ), emit: gff
 
     script:
     """
-	gffread_unzip.pl ${sample_id} ${fasta} ${gff}	
+	    gffread_unzip.pl ${sample_id} ${fasta} ${gff}	
     """
 }
 
