@@ -14,12 +14,13 @@
  
 params.outdir = "Results"
 params.input = "data/Example.csv"
-params.seqids = "data/default1"
-params.layout = "data/default2"
+params.seqids = "./data/default1"
+params.layout = "./data/default2"
 params.hex = "data/unique_hex2"
 params.go = null
 params.test=0
 params.tree= false
+params.macro= false
 
 log.info """\
  ===================================
@@ -42,6 +43,7 @@ include { SYNTENY } from './modules/synteny.nf'
 include { MACRO } from './modules/macro.nf'
 include { CONFIG } from './modules/default_config.nf'
 include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
+include { DOWNLOAD_NCBI as DOWNLOAD_NCBI2 } from './modules/download_ncbi.nf'
 include { CHROMOPAINT } from './modules/chromo.nf'
 include { SCORE } from './modules/score.nf'
 include { LONGEST } from './modules/longest_orf.nf'
@@ -132,6 +134,18 @@ workflow {
  
     }
     
+    
+
+    if (params.macro){
+
+        DOWNLOAD_NCBI2 ( input_type.ncbi )
+
+        CONFIG ( DOWNLOAD_NCBI2.out.genome.mix(input_type.local) )
+
+        //MACRO ( CONFIG.out.seqids_out , CONFIG.out.layout_out , SYNTENY.out.anchors , JCVI.out )
+
+    }
+
 }
 
 workflow.onComplete {

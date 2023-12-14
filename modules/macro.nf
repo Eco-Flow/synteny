@@ -1,7 +1,7 @@
 process MACRO {
     label 'mac'
     tag "$sample_id\_$sample_id2"
-    publishDir "$params.outdir/Jcvi_results" , mode: "copy"
+    publishDir "$params.outdir/Macro_results" , mode: "copy"
     container = 'chriswyatt/jcvi'
              
     input:
