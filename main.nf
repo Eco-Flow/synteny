@@ -11,7 +11,7 @@
  * Default pipeline parameters (on test data). They can be overriden on the command line eg.
  * given `params.name` specify on the run command line `--name My_run_v1`.
  */
- 
+
 params.outdir = "Results"
 params.input = "data/Example.csv"
 params.seqids = "./data/default1"
@@ -48,7 +48,6 @@ include { GO } from './modules/go.nf'
 include { SCORE_TREE } from './modules/score_tree.nf'
 include { GO_SUMMARISE } from './modules/go_summarise.nf'
 
-
 Channel
     .fromPath(params.input)
     .splitCsv()
@@ -66,33 +65,30 @@ Channel
 
 Channel
     .fromPath(params.layout)
-    .set { in_layout }   
+    .set { in_layout }
 
 Channel
     .fromPath(params.hex)
-    .set { in_hex } 
+    .set { in_hex }
 
 Channel
     .fromPath(params.input)
     .splitCsv()
-    .branch { 
-        ncbi: it.size() == 2 
+    .branch {
+        ncbi: it.size() == 2
         local: it.size() == 3
     }
     .set { input_type }
 
-    
 // input_type.ncbi.view { "$it is small" }
 // input_type.local.view { "$it is large" }
-
-
 
 workflow {
 
     DOWNLOAD_NCBI ( input_type.ncbi )
 
     GFFREAD ( DOWNLOAD_NCBI.out.genome.mix(input_type.local) )
-    
+
     JCVI ( GFFREAD.out.proteins )
 
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
@@ -101,34 +97,34 @@ workflow {
 
     if (params.tree){
 
-	tree_in = Channel.fromPath(params.tree)
+       tree_in = Channel.fromPath(params.tree)
 
-	SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
+       SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
     }
 
     else{
 
-        SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
+       SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
 
-    }  
+    }
 
     if (params.go){
 
-	go_datasets = Channel.fromPath(params.go)
+      go_datasets = Channel.fromPath(params.go)
 
-    	if (params.tree){
+      if (params.tree){
 
-		GO ( go_datasets.collect() , SCORE_TREE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
+         GO ( go_datasets.collect() , SCORE_TREE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
 
-    	}
-    	else{
+      }
+      else{
 
-        	GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
+         GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
 
-    	}
+      }
 
-	GO_SUMMARISE ( GO.out.go_table.collect() )
- 
+      GO_SUMMARISE ( GO.out.go_table.collect() )
+
     }
 
 }
@@ -136,4 +132,3 @@ workflow {
 workflow.onComplete {
     println ( workflow.success ? "\nDone! Check results in $params.outdir/ \n" : "Hmmm .. something went wrong\n" )
 }
-
