@@ -97,14 +97,14 @@ workflow {
 
     if (params.tree){
 
-       tree_in = Channel.fromPath(params.tree)
+      tree_in = Channel.fromPath(params.tree)
 
-       SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
+      SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
     }
 
     else{
 
-       SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
+      SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
 
     }
 
