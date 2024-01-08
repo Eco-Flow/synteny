@@ -6,7 +6,6 @@ process GFFREAD {
     publishDir "$params.outdir/Gffread_results" , mode: "copy"
 
     input:
-
     tuple val(sample_id), path(fasta), path(gff)
 
     output:

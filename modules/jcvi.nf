@@ -17,6 +17,5 @@ process JCVI {
 
     python -m jcvi.formats.gff bed --type=mRNA --key=ID ${gff} -o ${sample_id}.bed
     python -m jcvi.formats.fasta format ${fasta} ${sample_id}.cds
-
     """
 }
