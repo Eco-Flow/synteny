@@ -1,4 +1,5 @@
 process SCORE {
+
     label 'score'
     tag "$sample_id"
     container = 'chriswyatt/r_perl_jcvi'
@@ -31,10 +32,9 @@ process SCORE {
     """
     #Run Score for each gene on how close it is to the edge of the syntenic block
 
-
     #Run score for genome X in terms of size of syntenic blacks to species Y.
 
-    summarise_anchors.pl 
+    summarise_anchors.pl
 
     summarise_similarity.pl
 
@@ -42,7 +42,7 @@ process SCORE {
 
     Synteny_gene_score.pl
 
-    SyntenyScoreSummary.pl 
+    SyntenyScoreSummary.pl
 
     Trans_location_Inversion_score.pl
     """

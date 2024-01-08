@@ -1,4 +1,5 @@
 process LONGEST {
+
     label 'longest'
     tag "$fasta"
     container = 'chriswyatt/bioseqio'
@@ -6,15 +7,13 @@ process LONGEST {
     debug true
 
     input:
-
-        tuple val(sample_id), path(fasta), path(gff)
+    tuple val(sample_id), path(fasta), path(gff)
 
     output:
-
-        tuple val (sample_id), path( "${sample_id}.largestIsoform.fa" ), path( "${sample_id}.gff_for_jvci.gff3" ), emit: longest_proteins
+    tuple val (sample_id), path( "${sample_id}.largestIsoform.fa" ), path( "${sample_id}.gff_for_jvci.gff3" ), emit: longest_proteins
 
     script:
     """
-        ncbi_gffread_to_gene_universal.pl ${fasta} ${sample_id}
+    ncbi_gffread_to_gene_universal.pl ${fasta} ${sample_id}
     """
 }

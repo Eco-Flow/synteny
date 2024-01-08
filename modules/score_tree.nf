@@ -1,4 +1,5 @@
 process SCORE_TREE {
+
     label 'score'
     tag "$sample_id"
     container = 'chriswyatt/r_perl_jcvi'
@@ -24,7 +25,7 @@ process SCORE_TREE {
     path("My_comp_synteny_similarity.tsv"), emit: pairdata
     path("Synteny_matrix.tsv"), emit:synmat
     path("*geneScore.tsv"), emit: pairedgenescores
-    path("*SpeciesScoreSummary.txt"), emit:speciesSummary 
+    path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
     path("*-all_treesort.pdf"), emit:emeline_plots
 
@@ -32,10 +33,9 @@ process SCORE_TREE {
     """
     #Run Score for each gene on how close it is to the edge of the syntenic block
 
-
     #Run score for genome X in terms of size of syntenic blacks to species Y.
 
-    summarise_anchors.pl 
+    summarise_anchors.pl
 
     summarise_similarity.pl
 
@@ -43,12 +43,11 @@ process SCORE_TREE {
 
     Synteny_gene_score.pl
 
-    SyntenyScoreSummary.pl 
-
+    SyntenyScoreSummary.pl
 
     #Now we run newick tools to get the correct species order, based on the phylogenetic tree in nw format.
 
-    #nw_prune $tree # This is the file called pruned_tree from Goatee 
+    #nw_prune $tree # This is the file called pruned_tree from Goatee
 
     nw_labels $tree | grep -v 'N[0-9]' > species_order
 
