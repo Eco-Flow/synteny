@@ -12,15 +12,6 @@
  * given `params.name` specify on the run command line `--name My_run_v1`.
  */
 
-params.outdir = "Results"
-params.input = "data/Example.csv"
-params.seqids = "./data/default1"
-params.layout = "./data/default2"
-params.hex = "data/unique_hex2"
-params.go = null
-params.test=0
-params.tree= false
-
 log.info """\
  ===================================
 
@@ -40,7 +31,6 @@ include { GFFREAD } from './modules/gffread.nf'
 include { JCVI } from './modules/jcvi.nf'
 include { SYNTENY } from './modules/synteny.nf'
 include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
-include { DOWNLOAD_NCBI as DOWNLOAD_NCBI2 } from './modules/download_ncbi.nf'
 include { CHROMOPAINT } from './modules/chromo.nf'
 include { SCORE } from './modules/score.nf'
 include { LONGEST } from './modules/longest_orf.nf'
@@ -79,9 +69,6 @@ Channel
         local: it.size() == 3
     }
     .set { input_type }
-
-// input_type.ncbi.view { "$it is small" }
-// input_type.local.view { "$it is large" }
 
 workflow {
 
