@@ -1,7 +1,8 @@
 process SCORE {
+
     label 'score'
     tag "$sample_id"
-    container = 'chriswyatt/r_perl_jcvi'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
@@ -31,10 +32,9 @@ process SCORE {
     """
     #Run Score for each gene on how close it is to the edge of the syntenic block
 
-
     #Run score for genome X in terms of size of syntenic blacks to species Y.
 
-    summarise_anchors.pl 
+    summarise_anchors.pl
 
     summarise_similarity.pl
 
@@ -42,8 +42,10 @@ process SCORE {
 
     Synteny_gene_score.pl
 
-    SyntenyScoreSummary.pl 
+    SyntenyScoreSummary.pl
 
     Trans_location_Inversion_score.pl
+
+    Rscript "${projectDir}/bin/plotting-inversions.R" > R_output.txt
     """
 }

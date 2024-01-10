@@ -1,5 +1,3 @@
-#!/opt/conda/bin/Rscript --vanilla
-
 library(pheatmap)
 
 erefd<-read.table("Go_summary_topSynteny.tsv", h=T, sep="\t")

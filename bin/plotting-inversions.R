@@ -1,5 +1,3 @@
-#!/opt/conda/bin/Rscript --vanilla
-
 # import data
 Bee_inver_trans_prot <- read.delim("Trans_location_version.out.txt", stringsAsFactors=FALSE)
 
