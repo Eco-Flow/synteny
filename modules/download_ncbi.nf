@@ -2,7 +2,7 @@ process DOWNLOAD_NCBI {
 
     label 'download'
     tag "$sample_id via $accension_id"
-    container = 'ecoflowucl/ncbi_download:v16.1.2-arm64'
+    container "${ params.architecture == 'arm' ? 'ecoflowucl/ncbi_download:v16.1.2-arm64' : 'ecoflowucl/ncbi_download:v16.1.2-amd64' }"
 
     input:
     tuple val(sample_id), val(accension_id)
