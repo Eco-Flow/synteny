@@ -4,7 +4,8 @@
 
 /*
  * Authors:
- * - Chris Wyatt <chris.wyatt@seqera.io>
+ * - Chris Wyatt <c.wyatt@ucl.ac.uk>
+ * - Simon Murray <simon.murray@ucl.ac.uk>
  */
 
 /*
@@ -81,38 +82,19 @@ workflow {
 
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect() )
 
-    if (params.tree){
-
-      tree_in = Channel.fromPath(params.tree)
-
-      SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
+    if (params.tree) {
+        tree_in = Channel.fromPath(params.tree)
+        SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
     }
-
-    else{
-
-      SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
-
+    else {
+        SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
     }
-
-    if (params.go){
-
-      go_datasets = Channel.fromPath(params.go)
-
-      if (params.tree){
-
-         GO ( go_datasets.collect() , SCORE_TREE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
-
-      }
-      else{
-
-         GO ( go_datasets.collect() , SCORE.out.speciesSummary.flatten() , JCVI.out.beds.collect() )
-
-      }
-
-      GO_SUMMARISE ( GO.out.go_table.collect() )
-
+    if (params.go) {
+        ch_go = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.speciesSummary
+        ch_go.view()
+        GO ( go_datasets.collect() , ch_go.flatten(), JCVI.out.beds.collect() )
+        GO_SUMMARISE ( GO.out.go_table.collect() )
     }
-
 }
 
 workflow.onComplete {

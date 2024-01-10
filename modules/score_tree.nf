@@ -2,7 +2,7 @@ process SCORE_TREE {
 
     label 'score'
     tag "$sample_id"
-    container = 'chriswyatt/r_perl_jcvi'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
@@ -52,5 +52,7 @@ process SCORE_TREE {
     nw_labels $tree | grep -v 'N[0-9]' > species_order
 
     Trans_location_Inversion_score_treeSort.pl
+
+    Rscript "${projectDir}/bin/plotting-inversions-treeSort.R" > R_output.txt
     """
 }

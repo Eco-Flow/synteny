@@ -6,8 +6,7 @@ process SYNTENY {
     publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.percent.similarity"
     publishDir "$params.outdir/Karyotype_results" , mode: "copy", pattern: "*.karyotype.pdf"
     publishDir "$params.outdir/Last" , mode: "copy", pattern: "*last.filtered"
-    container = 'chriswyatt/jcvi'
-    errorStrategy = 'ignore'
+    container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 
     input:
     tuple val(sample_id), path(fasta), path(gff), val(sample_id2), path(fasta2), path(gff2)

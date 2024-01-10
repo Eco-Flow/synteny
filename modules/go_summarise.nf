@@ -2,9 +2,8 @@ process GO_SUMMARISE {
 
     label 'go_summarise'
     tag "summary of go s"
-    container = 'chriswyatt/chopgo'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/GO_results" , mode: "copy"
-    errorStrategy = 'ignore'
 
     input:
     path(go)
@@ -16,6 +15,6 @@ process GO_SUMMARISE {
     script:
     """
     Summarise_go.pl
-    plotting-synteny_go.R
+    Rscript "${projectDir}/bin/plotting-synteny_go.R"
     """
 }

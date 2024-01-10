@@ -2,7 +2,7 @@ process JCVI {
 
     label 'jcvi'
     tag "$sample_id"
-    container = 'chriswyatt/jcvi'
+    container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 
     input:
     tuple val(sample_id), path(fasta), path(gff)

@@ -3,8 +3,7 @@ process CHROMOPAINT {
     label 'chromo'
     tag "$anchors"
     publishDir "$params.outdir/Chromosome_plots" , mode: "copy"
-    container = 'chriswyatt/jcvi'
-    errorStrategy = 'ignore'
+    container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 
     input:
     path (hex)

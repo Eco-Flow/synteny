@@ -265,4 +265,3 @@ foreach my $file2 (@anchors){
 }
 
 
-`plotting-inversions-treeSort.R > R_output.txt`

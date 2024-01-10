@@ -2,9 +2,8 @@ process GO {
 
     label 'go'
     tag "$speciessummaries"
-    container = 'chriswyatt/chopgo'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/GO_results" , mode: "copy"
-    errorStrategy = 'ignore'
 
     input:
     path(go)

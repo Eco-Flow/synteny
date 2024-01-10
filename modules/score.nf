@@ -2,7 +2,7 @@ process SCORE {
 
     label 'score'
     tag "$sample_id"
-    container = 'chriswyatt/r_perl_jcvi'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
@@ -45,5 +45,7 @@ process SCORE {
     SyntenyScoreSummary.pl
 
     Trans_location_Inversion_score.pl
+
+    Rscript "${projectDir}/bin/plotting-inversions.R" > R_output.txt
     """
 }
