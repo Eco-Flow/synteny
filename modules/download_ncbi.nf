@@ -1,6 +1,7 @@
 process DOWNLOAD_NCBI {
 
-    label 'download'
+    label 'process_single'
+    label 'error_retry'
     tag "$sample_id via $accension_id"
     container "${ params.architecture == 'arm' ? 'ecoflowucl/ncbi_download:v16.1.2-arm64' : 'ecoflowucl/ncbi_download:v16.1.2-amd64' }"
 

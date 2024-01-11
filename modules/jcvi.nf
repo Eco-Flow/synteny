@@ -1,6 +1,6 @@
 process JCVI {
 
-    label 'jcvi'
+    label 'process_single'
     tag "$sample_id"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 

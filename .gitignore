@@ -1,12 +1,10 @@
-work/
-Results/
-.nextflow*
-tbd
-nextflow
+work
+Results
+Go
 *.gff3
 *.fa
 *.fasta
-Go/
 *fna
 *.gff
-reports/
+.nextflow*
+.DS_Store

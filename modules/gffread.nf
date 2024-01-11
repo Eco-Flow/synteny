@@ -1,6 +1,6 @@
 process GFFREAD {
 
-    label 'gffread'
+    label 'process_single'
     tag "$sample_id"
     container = 'ecoflowucl/gffread_python:python-3.10_Linux_x86_64'
     publishDir "$params.outdir/Gffread_results" , mode: "copy"
