@@ -43,7 +43,7 @@ Prerequistites :
 - Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2].)
 - Git.
 
-To clone the repo: `git clone https://github.com/chriswyatt1/jcvi-nextflow.git`
+To clone the repo: `git clone https://github.com/Eco-Flow/synteny.git`
 
 Then `cd` into the repository on your machine.
 
