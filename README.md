@@ -10,7 +10,8 @@ if you use this Nextflow wrapper of JCVI MCSxanX software.
 This is a developmental Nextflow workflow running JCVI, to look at gene synteny with chromosome level assemblies (less than 40 chromosomes or scaffolds ideally- for better visualisation). We will paint chromosomes from one species to another, translate scaffolds between species, and produce dot plots and basic statistics.
 
 All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). 
-OR you can supply a NCBI genome reference ID (which will be automatically downloaded; e.g. GCF_000001215.4).
+**OR** you can supply a Refseq genome reference ID (which will be automatically downloaded; e.g. GCF_000001215.4).
+Do not submit a Genbank reference ID, as these will not work.
 
 There is one main branch.
 'main': which can run 2 or more samples against eachother pairwise, producing dotplots and chromosome plots, along with species wise statistics and gene statistics.
