@@ -26,5 +26,8 @@ process DOWNLOAD_NCBI {
     fi
     
     cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
+
+    md5sum ${sample_id}.genome.fna > ${sample_id}.genome.fna.md5
+    md5sum ${sample_id}.genomic.gff > ${sample_id}.genomic.gff.md5
     """
 }

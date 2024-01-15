@@ -8,3 +8,6 @@ Go
 *.gff
 .nextflow*
 .DS_Store
+.nf-test
+.nf-test.log
+test-results
