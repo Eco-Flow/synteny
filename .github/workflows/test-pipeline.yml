@@ -37,5 +37,8 @@ jobs:
     - name: Run ncbi_download test
       run: nf-test test tests/modules/download_ncbi.nf.test
 
+    - name: Run ncbi_download test
+      run: nf-test test tests/modules/gffread.nf.test
+
     - name: Clean workspace after finish
       run: rm -rf $GITHUB_WORKSPACE/*

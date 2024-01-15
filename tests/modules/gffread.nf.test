@@ -14,7 +14,7 @@ nextflow_process {
             process {
                 """
                 // define inputs of the process here. Example:
-                Channel.of( ["Drosophila_yakuba", file("${projectDir}/data/Drosophila_yakuba/genome.fna"), file("${projectDir}/data/Drosophila_yakuba/genomic.gff")] ).set{ in_channel }
+                Channel.of( ["Drosophila_yakuba", file("${projectDir}/data/Drosophila_yakuba/genome.fna.gz"), file("${projectDir}/data/Drosophila_yakuba/genomic.gff.gz")] ).set{ in_channel } 
                 input[0] = in_channel
                 """
             }
@@ -32,9 +32,9 @@ nextflow_process {
               assert proteins[0].size() == 3
               //checks one file exists in gff channel
               assert gff.size() == 1
-              //checks file names are correct
-              assert path(proteins[0].get(1)).md5 == '1311a671549a4b1aba80a13fe04c52ac'
-              assert path(gff[0]).md5 == '7669b7e00a51af678dbae1bf702850ca' 
+              //checks output files aren't corrupted
+              assert path(proteins[0].get(1)).md5 == 'ae087cd169c88b121cfbd96888022b85'
+              assert path(gff[0]).md5 == '7669b7e00a51af678dbae1bf702850ca'
               
             }
         }
