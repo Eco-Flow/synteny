@@ -34,7 +34,7 @@ Then login in to Github, which will open up an environment to run the code, usin
 
 The example run is below (using three public Drosophila genomes):
 
-`nextflow run main.nf -profile docker,local -resume --input data/Example.csv`
+`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
 
 # Run locally
 
@@ -50,7 +50,7 @@ Then `cd` into the repository on your machine.
 
 To run Nextflow (locally with docker installed), use the following command:
 
-`nextflow run main.nf -profile docker,local -resume --input data/Example.csv`
+`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
 
 
 or with (if you download these three datasets manually- e.g. http://ftp.ensembl.org/pub/rapid-release/species/Vespula_germanica/GCA_905340365.1/genome/)
@@ -61,7 +61,7 @@ or with (if you download these three datasets manually- e.g. http://ftp.ensembl.
 
 # Changing the input 
 
-Our example input template looks like this (data/Example.csv):
+Our example input template looks like this (data/Example-accession.csv):
 
 ```
 Drosophila_yakuba,GCF_016746365.2
@@ -69,11 +69,12 @@ Drosophila_simulans,GCF_016746395.2
 Drosophila_santomea,GCF_016746245.2
 ```
 
-You can also run your own genomes through this program (or mixed with NCBI ones), using the following format:
+You can also run your own genomes through this program (or mixed with NCBI ones), using the following format (data/Example-local.csv):
 
 ```
-B_impatiens,/path/to/Desktop/B_impatiens_Genome**.f**a**,/path/to/Desktop/B_impatiens**.gff**
-A_mellifera,GCF_003254395.2
+Drosophila_yakuba,data/Drosophila_yakuba/genome.fna,data/Drosophila_yakuba/genomic.gff
+Drosophila_simulans,data/Drosophila_simulans/genome.fna,data/Drosophila_simulans/genomic.gff
+Drosophila_santomea,data/Drosophila_santomea/genome.fna,data/Drosophila_santomea/genomic.gff
 ```
 
 Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file). To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified (or mix and match them). 
@@ -84,7 +85,7 @@ You need to provide the transcript Gene Ontology annotations from [chriswyatt1/G
 
 Copy the *transcript* into a new folder, and then point to them with the flag `--go`.e.g. :
  
-`nextflow run main.nf -profile docker,local -resume --input data/Example.csv --go /path/to/go/transcripts/folder`
+`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv --go /path/to/go/transcripts/folder`
 
 # Run with Gitpod (for development of the pipeline). *For admins*
 
@@ -102,7 +103,7 @@ Then login in to Github, which will open up an environment to run the code, usin
 
 To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified. The example run is below:
 
-`nextflow run main.nf -profile docker,local -resume --input data/Example.csv`
+`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
 
 # Results
 

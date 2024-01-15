@@ -1,0 +1,44 @@
+nextflow_process {
+
+    name "Test Process GFFREAD"
+    script "modules/gffread.nf"
+    process "GFFREAD"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                // define parameters here:
+                clean = false
+            }
+            process {
+                """
+                // define inputs of the process here. Example:
+                Channel.of( ["Drosophila_yakuba", file("${projectDir}/data/Drosophila_yakuba/genome.fna"), file("${projectDir}/data/Drosophila_yakuba/genomic.gff")] ).set{ in_channel }
+                input[0] = in_channel
+                """
+            }
+        }
+
+        then {
+            //check if test case succeeded
+            assert process.success
+            //analyze trace file (TODO: workout how this works with retry)
+            assert process.trace.tasks().size() == 1 
+            with(process.out) {
+              //checks one tuple exists in proteins channel
+              assert proteins.size() == 1
+              //checks proteins tuple contains 3 elements
+              assert proteins[0].size() == 3
+              //checks one file exists in gff channel
+              assert gff.size() == 1
+              //checks file names are correct
+              assert path(proteins[0].get(1)).md5 == '1311a671549a4b1aba80a13fe04c52ac'
+              assert path(gff[0]).md5 == '7669b7e00a51af678dbae1bf702850ca' 
+              
+            }
+        }
+
+    }
+
+}
