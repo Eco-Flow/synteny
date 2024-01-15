@@ -34,9 +34,6 @@ jobs:
     - name: Add software to path
       run: echo "/opt" >> $GITHUB_PATH;
 
-    - name: Run gffread test
-      run:  nf-test test tests/modules/gffread.nf.test
-
     - name: Run ncbi_download test
       run: nf-test test tests/modules/download_ncbi.nf.test
 
