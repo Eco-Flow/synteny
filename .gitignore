@@ -1,11 +1,6 @@
 work
 Results
 Go
-*.gff3
-*.fa
-*.fasta
-*fna
-*.gff
 .nextflow*
 .DS_Store
 .nf-test
