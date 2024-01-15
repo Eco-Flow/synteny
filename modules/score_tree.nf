@@ -1,6 +1,6 @@
 process SCORE_TREE {
 
-    label 'score'
+    label 'process_low'
     tag "$sample_id"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"

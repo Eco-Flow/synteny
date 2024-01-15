@@ -1,0 +1,30 @@
+name: Run Pipeline Tests
+
+on:
+  workflow_dispatch
+
+env:
+  NEXTFLOW_VERSION: 23.10.1
+  NF_TEST_VERSION: 0.8.3
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+    - name: Install nextflow
+      run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow;
+    - name: Install nf-test
+      run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
+    - name: Add software to path
+      run: echo "/opt" >> $GITHUB_PATH;
+    - name: Run tests
+      run:  nf-test test tests/modules/*.nf.test

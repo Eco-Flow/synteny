@@ -1,6 +1,7 @@
 process DOWNLOAD_NCBI {
 
-    label 'download'
+    label 'process_single'
+    label 'error_retry'
     tag "$sample_id via $accension_id"
     container "${ params.architecture == 'arm' ? 'ecoflowucl/ncbi_download:v16.1.2-arm64' : 'ecoflowucl/ncbi_download:v16.1.2-amd64' }"
 
@@ -25,5 +26,8 @@ process DOWNLOAD_NCBI {
     fi
     
     cat ncbi_dataset/data/${accension_id}/genomic.gff > ${sample_id}.genomic.gff
+
+    md5sum ${sample_id}.genome.fna > ${sample_id}.genome.fna.md5
+    md5sum ${sample_id}.genomic.gff > ${sample_id}.genomic.gff.md5
     """
 }

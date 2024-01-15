@@ -1,5 +1,6 @@
 process SYNTENY {
-    label 'syn'
+
+    label 'process_low'
     tag "${sample_id}_VS_${sample_id2}"
     publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.anchors"
     publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.pdf"

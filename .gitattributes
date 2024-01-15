@@ -1,0 +1,2 @@
+*.fna filter=lfs diff=lfs merge=lfs -text
+*.gff filter=lfs diff=lfs merge=lfs -text

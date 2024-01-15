@@ -1,0 +1,39 @@
+nextflow_process {
+
+    name "Test Process DOWNLOAD_NCBI"
+    script "modules/download_ncbi.nf"
+    process "DOWNLOAD_NCBI"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                // define parameters here.
+            }
+            process {
+                """
+                // define inputs of the process here.
+                // download ncbi requires tuple of species name and ncbi accession id
+                Channel.of( ["Drosophila_yakuba", "GCF_016746365.2"] ).set{ in_channel }
+                input[0] = in_channel
+                """
+            }
+        }
+
+        then {
+            //check if test case succeeded
+            assert process.success
+            //analyze trace file (TODO: workout how this works with retry)
+            assert process.trace.tasks().size() == 1 || process.trace.tasks().size() == 2 || process.trace.tasks().size() == 3
+            with(process.out) {
+              //checks one tuple exists in output channel
+              assert genome.size() == 1
+              //checks tuple contains 3 elements
+              assert genome[0].size() == 3
+              //Check downloaded files are not corrupted
+              assert path(genome[0].get(1)).md5 == '5379dbd489c3ceafafbc2bd5720a67f2'
+              assert path(genome[0].get(2)).md5 == '7669b7e00a51af678dbae1bf702850ca'
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 process GO_SUMMARISE {
 
-    label 'go_summarise'
+    label 'process_single'
     tag "summary of go s"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/GO_results" , mode: "copy"
