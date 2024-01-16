@@ -31,7 +31,9 @@ process SCORE {
     script:
     """
     #If gff files are compressed, decompress them (useful in testing)
-    for gff in *.gz; do zcat \$gff > \${gff%.gz}; done
+    if [ "\$(ls -A | grep -i \\.*.gff3.gz\$)" ]; then
+       for gff in *.gff3.gz; do zcat \$gff > "\${gff%.gz}"; done
+    fi
 
     #Run Score for each gene on how close it is to the edge of the syntenic block
 
