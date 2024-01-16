@@ -49,5 +49,8 @@ jobs:
     - name: Run score test
       run: nf-test test tests/modules/score.nf.test
 
+    - name: Run score_tree test
+      run: nf-test test tests/modules/score_tree.nf.test
+
     - name: Clean workspace after finish
       run: rm -rf $GITHUB_WORKSPACE/*

@@ -24,7 +24,7 @@ process SCORE {
     path("My_comp_synteny_similarity.tsv"), emit: pairdata
     path("Synteny_matrix.tsv"), emit:synmat
     path("*geneScore.tsv"), emit: pairedgenescores
-    path("*SpeciesScoreSummary.txt"), emit:speciesSummary 
+    path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
     path("*-all.pdf"), emit:emeline_plots
 
