@@ -16,7 +16,7 @@ jobs:
            - uses: actions/checkout@v4.1.1
            - uses: actions/setup-java@v4.0.0
              with:
-               java-version: '17'
+               java-version: '11'
                distribution: 'adopt'
            - run: rm -rf $GITHUB_WORKSPACE/*
            - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
