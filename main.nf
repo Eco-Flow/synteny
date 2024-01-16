@@ -94,7 +94,6 @@ workflow {
     if (params.go) {
         //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
         ch_go = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.speciesSummary
-        ch_go.view()
         GO ( go_datasets.collect() , ch_go.flatten(), JCVI.out.beds.collect() )
         GO_SUMMARISE ( GO.out.go_table.collect() )
     }
