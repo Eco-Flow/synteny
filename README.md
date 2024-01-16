@@ -85,7 +85,7 @@ https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/245/GCF_016746245.2_Prin_Ds
 
 Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file). To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified (or mix and match them). 
 
-#To run with Gene Ontology information:
+# To run with Gene Ontology information:
 
 You need to provide the transcript Gene Ontology annotations from [chriswyatt1/Goatee](https://github.com/chriswyatt1/Goatee). These should be in the results/Go folder and are the ones labelled *transcript*.
 
