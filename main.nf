@@ -79,6 +79,7 @@ workflow {
 
     JCVI ( GFFREAD.out.proteins )
 
+    //Do a pairwise combination of each species' JCVI output but filter out combinations of the same species
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
 
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect() )
