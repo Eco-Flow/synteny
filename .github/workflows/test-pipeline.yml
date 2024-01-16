@@ -9,39 +9,69 @@ env:
 
 jobs:
 
-  build:
+  clean_start:
+       name: Clean workspace before start
+       runs-on: ubuntu-latest
+       steps:
+           - uses: actions/checkout@v4.1.1
+           - run: rm -rf $GITHUB_WORKSPACE/*
 
-    runs-on: ubuntu-latest
+  jdk_setup:
+       name: Set up JDK 17
+       needs: clean_start
+       runs-on: ubuntu-latest
+       steps:
+           - uses: actions/setup-java@v4.0.0
+             with:
+               java-version: '17'
+               distribution: 'adopt
 
-    steps:
-    - name: Clean workspace before start
-      run: rm -rf $GITHUB_WORKSPACE/*
+  nextflow_install:
+       name: Install nextflow
+       needs: clean_start
+       runs-on: ubuntu-latest
+       steps:
+           - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
 
-    - uses: actions/checkout@v4.1.1
+  nf_test_install:
+       name: Install nf-test
+       needs: nextflow_install
+       runs-on: ubuntu-latest
+       steps:
+           - run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v4.0.0
-      with:
-        java-version: '11'
-        distribution: 'adopt'
+  append_path:
+       name: Add software to path
+       needs: nf_test_install
+       runs-on: ubuntu-latest
+       steps:
+           - run: echo "/opt" >> $GITHUB_PATH
 
-    - name: Install nextflow
-      run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow;
+  test_download:
+       name: Run ncbi_download test
+       needs: nf_test_install
+       runs-on: ubuntu-latest
+       steps:
+           - run: nf-test test tests/modules/download_ncbi.nf.test
 
-    - name: Install nf-test
-      run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
+  test_gffread:
+       name: Run gffread test
+       needs: nf_test_install
+       runs-on: ubuntu-latest
+       steps:
+           - run: nf-test test tests/modules/gffread.nf.test
 
-    - name: Add software to path
-      run: echo "/opt" >> $GITHUB_PATH;
+  test_jcvi:
+       name: Run jcvi test
+       needs: nf_test_install
+       runs-on: ubuntu-latest
+       steps:
+           - run: nf-test test tests/modules/jcvi.nf.test
 
-    - name: Run ncbi_download test
-      run: nf-test test tests/modules/download_ncbi.nf.test
-
-    - name: Run gffread test
-      run: nf-test test tests/modules/gffread.nf.test
-
-    - name: Run jcvi test
-      run: nf-test test tests/modules/jcvi.nf.test
-
-    - name: Clean workspace after finish
-      run: rm -rf $GITHUB_WORKSPACE/*
+  clean_finish:
+       name: Clean workspace after finish
+       needs: [test_download, test_gffread, test_jcvi]
+       runs-on: ubuntu-latest
+       steps:
+           - uses: actions/checkout@v4.1.1
+           - run: rm -rf $GITHUB_WORKSPACE/*
