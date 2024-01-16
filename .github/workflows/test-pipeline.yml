@@ -9,63 +9,49 @@ env:
 
 jobs:
 
-  clean_start:
-       name: Clean workspace before start
+  test_download:
+       name: Run ncbi_download test
        runs-on: ubuntu-latest
        steps:
            - uses: actions/checkout@v4.1.1
-           - run: rm -rf $GITHUB_WORKSPACE/*
-
-  jdk_setup:
-       name: Set up JDK 17
-       needs: clean_start
-       runs-on: ubuntu-latest
-       steps:
            - uses: actions/setup-java@v4.0.0
              with:
                java-version: '17'
                distribution: 'adopt'
-
-  nextflow_install:
-       name: Install nextflow
-       needs: jdk_setup
-       runs-on: ubuntu-latest
-       steps:
+           - run: rm -rf $GITHUB_WORKSPACE/*
            - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
-
-  nf_test_install:
-       name: Install nf-test
-       needs: nextflow_install
-       runs-on: ubuntu-latest
-       steps:
            - run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
-
-  append_path:
-       name: Add software to path
-       needs: nf_test_install
-       runs-on: ubuntu-latest
-       steps:
            - run: echo "/opt" >> $GITHUB_PATH
-
-  test_download:
-       name: Run ncbi_download test
-       needs: append_path
-       runs-on: ubuntu-latest
-       steps:
            - run: /opt/nf-test test tests/modules/download_ncbi.nf.test
 
   test_gffread:
        name: Run gffread test
-       needs: append_path
        runs-on: ubuntu-latest
        steps:
+           - uses: actions/checkout@v4.1.1
+           - uses: actions/setup-java@v4.0.0
+             with:
+               java-version: '17'
+               distribution: 'adopt'
+           - run: rm -rf $GITHUB_WORKSPACE/*
+           - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
+           - run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
+           - run: echo "/opt" >> $GITHUB_PATH
            - run: /opt/nf-test test tests/modules/gffread.nf.test
 
   test_jcvi:
        name: Run jcvi test
-       needs: append_path
        runs-on: ubuntu-latest
        steps:
+           - uses: actions/checkout@v4.1.1
+           - uses: actions/setup-java@v4.0.0
+             with:
+               java-version: '17'
+               distribution: 'adopt'
+           - run: rm -rf $GITHUB_WORKSPACE/*
+           - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
+           - run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
+           - run: echo "/opt" >> $GITHUB_PATH
            - run: /opt/nf-test test tests/modules/jcvi.nf.test
 
   clean_finish:
