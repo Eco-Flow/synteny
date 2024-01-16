@@ -22,7 +22,7 @@ jobs:
            - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
            - run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
            - run: echo "/opt" >> $GITHUB_PATH
-           - run: /opt/nf-test test tests/modules/download_ncbi.nf.test
+           - run: nf-test test tests/modules/download_ncbi.nf.test
 
   test_gffread:
        name: Run gffread test
@@ -37,7 +37,7 @@ jobs:
            - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
            - run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
            - run: echo "/opt" >> $GITHUB_PATH
-           - run: /opt/nf-test test tests/modules/gffread.nf.test
+           - run: nf-test test tests/modules/gffread.nf.test
 
   test_jcvi:
        name: Run jcvi test
@@ -52,7 +52,7 @@ jobs:
            - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
            - run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
            - run: echo "/opt" >> $GITHUB_PATH
-           - run: /opt/nf-test test tests/modules/jcvi.nf.test
+           - run: nf-test test tests/modules/jcvi.nf.test
 
   clean_finish:
        name: Clean workspace after finish
