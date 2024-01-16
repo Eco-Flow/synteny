@@ -26,16 +26,23 @@ nextflow_process {
             //analyze trace file (TODO: workout how this works with retry)
             assert process.trace.tasks().size() == 1
             with(process.out) {
-              //checks one tuple exists in new_format channel
-              assert new_format.size() == 1
-              //checks new_format tuple contains 3 elements
-              assert new_format[0].size() == 3
-              //checks one file exists in beds channel
-              assert beds.size() == 1
+              //checks one file exists in anchors channel
+              assert anchors.size() == 1
+              //checks one tuple exists in pdf channel
+              assert pdf.size() == 1
+              //check pdf tuple contains 3 elements
+              assert pdf[0].size() == 3
+              //checks one file exists in percsim channel
+              assert percsim.size() == 1
+              //checks one file exists in last channel
+              assert last.size() == 1
               //checks output files aren't corrupted
-              assert path(new_format[0].get(1)).md5 == '29f9f634f3129d41c811cf3a5c33d992'
-              assert path(beds[0]).md5 == '5300533a8387437bc15c0dc932edf5ff'
-              
+              assert path(anchors[0]).md5 == '375298377779855bd3d2fc89847b60c0'
+              assert path(pdf[0].get(0)).md5 == 'ed322865865a1d7870737477115bfd22'
+              assert path(pdf[0].get(1)).md5 == '810e2fc266db49b1fa7c6306322a7062'
+              assert path(pdf[0].get(2)).md5 == 'bb4d1df402326ca00288dcf115dc7628'
+              assert path(percsim[0]).md5 == 'bf25abfbeef218a2b20d1988dada8865'
+              assert path(last[0]).md5 == 'e4fc55949bcd1bfbd09d323e0109ac8d'
             }
         }
 
