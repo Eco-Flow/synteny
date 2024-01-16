@@ -28,7 +28,7 @@ jobs:
 
   nextflow_install:
        name: Install nextflow
-       needs: clean_start
+       needs: jdk_setup
        runs-on: ubuntu-latest
        steps:
            - run: sudo bash; cd /opt; wget "https://github.com/nextflow-io/nextflow/releases/download/v${NEXTFLOW_VERSION}/nextflow"; chmod +x nextflow
