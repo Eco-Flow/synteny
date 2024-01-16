@@ -49,21 +49,21 @@ jobs:
 
   test_download:
        name: Run ncbi_download test
-       needs: nf_test_install
+       needs: append_path
        runs-on: ubuntu-latest
        steps:
            - run: nf-test test tests/modules/download_ncbi.nf.test
 
   test_gffread:
        name: Run gffread test
-       needs: nf_test_install
+       needs: append_path
        runs-on: ubuntu-latest
        steps:
            - run: nf-test test tests/modules/gffread.nf.test
 
   test_jcvi:
        name: Run jcvi test
-       needs: nf_test_install
+       needs: append_path
        runs-on: ubuntu-latest
        steps:
            - run: nf-test test tests/modules/jcvi.nf.test
