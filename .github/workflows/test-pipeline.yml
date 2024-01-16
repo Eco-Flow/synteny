@@ -52,21 +52,21 @@ jobs:
        needs: append_path
        runs-on: ubuntu-latest
        steps:
-           - run: nf-test test tests/modules/download_ncbi.nf.test
+           - run: /opt/nf-test test tests/modules/download_ncbi.nf.test
 
   test_gffread:
        name: Run gffread test
        needs: append_path
        runs-on: ubuntu-latest
        steps:
-           - run: nf-test test tests/modules/gffread.nf.test
+           - run: /opt/nf-test test tests/modules/gffread.nf.test
 
   test_jcvi:
        name: Run jcvi test
        needs: append_path
        runs-on: ubuntu-latest
        steps:
-           - run: nf-test test tests/modules/jcvi.nf.test
+           - run: /opt/nf-test test tests/modules/jcvi.nf.test
 
   clean_finish:
        name: Clean workspace after finish
