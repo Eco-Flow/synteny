@@ -52,12 +52,11 @@ To run Nextflow (locally with docker installed), use the following command:
 
 `nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
 
+## Architecture
+If you are running on a Mac or any arm64 architecture then please add the flag:
+`--architecture arm`
 
-or with (if you download these three datasets manually- e.g. http://ftp.ensembl.org/pub/rapid-release/species/Vespula_germanica/GCA_905340365.1/genome/)
-
-`--input example.csv`
-
-#Notice, we use one `-` for Nextflow options, and two `--` for pipeline options.
+Notice, we use one `-` for Nextflow options, and two `--` for pipeline options.
 
 # Changing the input 
 
@@ -72,9 +71,16 @@ Drosophila_santomea,GCF_016746245.2
 You can also run your own genomes through this program (or mixed with NCBI ones), using the following format (data/Example-local.csv):
 
 ```
-Drosophila_yakuba,data/Drosophila_yakuba/genome.fna,data/Drosophila_yakuba/genomic.gff
-Drosophila_simulans,data/Drosophila_simulans/genome.fna,data/Drosophila_simulans/genomic.gff
-Drosophila_santomea,data/Drosophila_santomea/genome.fna,data/Drosophila_santomea/genomic.gff
+Drosophila_yakuba,data/Drosophila_yakuba/genome.fna.gz,data/Drosophila_yakuba/genomic.gff.gz
+Drosophila_simulans,data/Drosophila_simulans/genome.fna.gz,data/Drosophila_simulans/genomic.gff.gz
+Drosophila_santomea,data/Drosophila_santomea/genome.fna.gz,data/Drosophila_santomea/genomic.gff.gz
+```
+
+The example  data was downloaded from the following NCBI FTP locations:
+```
+https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/365/GCF_016746365.2_Prin_Dyak_Tai18E2_2.1
+https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/395/GCF_016746395.2_Prin_Dsim_3.1
+https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/245/GCF_016746245.2_Prin_Dsan_1.1
 ```
 
 Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file). To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified (or mix and match them). 
