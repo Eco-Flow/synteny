@@ -6,7 +6,7 @@ process GO {
     publishDir "$params.outdir/GO_results" , mode: "copy"
 
     input:
-    path(go)
+    path(go), stageAs: 'Go'
     path(speciessummaries)
     path(beds)
 
@@ -16,8 +16,6 @@ process GO {
 
     script:
     """
-       #head $speciessummaries > ${speciessummaries}.gohits.pdf
-       #head $go > ${speciessummaries}.gotable.tsv
-       Synteny_go.pl
+    Synteny_go.pl
     """
 }

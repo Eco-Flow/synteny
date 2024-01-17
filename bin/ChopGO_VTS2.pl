@@ -156,6 +156,7 @@ print "GO file = $GO_file\n\n" if defined $GO_file;
 my $outfile="BACKGROUND\.forR";
 my %Background_hash;
 if($background){
+    print "test1\n";
     ## FIND BACKGROUND GENES
     open(my $IN_b, "<", $background)   or die "Could not open $background \n";
     while (my $line=<$IN_b>){
@@ -184,6 +185,7 @@ if($background){
     open(my $outhandle, ">", $outfile)   or die "Could not open $outfile \n";
     my %Gene_Go_Hash;
     my %tot_genes;
+    print "test2\n";
     while (my $line=<$IN>){
 	$line=~s/\r//g;
 	chomp $line;
@@ -197,17 +199,20 @@ if($background){
 		    my $old=$Gene_Go_Hash{$gene};
 		    #print  "2+ $gene  $old\t$GO\n";
 		    $Gene_Go_Hash{$gene}="$old\",\"$GO";
+                    print "test3";
 		}
 		else{
 		    $Gene_Go_Hash{$gene}=$GO;
 		    #print "1st $gene $GO\n";
+                    print "test4";
 		}
 	    }
 	}
     }
     my $n_all=keys %tot_genes;
     print "BACKGROUND\nOf $n_all total Genes with GO annotation, $n_back were chosen for the background (based on user -b list)\n\n";
-    
+    #print "$Gene_Go_Hash\n";
+    print "variable^^^\n";
     print $outhandle "Chop.gene2GO<- list()\n";
     foreach my $key ( keys %Gene_Go_Hash ){
 	print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
@@ -319,7 +324,10 @@ while (my $line=<$IN>){
 ### RUN R COMPARISONS ###
 
 print $outhandle2 "Chop.WGCNA2Gene<- list()\n";
+
 foreach my $key ( keys %Gene_Go_Hash ){
+
+    print "test4";
     
     print $outhandle2 "Chop.WGCNA2Gene\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
     
