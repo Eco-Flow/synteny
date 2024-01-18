@@ -14,13 +14,17 @@ nextflow_process {
             process {
                 """
                 // define inputs of the process here. Example:
-                //input[0] = file("${projectDir}/data/go_summarise_input")
+                Channel.of( [file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averhigh.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averhigh.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averlow.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averlow.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.botSynteny.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.botSynteny.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.highScore.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.highScore.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.lowScore.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.lowScore.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab")] ).set{ in_channel }
+                input[0] = in_channel
                 """
             }
         }
 
         then {
+             //check if test case succeeded
             assert process.success
+            //analyze trace file
+            assert process.trace.tasks().size() == 1
         }
 
     }
