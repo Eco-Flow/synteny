@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0106094	nuclear membrane microtubule tethering c...	2.51
+CC	GO:0034993	meiotic nuclear membrane microtubule tet...	2.51
+CC	GO:0034992	microtubule organizing center attachment...	2.51
+CC	GO:0098852	lytic vacuole membrane	2.62
+CC	GO:0005765	lysosomal membrane	2.62
+CC	GO:0031965	nuclear membrane	2.66
+CC	GO:0097361	CIA complex	2.71
+CC	GO:0000786	nucleosome	2.74
+CC	GO:0017086	3-methyl-2-oxobutanoate dehydrogenase (l...	3.03
+CC	GO:0035301	Hedgehog signaling complex	5.05
+BLANK			
+MF	GO:0005042	netrin receptor activity	3.04
+MF	GO:0003863	3-methyl-2-oxobutanoate dehydrogenase (2...	3.04
+MF	GO:0001002	RNA polymerase III type 1 promoter seque...	3.04
+MF	GO:0000994	RNA polymerase III core binding	3.55
+MF	GO:0030296	protein tyrosine kinase activator activi...	4.00
+MF	GO:0030297	transmembrane receptor protein tyrosine ...	4.51
+MF	GO:0019207	kinase regulator activity	4.96
+MF	GO:0019901	protein kinase binding	5.00
+MF	GO:0019900	kinase binding	5.01
+MF	GO:0019887	protein kinase regulator activity	5.18
+BLANK			
+BP	GO:0007062	sister chromatid cohesion	3.51
+BP	GO:0030858	positive regulation of epithelial cell d...	3.57
+BP	GO:1905634	regulation of protein localization to ch...	3.89
+BP	GO:0007063	regulation of sister chromatid cohesion	3.89
+BP	GO:0034088	maintenance of mitotic sister chromatid ...	4.34
+BP	GO:0034086	maintenance of sister chromatid cohesion	4.34
+BP	GO:0007171	activation of transmembrane receptor pro...	4.54
+BP	GO:0007064	mitotic sister chromatid cohesion	4.77
+BP	GO:0034502	protein localization to chromosome	5.02
+BP	GO:0120187	positive regulation of protein localizat...	5.08

@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0005773	vacuole	2.97
+CC	GO:0005635	nuclear envelope	3.04
+CC	GO:0106094	nuclear membrane microtubule tethering c...	3.05
+CC	GO:0034993	meiotic nuclear membrane microtubule tet...	3.05
+CC	GO:0034992	microtubule organizing center attachment...	3.05
+CC	GO:0097361	CIA complex	3.09
+CC	GO:0035301	Hedgehog signaling complex	3.41
+CC	GO:0098852	lytic vacuole membrane	3.60
+CC	GO:0005765	lysosomal membrane	3.60
+CC	GO:0031965	nuclear membrane	3.77
+BLANK			
+MF	GO:0005042	netrin receptor activity	3.43
+MF	GO:0001002	RNA polymerase III type 1 promoter seque...	3.43
+MF	GO:0045503	dynein light chain binding	3.43
+MF	GO:0003823	antigen binding	3.47
+MF	GO:0034452	dynactin binding	3.77
+MF	GO:0000994	RNA polymerase III core binding	3.96
+MF	GO:0019207	kinase regulator activity	4.52
+MF	GO:0019887	protein kinase regulator activity	4.70
+MF	GO:0019900	kinase binding	5.89
+MF	GO:0019901	protein kinase binding	6.51
+BLANK			
+BP	GO:0034093	positive regulation of maintenance of si...	3.66
+BP	GO:0034091	regulation of maintenance of sister chro...	3.66
+BP	GO:0071168	protein localization to chromatin	3.92
+BP	GO:1905634	regulation of protein localization to ch...	4.44
+BP	GO:0007063	regulation of sister chromatid cohesion	4.44
+BP	GO:0034088	maintenance of mitotic sister chromatid ...	4.92
+BP	GO:0034086	maintenance of sister chromatid cohesion	4.92
+BP	GO:0007064	mitotic sister chromatid cohesion	5.52
+BP	GO:0120187	positive regulation of protein localizat...	5.66
+BP	GO:0034502	protein localization to chromosome	6.29
