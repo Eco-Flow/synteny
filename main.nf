@@ -92,11 +92,15 @@ workflow {
         SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
     }
     if (params.go) {
-        go_datasets = Channel.fromPath(params.go)
+        go_folder = Channel.fromPath(params.go)
         //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
-        ch_go = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.speciesSummary
-        GO ( go_datasets.collect(), ch_go.flatten(), JCVI.out.beds.collect() )
-        GO_SUMMARISE ( GO.out.go_table.collect() )
+        species_summary = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.speciesSummary
+        go_folder.view()
+        go_folder.collect().view()
+        //species_summary.view()
+        //JCVI.out.beds.view()
+        //GO ( go_folder, species_summary.flatten(), JCVI.out.beds.collect() )
+        //GO_SUMMARISE ( GO.out.go_table.collect() )
     }
 }
 
