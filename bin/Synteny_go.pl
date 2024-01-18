@@ -65,7 +65,7 @@ while (my $line = <$filein>){
     print "$line\n";
     my @splitl=split("\t", $line);
     my $gene=$splitl[1];
-    print $out8 "$gene\n";
+    
     #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
     if($gene =~ m/\:/){
         my @sp1=split(/\:/, $gene);
@@ -76,6 +76,8 @@ while (my $line = <$filein>){
         my @sp1=split(/\-/, $gene);
         $gene=$sp1[1];
     }
+    #Print out background geens to file:
+    print $out8 "$gene\n";
     push (@hit_genes, $gene);
     my $score=$splitl[2];
     my $count=$splitl[3];
