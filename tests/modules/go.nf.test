@@ -15,7 +15,6 @@ nextflow_process {
                 """
                 // define inputs of the process here. Example:
                 input[0] = Channel.fromPath("${projectDir}/data/go_input/tree_files")
-                //input[1] = Channel.fromPath("${projectDir}/data/go_input/*.SpeciesScoreSummary.txt").collect() 
                 input[1] = file("${projectDir}/data/go_input/Drosophila_yakuba.SpeciesScoreSummary.txt")
                 input[2] = Channel.fromPath("${projectDir}/data/go_input/*.bed").collect()
                 """
