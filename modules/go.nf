@@ -6,8 +6,9 @@ process GO {
     publishDir "$params.outdir/GO_results" , mode: "copy"
 
     input:
-    path(go), stageAs: 'Go'
-    path(speciessummaries)
+    //path(go), stageAs: 'Go'
+    //path(speciessummaries)
+    tuple path(go, stageAs: 'Go'), path(speciessummaries)
     path(beds)
 
     output:

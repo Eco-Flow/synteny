@@ -95,7 +95,9 @@ workflow {
         go_folder = Channel.fromPath(params.go)
         //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
         species_summary = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.out.speciesSummary
-        GO ( go_folder, species_summary.flatten(), JCVI.out.beds.collect() )
+        //creating 3 instances of a channel with the GO hash files and species summary files 
+        go_folder.combine(species_summary.flatten()).set{ go_and_summary }
+        GO ( go_and_summary, JCVI.out.beds.collect() )
         GO_SUMMARISE ( GO.out.go_table.collect() )
     }
 }
