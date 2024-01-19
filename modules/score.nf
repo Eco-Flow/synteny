@@ -24,12 +24,17 @@ process SCORE {
     path("My_comp_synteny_similarity.tsv"), emit: pairdata
     path("Synteny_matrix.tsv"), emit:synmat
     path("*geneScore.tsv"), emit: pairedgenescores
-    path("*SpeciesScoreSummary.txt"), emit:speciesSummary 
+    path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
     path("*-all.pdf"), emit:emeline_plots
 
     script:
     """
+    #If gff files are compressed, decompress them (useful in testing)
+    if [ "\$(ls -A | grep -i \\.*.gff3.gz\$)" ]; then
+       for gff in *.gff3.gz; do zcat \$gff > "\${gff%.gz}"; done
+    fi
+
     #Run Score for each gene on how close it is to the edge of the syntenic block
 
     #Run score for genome X in terms of size of syntenic blacks to species Y.
@@ -47,5 +52,11 @@ process SCORE {
     Trans_location_Inversion_score.pl
 
     Rscript "${projectDir}/bin/plotting-inversions.R" > R_output.txt
+
+    md5sum My_scores.tsv > My_scores.tsv.md5
+    md5sum My_sim_cores.tsv > My_sim_cores.tsv.md5
+    md5sum My_comp_synteny_similarity.tsv > My_comp_synteny_similarity.tsv.md5
+    md5sum Synteny_matrix.tsv > Synteny_matrix.tsv.md5
+    md5sum Trans_location_version.out.txt > Trans_location_version.out.txt.md5
     """
 }

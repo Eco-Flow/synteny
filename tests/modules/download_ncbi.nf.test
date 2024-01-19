@@ -9,6 +9,7 @@ nextflow_process {
         when {
             params {
                 // define parameters here.
+                clean = false
             }
             process {
                 """
@@ -30,7 +31,7 @@ nextflow_process {
               assert genome.size() == 1
               //checks tuple contains 3 elements
               assert genome[0].size() == 3
-              //Check downloaded files are not corrupted
+              //check downloaded files are not corrupted
               assert path(genome[0].get(1)).md5 == '5379dbd489c3ceafafbc2bd5720a67f2'
               assert path(genome[0].get(2)).md5 == '7669b7e00a51af678dbae1bf702850ca'
             }

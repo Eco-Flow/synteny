@@ -1,0 +1,69 @@
+nextflow_process {
+
+    name "Test Process SCORE"
+    script "modules/score.nf"
+    process "SCORE"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                // define parameters here. Example:
+                clean = false
+            }
+            process {
+                """
+                // define inputs of the process here. Example:
+                Channel.fromPath( "${projectDir}/data/chromopaint_input/Drosophila_santomea.Drosophila_simulans.anchors").set{ anchor_ch }
+                input[0] = Channel.fromPath( "${projectDir}/data/score_input/*.anchors").collect().combine(anchor_ch)
+                input[1] = Channel.fromPath( "${projectDir}/data/score_input/*.percent.similarity").collect()
+                Channel.fromPath( "${projectDir}/data/jcvi_input/Drosophila_yakuba.gff_for_jvci.gff3.gz").set{ gff_ch }
+                input[2] = Channel.fromPath( "${projectDir}/data/score_input/*.gff_for_jvci.gff3.gz").collect().combine(gff_ch)
+                """
+            }
+        }
+
+        then {
+            //check if test case succeeded
+            assert process.success
+            //analyze trace file (TODO: workout how this works with retry)
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+              //checks one file exists in score_combine channel
+              assert score_combine.size() == 1
+              //check file corruption
+              assert path(score_combine[0]).md5 == 'a143bfa466eaaf67ee91991dec04e03a'
+              //checks one file exists in simil_combine channel
+              assert simil_combine.size() == 1
+              //check file corruption
+              assert path(simil_combine[0]).md5 == '7312f16af9c1210b486ca69e93144a42'
+              //checks one file exists in pairwiseplot channel
+              assert pairwiseplot.size() == 1
+              //checks one file exists in pairdata channel
+              assert pairdata.size() == 1
+              //check file corruption
+              assert path(pairdata[0]).md5 == 'da10e8911707ee886cf9eb0bf7c2fd8b'
+              //checks one file exists in synmat channel
+              assert synmat.size() == 1
+              //check file corruption
+              assert path(synmat[0]).md5 == 'cece9526b87668e383954c275f2d70a3'
+              //checks one tuple exists in pairedgenescores channel
+              assert pairedgenescores.size() == 1
+              //checks pairedgenescores tuple contains 6 elements
+              assert pairedgenescores[0].size() == 6
+              //checks one tuple exists in speciesSummary channel
+              assert speciesSummary.size() == 1
+              //checks speciesSummary tuple contains 3 elements
+              assert speciesSummary[0].size() == 3
+              //checks one file exists in trans_inver_summary channel
+              assert trans_inver_summary.size() == 1
+              //check file corruption
+              assert path(trans_inver_summary[0]).md5 == 'e8a7dd3a356175f58eb22bf08a317272'
+              //checks one file exists in emeline_plots channel
+              assert emeline_plots.size() == 1
+            }
+        }
+
+    }
+
+}

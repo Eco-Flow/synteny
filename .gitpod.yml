@@ -4,6 +4,7 @@ tasks:
     init: |
       echo 'init script' # runs during prebuild
       curl -s https://get.nextflow.io | bash
+      curl -fsSL https://code.askimed.com/install/nf-test | bash
     command: |
       export PATH=/workspace/synteny:$PATH
       nextflow info

@@ -59,7 +59,7 @@ else{
 
 if ($helpFlag or $EXIT_STATUS){
     die "
-usage: ChopGO.pl -i <INPUT_list> (-sp <SPECIES_CODE> -db </path/to/DB> OR --GO_file Custom_GO_file) [options]
+usage: ChopGO_.pl -i <INPUT_list> (-sp <SPECIES_CODE> -db </path/to/DB> OR --GO_file Custom_GO_file) [options]
 
 compulsory:
     -i               Input list of genes (compulsory). Sep by \'\\n\'. Optional second column for subdivisions of list.  
@@ -207,11 +207,17 @@ if($background){
     }
     my $n_all=keys %tot_genes;
     print "BACKGROUND\nOf $n_all total Genes with GO annotation, $n_back were chosen for the background (based on user -b list)\n\n";
-    
-    print $outhandle "Chop.gene2GO<- list()\n";
-    foreach my $key ( keys %Gene_Go_Hash ){
-	print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
-    }
+
+	print $outhandle "Chop.gene2GO<- list()\n";
+	foreach my $key ( keys %Gene_Go_Hash ){
+		if($key =~ m/RefSeq/g){
+			print "Ignore this line\n";
+		}
+		else{
+			print "Correct line\n";
+			print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
+		}	
+	}
 }
 else {
     #all genes as background. No background chosen by user.
@@ -250,8 +256,9 @@ else {
     }
     
     print $outhandle "Chop.gene2GO<- list()\n";
+    
     foreach my $key ( keys %Gene_Go_Hash ){
-	print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
+		print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
     }
 }
 
@@ -472,5 +479,3 @@ print  "Script completed\n\n";
 #TIDY UP , temporary files
 $input=~s/\-/\_/g;
 `rm -f ACTUAL_R_CODE BACKGROUND.forR R_CODE_TO_RUN output.ofthis.test $input\.converted $input\.R_GO_subs tmp_file Image.Rdata`;
-
-

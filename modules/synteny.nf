@@ -14,9 +14,9 @@ process SYNTENY {
 
     output:
     path("${sample_id}.${sample_id2}.anchors"), emit: anchors
-    path("*.pdf"), emit: pdf
+    tuple path("${sample_id}.${sample_id2}.pdf"), path("${sample_id}.${sample_id2}.depth.pdf"), path("${sample_id}.${sample_id2}.karyotype.pdf"), emit: pdf
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
-    path("*.last.filtered"), emit: last
+    path("${sample_id}.${sample_id2}.last.filtered"), emit: last
 
     script:
     """
@@ -28,5 +28,9 @@ process SYNTENY {
     syntenous_chromosomes.pl ${sample_id}.bed ${sample_id2}.bed ${sample_id}.${sample_id2}.anchors.new
     python -m jcvi.graphics.karyotype seqids_karyotype.txt layout
     mv karyotype.pdf ${sample_id}.${sample_id2}.karyotype.pdf
+
+    md5sum "${sample_id}.${sample_id2}.anchors" > "${sample_id}.${sample_id2}.anchors.md5"
+    md5sum "${sample_id}.${sample_id2}.percent.similarity" > "${sample_id}.${sample_id2}.percent.similarity.md5"
+    md5sum "${sample_id}.${sample_id2}.last.filtered" > "${sample_id}.${sample_id2}.last.filtered.md5"
     """
 }

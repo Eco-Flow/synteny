@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0000315	organellar large ribosomal subunit	9.60
+CC	GO:0005730	nucleolus	9.62
+CC	GO:0005761	mitochondrial ribosome	10.18
+CC	GO:0000313	organellar ribosome	10.18
+CC	GO:0098798	mitochondrial protein-containing complex	10.24
+CC	GO:0015934	large ribosomal subunit	10.41
+CC	GO:0030684	preribosome	11.41
+CC	GO:0005739	mitochondrion	15.92
+CC	GO:0044391	ribosomal subunit	16.96
+CC	GO:0005840	ribosome	17.28
+BLANK			
+MF	GO:0004497	monooxygenase activity	8.64
+MF	GO:0016491	oxidoreductase activity	9.16
+MF	GO:0005214	structural constituent of chitin-based c...	9.35
+MF	GO:0004175	endopeptidase activity	9.62
+MF	GO:0042302	structural constituent of cuticle	9.89
+MF	GO:0004252	serine-type endopeptidase activity	10.41
+MF	GO:0008233	peptidase activity	10.54
+MF	GO:0140640	catalytic activity, acting on a nucleic ...	11.05
+MF	GO:0003824	catalytic activity	13.02
+MF	GO:0003735	structural constituent of ribosome	16.80
+BLANK			
+BP	GO:0071704	organic substance metabolic process	12.82
+BP	GO:0006508	proteolysis	13.07
+BP	GO:0044238	primary metabolic process	13.30
+BP	GO:0008152	metabolic process	14.66
+BP	GO:0006364	rRNA processing	15.57
+BP	GO:0034470	ncRNA processing	15.92
+BP	GO:0016072	rRNA metabolic process	15.96
+BP	GO:0022613	ribonucleoprotein complex biogenesis	16.46
+BP	GO:0034660	ncRNA metabolic process	18.33
+BP	GO:0042254	ribosome biogenesis	23.44

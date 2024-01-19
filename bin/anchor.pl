@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 
-die "need three inputs :sp1 bed file (followed by a space), sp2 bed file, followed by the anchor file\n" if (@ARGV!=3); 
+die "need four inputs :sp1 bed file (followed by a space), sp2 bed file (followed by a space), followed by the anchor file (followed by a space), followed by the hex file\n" if (@ARGV!=4); 
 
 #print "Script is running\n";
 
@@ -20,7 +20,7 @@ open(my $out, "> $outfile") or die "error opening $outfile. $!";
 #print "1 $BED_file1 2 $BED_file2 anchor $ANC\n";
 
 #read in the colour hex list
-my $colours="unique_hex2";
+my $colours=$ARGV[3];
 open(my $COL, "<", $colours) or die "Could not open $colours\n";
 my $col_outfile="colour.idmap";
 open(my $col_out, ">", $col_outfile) or die "Could not open $col_outfile\n";

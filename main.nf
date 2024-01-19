@@ -79,6 +79,7 @@ workflow {
 
     JCVI ( GFFREAD.out.proteins )
 
+    //Do a pairwise combination of each species' JCVI output but filter out combinations of the same species
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
 
     CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect() )
@@ -91,10 +92,10 @@ workflow {
         SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
     }
     if (params.go) {
+        go_folder = Channel.fromPath(params.go)
         //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
-        ch_go = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.speciesSummary
-        ch_go.view()
-        GO ( go_datasets.collect() , ch_go.flatten(), JCVI.out.beds.collect() )
+        species_summary = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.speciesSummary
+        GO ( go_folder, species_summary.flatten(), JCVI.out.beds.collect() )
         GO_SUMMARISE ( GO.out.go_table.collect() )
     }
 }

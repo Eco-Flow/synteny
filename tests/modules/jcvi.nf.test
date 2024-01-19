@@ -1,0 +1,44 @@
+nextflow_process {
+
+    name "Test Process JCVI"
+    script "modules/jcvi.nf"
+    process "JCVI"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                // define parameters here:
+                clean = false
+            }
+            process {
+                """
+                // define inputs of the process here. Example:
+                Channel.of( ["Drosophila_yakuba", file("${projectDir}/data/jcvi_input/Drosophila_yakuba.nucl.fa.gz"), file("${projectDir}/data/jcvi_input/Drosophila_yakuba.gff_for_jvci.gff3.gz")] ).set{ in_channel } 
+                input[0] = in_channel
+                """
+            }
+        }
+
+        then {
+            //check if test case succeeded
+            assert process.success
+            //analyze trace file (TODO: workout how this works with retry)
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+              //checks one tuple exists in new_format channel
+              assert new_format.size() == 1
+              //checks new_format tuple contains 3 elements
+              assert new_format[0].size() == 3
+              //checks one file exists in beds channel
+              assert beds.size() == 1
+              //checks output files aren't corrupted
+              assert path(new_format[0].get(1)).md5 == '29f9f634f3129d41c811cf3a5c33d992'
+              assert path(beds[0]).md5 == '5300533a8387437bc15c0dc932edf5ff'
+
+            }
+        }
+
+    }
+
+}

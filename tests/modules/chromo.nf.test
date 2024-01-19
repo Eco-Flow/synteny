@@ -1,0 +1,38 @@
+nextflow_process {
+
+    name "Test Process CHROMOPAINT"
+    script "modules/chromo.nf"
+    process "CHROMOPAINT"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                // define parameters here. Example:
+                clean = false
+            }
+            process {
+                """
+                // define inputs of the process here. Example:
+                input[0] = file("${projectDir}/data/unique_hex")
+                input[1] = file("${projectDir}/data/chromopaint_input/Drosophila_santomea.Drosophila_simulans.anchors")
+                Channel.fromPath( "${projectDir}/data/chromopaint_input/*.bed" ).collect().set { in_channel }
+                input[2] = in_channel
+                """
+            }
+        }
+
+        then {
+            //check if test case succeeded
+            assert process.success
+            //analyze trace file
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+              //checks one file exists in pdf channel
+              assert pdf.size() == 1
+            } 
+        }
+
+    }
+
+}

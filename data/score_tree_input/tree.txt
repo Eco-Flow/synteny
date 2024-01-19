@@ -1,0 +1,1 @@
+(Drosophila_simulans:0.0116562, (Drosophila_yakuba:0.00917442, Drosophila_santomea:0.00724224):0.0242324);
