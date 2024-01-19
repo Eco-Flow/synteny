@@ -34,26 +34,11 @@ jobs:
     - name: Add software to path
       run: echo "/opt" >> $GITHUB_PATH;
 
-    - name: Run ncbi_download test
-      run: nf-test test tests/modules/download_ncbi.nf.test
+    - name: download test data
+      run: cd data/synteny_input; wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1wfrcvTd264dvp-tmq_6vDqo95S-7oIAs' -O Drosophila_santomea.cds; wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1NuaL5vWiV2-L08PJpKGNxFk1gYemOKaA' -O Drosophila_simulans.cds 
 
-    - name: Run gffread test
-      run: nf-test test tests/modules/gffread.nf.test
-
-    - name: Run jcvi test
-      run: nf-test test tests/modules/jcvi.nf.test
-
-    - name: Run chromopaint test
-      run: nf-test test tests/modules/chromo.nf.test
-
-    - name: Run score test
-      run: nf-test test tests/modules/score.nf.test
-
-    - name: Run score_tree test
-      run: nf-test test tests/modules/score_tree.nf.test
-
-    - name: Run go test
-      run: nf-test test tests/modules/go.nf.test
+    - name: Run synteny test
+      run: nf-test test tests/modules/synteny.nf.test
 
     - name: Clean workspace after finish
       run: rm -rf $GITHUB_WORKSPACE/*
