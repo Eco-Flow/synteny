@@ -1,4 +1,4 @@
-name: Run Pipeline Tests
+name: Run Synteny Test
 
 on:
   workflow_dispatch
