@@ -1,13 +1,12 @@
 process CHROMOPAINT {
 
     label 'process_single'
-    tag "$anchors"
+    tag "${sample1} with ${sample2}"
     publishDir "$params.outdir/Chromosome_plots" , mode: "copy"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 
     input:
-    path (hex)
-    each (anchors)
+    tuple path (hex), val(sample1), val(sample2), path(anchors)
     path ('*')
 
     output:

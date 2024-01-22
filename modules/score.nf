@@ -1,7 +1,7 @@
 process SCORE {
 
     label 'process_low'
-    tag "$sample_id"
+    tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"

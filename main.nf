@@ -82,14 +82,19 @@ workflow {
     //Do a pairwise combination of each species' JCVI output but filter out combinations of the same species
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
 
-    CHROMOPAINT ( in_hex , SYNTENY.out.anchors , JCVI.out.beds.collect() )
+    //Use name of anchors file to identify the 2 species involved and create a tuple with these species as strings
+    SYNTENY.out.anchors.map{ it -> def(sample1, sample2) = it.baseName.toString().split("\\."); [sample1, sample2, it] }.set{ labelled_anchors }
+
+    //Combine hex path with each tuple of species and anchor files for parallelisation of process
+    in_hex.combine(labelled_anchors).set{ hex_labelled_anchors }
+    CHROMOPAINT ( hex_labelled_anchors, JCVI.out.beds.collect() )
 
     if (params.tree) {
         tree_in = Channel.fromPath(params.tree)
-        SCORE_TREE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() , tree_in )
+        SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), tree_in )
     }
     else {
-        SCORE ( SYNTENY.out.anchors.collect() , SYNTENY.out.percsim.collect() , GFFREAD.out.gff.collect() )
+        SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect() )
     }
     if (params.go) {
         go_folder = Channel.fromPath(params.go)

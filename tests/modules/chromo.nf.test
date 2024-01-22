@@ -14,10 +14,9 @@ nextflow_process {
             process {
                 """
                 // define inputs of the process here. Example:
-                input[0] = file("${projectDir}/data/unique_hex")
-                input[1] = file("${projectDir}/data/chromopaint_input/Drosophila_santomea.Drosophila_simulans.anchors")
+                input[0] = Channel.of( [ file("${projectDir}/data/unique_hex"), "Drosophila_santomea", "Drosophila_simulans", file("${projectDir}/data/chromopaint_input/Drosophila_santomea.Drosophila_simulans.anchors") ] )
                 Channel.fromPath( "${projectDir}/data/synteny_input/*.bed" ).collect().set { in_channel }
-                input[2] = in_channel
+                input[1] = in_channel
                 """
             }
         }
