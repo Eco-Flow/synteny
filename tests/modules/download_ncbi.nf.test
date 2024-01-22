@@ -24,7 +24,7 @@ nextflow_process {
         then {
             //check if test case succeeded
             assert process.success
-            //analyze trace file (TODO: workout how this works with retry)
+            //analyze trace file
             assert process.trace.tasks().size() == 1 || process.trace.tasks().size() == 2 || process.trace.tasks().size() == 3
             with(process.out) {
               //checks one tuple exists in output channel

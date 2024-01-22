@@ -28,6 +28,7 @@ process SCORE_TREE {
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
     path("*-all_treesort.pdf"), emit:emeline_plots
+    path "versions.yml", emit: versions
 
     script:
     """
@@ -65,5 +66,11 @@ process SCORE_TREE {
     md5sum My_comp_synteny_similarity.tsv > My_comp_synteny_similarity.tsv.md5
     md5sum Synteny_matrix.tsv > Synteny_matrix.tsv.md5
     md5sum Trans_location_version.out.txt > Trans_location_version.out.txt.md5
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        \$(R --version | grep "R version" | sed 's/[(].*//')
+        Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
+    END_VERSIONS
     """
 }

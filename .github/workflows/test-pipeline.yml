@@ -61,7 +61,7 @@ jobs:
     - name: Run go test
       run: nf-test test tests/modules/go.nf.test
 
-    - name: Run go test
+    - name: Run go summarise test
       run: nf-test test tests/modules/go_summarise.nf.test
 
     - name: Clean workspace after finish

@@ -17,6 +17,7 @@ process SYNTENY {
     tuple path("${sample_id}.${sample_id2}.pdf"), path("${sample_id}.${sample_id2}.depth.pdf"), path("${sample_id}.${sample_id2}.karyotype.pdf"), emit: pdf
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
     path("${sample_id}.${sample_id2}.last.filtered"), emit: last
+    path "versions.yml", emit: versions
 
     script:
     """
@@ -32,5 +33,11 @@ process SYNTENY {
     md5sum "${sample_id}.${sample_id2}.anchors" > "${sample_id}.${sample_id2}.anchors.md5"
     md5sum "${sample_id}.${sample_id2}.percent.similarity" > "${sample_id}.${sample_id2}.percent.similarity.md5"
     md5sum "${sample_id}.${sample_id2}.last.filtered" > "${sample_id}.${sample_id2}.last.filtered.md5"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        Python version: \$(python --version  | sed 's/[^0-9]*//')
+        Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
+    END_VERSIONS
     """
 }

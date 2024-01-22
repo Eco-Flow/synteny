@@ -14,7 +14,7 @@ nextflow_process {
             process {
                 """
                 // define inputs of the process here. Example:
-                //PLEASE NOTE: These files are too big to go in GitHub as they exceed total limit of storage in the repo so until Amazon S3 is set up this test can only be done locally
+                //PLEASE NOTE: These files are too big to go in GitHub as they exceed total limit of storage in the repo so until Amazon S3 is set up they are stored in google drive for github actions
                 Channel.of( ["Drosophila_santomea", file("${projectDir}/data/synteny_input/Drosophila_santomea.cds"), file("${projectDir}/data/synteny_input/Drosophila_santomea.bed"), "Drosophila_simulans", file("${projectDir}/data/synteny_input/Drosophila_simulans.cds"), file("${projectDir}/data/synteny_input/Drosophila_simulans.bed")] ).set{ in_channel }
                 input[0] = in_channel
                 """

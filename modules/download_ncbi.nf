@@ -10,6 +10,7 @@ process DOWNLOAD_NCBI {
 
     output:
     tuple val(sample_id), path("${sample_id}.genome.fna"), path("${sample_id}.genomic.gff"), emit: genome
+    path "versions.yml", emit: versions
 
     script:
     """
@@ -29,5 +30,10 @@ process DOWNLOAD_NCBI {
 
     md5sum ${sample_id}.genome.fna > ${sample_id}.genome.fna.md5
     md5sum ${sample_id}.genomic.gff > ${sample_id}.genomic.gff.md5
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        NCBI Download \$(datasets --version)
+    END_VERSIONS
     """
 }
