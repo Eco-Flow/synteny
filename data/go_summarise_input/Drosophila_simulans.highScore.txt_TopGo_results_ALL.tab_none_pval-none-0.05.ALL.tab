@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0016328	lateral plasma membrane	6.52
+CC	GO:0005739	mitochondrion	6.62
+CC	GO:0071212	subsynaptic reticulum	6.96
+CC	GO:0042734	presynaptic membrane	7.11
+CC	GO:0042600	egg chorion	7.37
+CC	GO:0061176	type Ib terminal bouton	9.74
+CC	GO:0005920	smooth septate junction	11.74
+CC	GO:0061689	tricellular tight junction	14.28
+CC	GO:0099634	postsynaptic specialization membrane	16.89
+CC	GO:0098839	postsynaptic density membrane	17.59
+BLANK			
+MF	GO:0016229	steroid dehydrogenase activity	4.80
+MF	GO:0004706	JUN kinase kinase kinase activity	4.85
+MF	GO:0016899	oxidoreductase activity, acting on the C...	4.89
+MF	GO:0033764	steroid dehydrogenase activity, acting o...	5.19
+MF	GO:0004709	MAP kinase kinase kinase activity	5.68
+MF	GO:0047875	ecdysone oxidase activity	5.92
+MF	GO:0019205	nucleobase-containing compound kinase ac...	12.00
+MF	GO:0016776	phosphotransferase activity, phosphate g...	12.51
+MF	GO:0050145	nucleoside monophosphate kinase activity	14.22
+MF	GO:0004385	guanylate kinase activity	17.34
+BLANK			
+BP	GO:0009126	purine nucleoside monophosphate metaboli...	13.82
+BP	GO:0009132	nucleoside diphosphate metabolic process	14.49
+BP	GO:0045197	establishment or maintenance of epitheli...	14.96
+BP	GO:0009185	ribonucleoside diphosphate metabolic pro...	15.96
+BP	GO:0052128	positive energy taxis	16.02
+BP	GO:0046956	positive phototaxis	16.02
+BP	GO:0009179	purine ribonucleoside diphosphate metabo...	16.80
+BP	GO:0009135	purine nucleoside diphosphate metabolic ...	16.80
+BP	GO:0046710	GDP metabolic process	17.39
+BP	GO:0046037	GMP metabolic process	17.96

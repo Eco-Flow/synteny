@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0005868	cytoplasmic dynein complex	1.94
+CC	GO:0043596	nuclear replication fork	2.00
+CC	GO:0097729	9+2 motile cilium	2.00
+CC	GO:0005637	nuclear inner membrane	2.03
+CC	GO:0036126	sperm flagellum	2.05
+CC	GO:0044309	neuron spine	2.10
+CC	GO:0043197	dendritic spine	2.10
+CC	GO:0005635	nuclear envelope	2.46
+CC	GO:0035301	Hedgehog signaling complex	3.44
+CC	GO:0031965	nuclear membrane	3.92
+BLANK			
+MF	GO:0045503	dynein light chain binding	2.54
+MF	GO:0042800	histone H3K4 methyltransferase activity	2.73
+MF	GO:0034452	dynactin binding	2.80
+MF	GO:0008170	N-methyltransferase activity	2.80
+MF	GO:0008276	protein methyltransferase activity	2.84
+MF	GO:0008140	cAMP response element binding protein bi...	3.02
+MF	GO:0016286	small conductance calcium-activated pota...	3.54
+MF	GO:0016279	protein-lysine N-methyltransferase activ...	3.59
+MF	GO:0016278	lysine N-methyltransferase activity	3.59
+MF	GO:0003993	acid phosphatase activity	5.59
+BLANK			
+BP	GO:0006222	UMP biosynthetic process	2.95
+BP	GO:0051255	spindle midzone assembly	3.06
+BP	GO:1903307	positive regulation of regulated secreto...	3.18
+BP	GO:0032837	distributive segregation	3.18
+BP	GO:0051256	mitotic spindle midzone assembly	3.51
+BP	GO:0045956	positive regulation of calcium ion-depen...	3.51
+BP	GO:0016057	regulation of membrane potential in phot...	3.70
+BP	GO:0044205	'de novo' UMP biosynthetic process	3.72
+BP	GO:0018023	peptidyl-lysine trimethylation	3.85
+BP	GO:0030858	positive regulation of epithelial cell d...	4.02

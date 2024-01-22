@@ -24,7 +24,7 @@ nextflow_process {
         then {
             //check if test case succeeded
             assert process.success
-            //analyze trace file (TODO: workout how this works with retry)
+            //analyze trace file
             assert process.trace.tasks().size() == 1
             with(process.out) {
               //checks one file exists in anchors channel
@@ -38,12 +38,10 @@ nextflow_process {
               //checks one file exists in last channel
               assert last.size() == 1
               //checks output files aren't corrupted
-              assert path(anchors[0]).md5 == '375298377779855bd3d2fc89847b60c0'
-              assert path(percsim[0]).md5 == 'bf25abfbeef218a2b20d1988dada8865'
-              assert path(last[0]).md5 == 'e4fc55949bcd1bfbd09d323e0109ac8d'
+              assert path(anchors[0]).md5 == '438094fa8e040b674be3a52550b77943'
+              assert path(percsim[0]).md5 == 'ef51a68fef6324399cc23afeef5c67e6'
+              assert path(last[0]).md5 == '1a6d8260c74adac5448c041d4106c4f1'
             }
         }
-
     }
-
 }

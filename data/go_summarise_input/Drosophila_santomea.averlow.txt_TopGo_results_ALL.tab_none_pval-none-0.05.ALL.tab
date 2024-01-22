@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0030286	dynein complex	2.25
+CC	GO:0005892	acetylcholine-gated channel complex	2.30
+CC	GO:1990023	mitotic spindle midzone	2.36
+CC	GO:0000228	nuclear chromosome	2.46
+CC	GO:0097729	9+2 motile cilium	2.76
+CC	GO:0005868	cytoplasmic dynein complex	2.80
+CC	GO:0036126	sperm flagellum	2.85
+CC	GO:0035301	Hedgehog signaling complex	3.80
+CC	GO:0044309	neuron spine	3.96
+CC	GO:0043197	dendritic spine	3.96
+BLANK			
+MF	GO:0070696	transmembrane receptor protein serine/th...	3.12
+MF	GO:0033612	receptor serine/threonine kinase binding	3.12
+MF	GO:0045504	dynein heavy chain binding	3.24
+MF	GO:0008140	cAMP response element binding protein bi...	3.33
+MF	GO:0045503	dynein light chain binding	3.42
+MF	GO:0034452	dynactin binding	3.77
+MF	GO:0070697	activin receptor binding	4.00
+MF	GO:0004180	carboxypeptidase activity	4.15
+MF	GO:0050263	ribosylpyrimidine nucleosidase activity	4.29
+MF	GO:0004181	metallocarboxypeptidase activity	4.72
+BLANK			
+BP	GO:1903522	regulation of blood circulation	3.68
+BP	GO:0008016	regulation of heart contraction	3.68
+BP	GO:0007632	visual behavior	4.00
+BP	GO:0051256	mitotic spindle midzone assembly	4.01
+BP	GO:0030858	positive regulation of epithelial cell d...	4.31
+BP	GO:0035039	male pronucleus assembly	4.64
+BP	GO:0035041	sperm DNA decondensation	4.74
+BP	GO:0018200	peptidyl-glutamic acid modification	5.02
+BP	GO:0035610	protein side chain deglutamylation	8.05
+BP	GO:0035608	protein deglutamylation	8.05

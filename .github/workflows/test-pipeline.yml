@@ -43,6 +43,12 @@ jobs:
     - name: Run jcvi test
       run: nf-test test tests/modules/jcvi.nf.test
 
+    - name: download synteny test cds files
+      run: cd data/synteny_input; wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1-sgGEBdkcDiw2XHwuapH53HCdzeil-F1' -O Drosophila_santomea.cds; wget --no-check-certificate 'https://docs.google.com/uc?export=download&id='1Sc8rD8ioxBJPIxZoCPkY_IkCBX1L_LwL -O Drosophila_simulans.cds 
+
+    - name: Run synteny test
+      run: nf-test test tests/modules/synteny.nf.test
+
     - name: Run chromopaint test
       run: nf-test test tests/modules/chromo.nf.test
 
@@ -54,6 +60,9 @@ jobs:
 
     - name: Run go test
       run: nf-test test tests/modules/go.nf.test
+
+    - name: Run go test
+      run: nf-test test tests/modules/go_summarise.nf.test
 
     - name: Clean workspace after finish
       run: rm -rf $GITHUB_WORKSPACE/*

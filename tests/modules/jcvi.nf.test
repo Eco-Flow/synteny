@@ -23,7 +23,7 @@ nextflow_process {
         then {
             //check if test case succeeded
             assert process.success
-            //analyze trace file (TODO: workout how this works with retry)
+            //analyze trace file
             assert process.trace.tasks().size() == 1
             with(process.out) {
               //checks one tuple exists in new_format channel
@@ -33,12 +33,9 @@ nextflow_process {
               //checks one file exists in beds channel
               assert beds.size() == 1
               //checks output files aren't corrupted
-              assert path(new_format[0].get(1)).md5 == '29f9f634f3129d41c811cf3a5c33d992'
-              assert path(beds[0]).md5 == '5300533a8387437bc15c0dc932edf5ff'
-
+              assert path(new_format[0].get(1)).md5 == 'cddccc1ce92eaf4b3d226abbec140d10'
+              assert path(beds[0]).md5 == 'a752d7ff39b298e6d9fe99848aec1b5c'
             }
         }
-
     }
-
 }

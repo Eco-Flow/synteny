@@ -6,8 +6,6 @@ process GO {
     publishDir "$params.outdir/GO_results" , mode: "copy"
 
     input:
-    //path(go), stageAs: 'Go'
-    //path(speciessummaries)
     tuple path(go, stageAs: 'Go'), path(speciessummaries)
     path(beds)
 
@@ -18,5 +16,8 @@ process GO {
     script:
     """
     Synteny_go.pl
+    for tab_file in *.tab; do
+      md5sum \$tab_file > \$tab_file.md5
+    done
     """
 }

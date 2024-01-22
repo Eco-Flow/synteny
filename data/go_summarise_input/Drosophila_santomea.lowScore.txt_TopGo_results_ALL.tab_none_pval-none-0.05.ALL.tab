@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0098852	lytic vacuole membrane	2.72
+CC	GO:0005765	lysosomal membrane	2.72
+CC	GO:0005892	acetylcholine-gated channel complex	2.86
+CC	GO:0031514	motile cilium	2.91
+CC	GO:0030286	dynein complex	3.07
+CC	GO:0097729	9+2 motile cilium	3.60
+CC	GO:0005868	cytoplasmic dynein complex	3.64
+CC	GO:0036126	sperm flagellum	3.70
+CC	GO:0044309	neuron spine	5.10
+CC	GO:0043197	dendritic spine	5.10
+BLANK			
+MF	GO:0008307	structural constituent of muscle	2.59
+MF	GO:0005261	monoatomic cation channel activity	2.70
+MF	GO:0008332	low voltage-gated calcium channel activi...	2.75
+MF	GO:0022848	acetylcholine-gated monoatomic cation-se...	2.81
+MF	GO:0042165	neurotransmitter binding	2.95
+MF	GO:0042166	acetylcholine binding	3.12
+MF	GO:0005509	calcium ion binding	3.48
+MF	GO:0045504	dynein heavy chain binding	4.09
+MF	GO:0045503	dynein light chain binding	4.28
+MF	GO:0034452	dynactin binding	4.62
+BLANK			
+BP	GO:0035610	protein side chain deglutamylation	4.02
+BP	GO:0035608	protein deglutamylation	4.02
+BP	GO:1903083	protein localization to condensed chromo...	4.06
+BP	GO:0071459	protein localization to chromosome, cent...	4.06
+BP	GO:0034501	protein localization to kinetochore	4.06
+BP	GO:0023052	signaling	4.15
+BP	GO:0008344	adult locomotory behavior	4.22
+BP	GO:0071689	muscle thin filament assembly	4.28
+BP	GO:0048646	anatomical structure formation involved ...	4.70
+BP	GO:0007632	visual behavior	5.36

@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0005635	nuclear envelope	1.92
+CC	GO:0016020	membrane	2.04
+CC	GO:0002116	semaphorin receptor complex	2.08
+CC	GO:0098595	perivitelline space	2.16
+CC	GO:0043005	neuron projection	2.16
+CC	GO:0048786	presynaptic active zone	2.62
+CC	GO:0031965	nuclear membrane	2.80
+CC	GO:0036477	somatodendritic compartment	3.00
+CC	GO:0044309	neuron spine	3.06
+CC	GO:0043197	dendritic spine	3.06
+BLANK			
+MF	GO:0008331	high voltage-gated calcium channel activ...	2.20
+MF	GO:0008332	low voltage-gated calcium channel activi...	2.25
+MF	GO:0034452	dynactin binding	2.32
+MF	GO:0022839	monoatomic ion gated channel activity	2.41
+MF	GO:0022836	gated channel activity	2.41
+MF	GO:0005509	calcium ion binding	2.65
+MF	GO:0005227	calcium activated cation channel activit...	2.72
+MF	GO:0015269	calcium-activated potassium channel acti...	2.95
+MF	GO:0009881	photoreceptor activity	3.47
+MF	GO:0016286	small conductance calcium-activated pota...	4.59
+BLANK			
+BP	GO:0045921	positive regulation of exocytosis	3.16
+BP	GO:0034110	regulation of homotypic cell-cell adhesi...	3.16
+BP	GO:0034116	positive regulation of heterotypic cell-...	3.29
+BP	GO:0034114	regulation of heterotypic cell-cell adhe...	3.29
+BP	GO:0034113	heterotypic cell-cell adhesion	3.29
+BP	GO:0007632	visual behavior	3.35
+BP	GO:0031638	zymogen activation	3.44
+BP	GO:1903307	positive regulation of regulated secreto...	3.85
+BP	GO:0045956	positive regulation of calcium ion-depen...	4.17
+BP	GO:0016057	regulation of membrane potential in phot...	5.33

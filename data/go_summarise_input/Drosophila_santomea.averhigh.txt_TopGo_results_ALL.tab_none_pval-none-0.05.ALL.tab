@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0005921	gap junction	6.43
+CC	GO:0005918	septate junction	6.77
+CC	GO:0016327	apicolateral plasma membrane	7.09
+CC	GO:0016328	lateral plasma membrane	7.19
+CC	GO:0070160	tight junction	8.03
+CC	GO:0061176	type Ib terminal bouton	10.52
+CC	GO:0005920	smooth septate junction	11.62
+CC	GO:0061689	tricellular tight junction	16.40
+CC	GO:0099634	postsynaptic specialization membrane	17.04
+CC	GO:0098839	postsynaptic density membrane	17.48
+BLANK			
+MF	GO:0016899	oxidoreductase activity, acting on the C...	4.72
+MF	GO:0004709	MAP kinase kinase kinase activity	5.09
+MF	GO:0005248	voltage-gated sodium channel activity	5.40
+MF	GO:0022829	wide pore channel activity	5.57
+MF	GO:0047875	ecdysone oxidase activity	6.10
+MF	GO:0005243	gap junction channel activity	6.46
+MF	GO:0019205	nucleobase-containing compound kinase ac...	11.06
+MF	GO:0016776	phosphotransferase activity, phosphate g...	12.12
+MF	GO:0050145	nucleoside monophosphate kinase activity	13.57
+MF	GO:0004385	guanylate kinase activity	18.43
+BLANK			
+BP	GO:0009167	purine ribonucleoside monophosphate meta...	12.24
+BP	GO:0009126	purine nucleoside monophosphate metaboli...	12.24
+BP	GO:0009132	nucleoside diphosphate metabolic process	14.05
+BP	GO:0052128	positive energy taxis	15.51
+BP	GO:0046956	positive phototaxis	15.51
+BP	GO:0009185	ribonucleoside diphosphate metabolic pro...	15.68
+BP	GO:0009179	purine ribonucleoside diphosphate metabo...	16.96
+BP	GO:0009135	purine nucleoside diphosphate metabolic ...	16.96
+BP	GO:0046710	GDP metabolic process	18.43
+BP	GO:0046037	GMP metabolic process	18.85

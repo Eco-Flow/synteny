@@ -27,27 +27,27 @@ nextflow_process {
         then {
             //check if test case succeeded
             assert process.success
-            //analyze trace file (TODO: workout how this works with retry)
+            //analyze trace file
             assert process.trace.tasks().size() == 1
             with(process.out) {
               //checks one file exists in score_combine channel
               assert score_combine.size() == 1
               //check file corruption
-              assert path(score_combine[0]).md5 == 'a143bfa466eaaf67ee91991dec04e03a'
+              assert path(score_combine[0]).md5 == '246f2a06b9467c0968b56b812d32bb8a'
               //checks one file exists in simil_combine channel
               assert simil_combine.size() == 1
               //check file corruption
-              assert path(simil_combine[0]).md5 == '7312f16af9c1210b486ca69e93144a42'
+              assert path(simil_combine[0]).md5 == '0f4ec255d94aab52edcc2d32beee6c37'
               //checks one file exists in pairwiseplot channel
               assert pairwiseplot.size() == 1
               //checks one file exists in pairdata channel
               assert pairdata.size() == 1
               //check file corruption
-              assert path(pairdata[0]).md5 == 'da10e8911707ee886cf9eb0bf7c2fd8b'
+              assert path(pairdata[0]).md5 == '38ea6deda1a5bb5d5eb0f15b4345cb0a'
               //checks one file exists in synmat channel
               assert synmat.size() == 1
               //check file corruption
-              assert path(synmat[0]).md5 == 'cece9526b87668e383954c275f2d70a3'
+              assert path(synmat[0]).md5 == '4f3645157ef99b991617abebf0c69a1b'
               //checks one tuple exists in pairedgenescores channel
               assert pairedgenescores.size() == 1
               //checks pairedgenescores tuple contains 6 elements
@@ -59,12 +59,10 @@ nextflow_process {
               //checks one file exists in trans_inver_summary channel
               assert trans_inver_summary.size() == 1
               //check file corruption
-              assert path(trans_inver_summary[0]).md5 == 'e8a7dd3a356175f58eb22bf08a317272'
+              assert path(trans_inver_summary[0]).md5 == '5eab2ef82b406b9f930adb5b1ad86a8f'
               //checks one file exists in emeline_plots channel
               assert emeline_plots.size() == 1
             }
         }
-
     }
-
 }

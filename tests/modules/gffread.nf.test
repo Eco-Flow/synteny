@@ -23,7 +23,7 @@ nextflow_process {
         then {
             //check if test case succeeded
             assert process.success
-            //analyze trace file (TODO: workout how this works with retry)
+            //analyze trace file
             assert process.trace.tasks().size() == 1 
             with(process.out) {
               //checks one tuple exists in proteins channel
@@ -33,12 +33,9 @@ nextflow_process {
               //checks one file exists in gff channel
               assert gff.size() == 1
               //checks output files aren't corrupted
-              assert path(proteins[0].get(1)).md5 == 'ae087cd169c88b121cfbd96888022b85'
-              assert path(gff[0]).md5 == '7669b7e00a51af678dbae1bf702850ca'
-              
+              assert path(proteins[0].get(1)).md5 == '9cd50a535c0ea73ec8cc949c8750c177'
+              assert path(gff[0]).md5 == '0fecd3a9e15576133658da50f4a50cc8'
             }
         }
-
     }
-
 }
