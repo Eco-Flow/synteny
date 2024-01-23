@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process DOWNLOAD_NCBI"
-    script "modules/download_ncbi.nf"
+    script "modules/local/download_ncbi.nf"
     process "DOWNLOAD_NCBI"
 
     test("Should run without failures") {

@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process SCORE"
-    script "modules/score.nf"
+    script "modules/local/score.nf"
     process "SCORE"
 
     test("Should run without failures") {

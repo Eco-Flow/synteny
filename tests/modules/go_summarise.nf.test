@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process GO_SUMMARISE"
-    script "modules/go_summarise.nf"
+    script "modules/local/go_summarise.nf"
     process "GO_SUMMARISE"
 
     test("Should run without failures") {

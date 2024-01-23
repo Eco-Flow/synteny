@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process GFFREAD"
-    script "modules/gffread.nf"
+    script "modules/local/gffread.nf"
     process "GFFREAD"
 
     test("Should run without failures") {

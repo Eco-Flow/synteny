@@ -43,15 +43,16 @@ def errorMessage() {
     exit 1
 }
 
-include { GFFREAD } from './modules/gffread.nf'
-include { JCVI } from './modules/jcvi.nf'
-include { SYNTENY } from './modules/synteny.nf'
-include { DOWNLOAD_NCBI } from './modules/download_ncbi.nf'
-include { CHROMOPAINT } from './modules/chromo.nf'
-include { SCORE } from './modules/score.nf'
-include { GO } from './modules/go.nf'
-include { SCORE_TREE } from './modules/score_tree.nf'
-include { GO_SUMMARISE } from './modules/go_summarise.nf'
+include { DOWNLOAD_NCBI } from './modules/local/download_ncbi.nf'
+include { GFFREAD } from './modules/local/gffread.nf'
+include { JCVI } from './modules/local/jcvi.nf'
+include { SYNTENY } from './modules/local/synteny.nf'
+include { CHROMOPAINT } from './modules/local/chromo.nf'
+include { SCORE } from './modules/local/score.nf'
+include { SCORE_TREE } from './modules/local/score_tree.nf'
+include { GO } from './modules/local/go.nf'
+include { GO_SUMMARISE } from './modules/local/go_summarise.nf'
+include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 
 Channel
     .fromPath(params.hex)
@@ -75,7 +76,17 @@ workflow {
     //Ensures absolute paths are used if user inputs fasta and gff files
     input_type.local.map{ name, fasta , gff -> full_fasta = new File(fasta).getAbsolutePath(); full_gff = new File(gff).getAbsolutePath(); [name, full_fasta, full_gff] }.set{ local_full_tuple }
 
-    GFFREAD ( DOWNLOAD_NCBI.out.genome.mix(local_full_tuple) )
+    //Split channel into 2, keep tuple the same for gffread and take just sample id and fasta for fastavalidator
+    DOWNLOAD_NCBI.out.genome.mix(local_full_tuple)
+         .multiMap { it ->
+             gffread: it
+             fastqc: [[ id: it[0]], it[1]]
+          }
+          .set { fasta_inputs }
+
+    FASTAVALIDATOR(fasta_inputs.fastqc)
+
+    GFFREAD ( fasta_inputs.gffread )
 
     JCVI ( GFFREAD.out.proteins )
 
@@ -87,6 +98,7 @@ workflow {
 
     //Combine hex path with each tuple of species and anchor files for parallelisation of process
     in_hex.combine(labelled_anchors).set{ hex_labelled_anchors }
+
     CHROMOPAINT ( hex_labelled_anchors, JCVI.out.beds.collect() )
 
     if (params.tree) {

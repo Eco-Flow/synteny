@@ -1,0 +1,20 @@
+{
+  "name": "",
+  "homePage": "",
+  "repos": {
+    "https://github.com/nf-core/modules.git": {
+      "modules": {
+        "nf-core": {
+          "fastavalidator": {
+            "branch": "master",
+            "git_sha": "89ff95427f695086369d7927a3c17cea2a37a382",
+            "installed_by": ["modules"]
+          }
+        }
+      },
+      "subworkflows": {
+        "nf-core": {}
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process JCVI"
-    script "modules/jcvi.nf"
+    script "modules/local/jcvi.nf"
     process "JCVI"
 
     test("Should run without failures") {
