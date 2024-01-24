@@ -53,6 +53,7 @@ include { SCORE_TREE } from './modules/local/score_tree.nf'
 include { GO } from './modules/local/go.nf'
 include { GO_SUMMARISE } from './modules/local/go_summarise.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
+include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
 
 Channel
     .fromPath(params.hex)
@@ -80,16 +81,21 @@ workflow {
     DOWNLOAD_NCBI.out.genome.mix(local_full_tuple)
          .multiMap { it ->
              gffread: it
-             fastqc: [[ id: it[0]], it[1]]
+             tuple: [[ id: it[0]], it[1]]
           }
           .set { fasta_inputs }
 
-    FASTAVALIDATOR(fasta_inputs.fastqc)
+    FASTAVALIDATOR ( fasta_inputs.tuple )
     
-    //Manipulate successful and error logs of fasta validator into being save in results
+    //Manipulate successful and error logs of fasta validator to be saved into output directory
     FASTAVALIDATOR.out.success_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/fasta_validator/successful" )
     FASTAVALIDATOR.out.error_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/fasta_validator/error" )
-    
+
+    SEQKIT_STATS( fasta_inputs.tuple )
+
+    //Manipulate eqkit_stats tsv to be saved into output directory
+    SEQKIT_STATS.out.stats.map{ speciesname, tsv -> [ speciesname.id, tsv ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/seqkit_stats" )
+ 
     GFFREAD ( fasta_inputs.gffread )
 
     JCVI ( GFFREAD.out.proteins )
