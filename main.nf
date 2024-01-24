@@ -85,7 +85,11 @@ workflow {
           .set { fasta_inputs }
 
     FASTAVALIDATOR(fasta_inputs.fastqc)
-
+    
+    //Manipulate successful and error logs of fasta validator into being save in results
+    FASTAVALIDATOR.out.success_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/fasta_validator/successful" )
+    FASTAVALIDATOR.out.error_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/fasta_validator/error" )
+    
     GFFREAD ( fasta_inputs.gffread )
 
     JCVI ( GFFREAD.out.proteins )
