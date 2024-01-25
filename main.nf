@@ -140,7 +140,7 @@ workflow {
         GO ( go_and_summary, JCVI.out.beds.collect() )
 	ch_versions = ch_versions.mix(GO.out.versions.first())
         GO_SUMMARISE ( GO.out.go_table.collect() )
-	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions.first())
+	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
