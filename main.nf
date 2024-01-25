@@ -112,7 +112,7 @@ workflow {
     //Do a pairwise combination of each species' JCVI output but filter out combinations of the same species
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
     ch_versions = ch_versions.mix(SYNTENY.out.versions.first())
-/*
+
     //Use name of anchors file to identify the 2 species involved and create a tuple with these species as strings
     SYNTENY.out.anchors.map{ it -> def(sample1, sample2) = it.baseName.toString().split("\\."); [sample1, sample2, it] }.set{ labelled_anchors }
 
@@ -142,7 +142,7 @@ workflow {
         GO_SUMMARISE ( GO.out.go_table.collect() )
 	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions.first())
     }
-*/
+
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.collectFile(name: 'collated_versions.yml')
     )
