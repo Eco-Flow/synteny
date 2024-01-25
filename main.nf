@@ -77,7 +77,7 @@ workflow {
         .set { input_type }
 
     DOWNLOAD_NCBI ( input_type.ncbi )
-    ch_versions = ch_versions.mix(DOWNLOAD_NCBI.out.versions)
+    ch_versions = ch_versions.mix(DOWNLOAD_NCBI.out.versions.first())
 
     //Ensures absolute paths are used if user inputs fasta and gff files
     input_type.local.map{ name, fasta , gff -> full_fasta = new File(fasta).getAbsolutePath(); full_gff = new File(gff).getAbsolutePath(); [name, full_fasta, full_gff] }.set{ local_full_tuple }
@@ -91,28 +91,28 @@ workflow {
           .set { fasta_inputs }
 
     FASTAVALIDATOR ( fasta_inputs.tuple )
-    ch_versions = ch_versions.mix(FASTAVALIDATOR.out.versions)    
+    ch_versions = ch_versions.mix(FASTAVALIDATOR.out.versions.first())
 
     //Manipulate successful and error logs of fasta validator to be saved into output directory
     FASTAVALIDATOR.out.success_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/fasta_validator/successful" )
     FASTAVALIDATOR.out.error_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/fasta_validator/error" )
 
     SEQKIT_STATS( fasta_inputs.tuple )
-    ch_versions = ch_versions.mix(SEQKIT_STATS.out.versions)
+    ch_versions = ch_versions.mix(SEQKIT_STATS.out.versions.first())
 
     //Manipulate eqkit_stats tsv to be saved into output directory
     SEQKIT_STATS.out.stats.map{ speciesname, tsv -> [ speciesname.id, tsv ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/seqkit_stats" )
  
     GFFREAD ( fasta_inputs.gffread )
-    ch_versions = ch_versions.mix(GFFREAD.out.versions)
+    ch_versions = ch_versions.mix(GFFREAD.out.versions.first())
 
     JCVI ( GFFREAD.out.proteins )
-    ch_versions = ch_versions.mix(JCVI.out.versions)
+    ch_versions = ch_versions.mix(JCVI.out.versions.first())
 
     //Do a pairwise combination of each species' JCVI output but filter out combinations of the same species
     SYNTENY ( JCVI.out.new_format.combine(JCVI.out.new_format).filter{ it[0] != it[3] } )
-    ch_versions = ch_versions.mix(SYNTENY.out.versions)
-
+    ch_versions = ch_versions.mix(SYNTENY.out.versions.first())
+/*
     //Use name of anchors file to identify the 2 species involved and create a tuple with these species as strings
     SYNTENY.out.anchors.map{ it -> def(sample1, sample2) = it.baseName.toString().split("\\."); [sample1, sample2, it] }.set{ labelled_anchors }
 
@@ -120,7 +120,7 @@ workflow {
     in_hex.combine(labelled_anchors).set{ hex_labelled_anchors }
 
     CHROMOPAINT ( hex_labelled_anchors, JCVI.out.beds.collect() )
-    ch_versions = ch_versions.mix(CHROMOPAINT.out.versions)
+    ch_versions = ch_versions.mix(CHROMOPAINT.out.versions.first())
 
     if (params.tree) {
         tree_in = Channel.fromPath(params.tree)
@@ -138,13 +138,13 @@ workflow {
         //creating 3 instances of a channel with the GO hash files and species summary files 
         go_folder.combine(species_summary.flatten()).set{ go_and_summary }
         GO ( go_and_summary, JCVI.out.beds.collect() )
-	ch_versions = ch_versions.mix(GO.out.versions)
+	ch_versions = ch_versions.mix(GO.out.versions.first())
         GO_SUMMARISE ( GO.out.go_table.collect() )
-	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
+	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions.first())
     }
-
+*/
     CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+        ch_versions.collectFile(name: 'collated_versions.yml')
     )
 
 }

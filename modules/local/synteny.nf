@@ -37,7 +37,7 @@ process SYNTENY {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Python version: \$(python --version  | sed 's/[^0-9]*//')
-        Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
+        JCVI \$(pip show jcvi | grep "Version:")
     END_VERSIONS
     """
 }
