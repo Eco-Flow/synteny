@@ -20,7 +20,7 @@ process GO_SUMMARISE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        \$(R --version | grep "R version" | sed 's/[(].*//')
+        R version: \$(R --version | grep "R version" | sed 's/[(].*//' | sed 's/ //g' | sed 's/[^0-9]*//')
         GO version: \$(Rscript -e "as.data.frame(installed.packages())[ ,c(1,3)]" | grep topGO | sed 's/[^0-9]*//')
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
     END_VERSIONS
