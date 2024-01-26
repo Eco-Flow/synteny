@@ -55,6 +55,7 @@ include { GO_SUMMARISE } from './modules/local/go_summarise.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftwareversions'
+include { validateParameters; paramsHelp; paramsSummaryLog; fromSamplesheet } from 'plugin/nf-validation'
 
 Channel
     .fromPath(params.hex)
@@ -62,6 +63,18 @@ Channel
 
 workflow {
 
+    // Print help message, supply typical command line usage for the pipeline
+    if (params.help) {
+       log.info paramsHelp("nextflow run main.nf -profile docker,local -resume --input /path/to/input/csv")
+       exit 0
+    }
+
+    // Validate input parameters
+    validateParameters()
+
+    // Print summary of supplied parameters
+    log.info paramsSummaryLog(workflow)
+    
     //Make a channel for version outputs:
     ch_versions = Channel.empty()
 

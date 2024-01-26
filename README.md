@@ -40,6 +40,7 @@ This csv can take 2 forms:
 * `--tree /path/to/tree/file` - A path to a file containing a phylogenetic tree for all species in Newick format i.e. `data/score_tree_input/tree.txt`.
 * `--clean` - A true or false value assigned to this parameter will determine whether the work directory is automatically deleted or not if the pipeline is successful. Deleting the work directory saves space however it will not be possible to use this work directory in future for caching (**Default:** `true`).
 * `--architecture` - An `amd` or `arm` value assigned to this parameter determines whether containers built for the amd or arm CPU architecture are used (**Default:** `amd`).
+* `--help` - A true value assinged to this parameter will cause the help message to be displayed instead of pipeline running (**Default:** `false`).
 
 ## Profiles
 
