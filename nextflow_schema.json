@@ -101,6 +101,10 @@
           "type": "string",
           "default": "amd",
           "description": "Specify CPU architecture for containers."
+        },
+        "custom_config": {
+          "type": "string",
+          "description": "A path to a custom configuration file."
         }
       }
     }

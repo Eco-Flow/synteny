@@ -76,7 +76,7 @@ If you want to run this pipeline on your institute's on-premise HPC or specific 
 `nextflow run main.nf -profile singularity,local -resume --input data/Example-local.csv --clean false --architecture arm --go data/go_input/hash_files --tree data/score_tree_input/tree.txt`
 
 * Running the pipeline with a custom config file:
-`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv -c /path/to/custom/config`
+`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv --custom_config /path/to/custom/config`
 
 ## Results
 
