@@ -1,5 +1,5 @@
 # import data
-Bee_inver_trans_prot <- read.delim("Trans_location_version.out.txt", stringsAsFactors=FALSE)
+Bee_inver_trans_prot <- read.delim("filec", stringsAsFactors=FALSE)
 
 #Import tree:
 ordern2<-read.csv("species_order", h=F)
@@ -60,3 +60,29 @@ ggplot(Bee_inver_trans_prot, aes(Trans_mimimum_count, Inversion_estimate)) +
         legend.title = element_text(size = 8)) 
 ggsave(filename = "translocationVSinversion-all_treesort.pdf", width= 8, height=8 , device = "pdf")
 
+
+
+# plot 4: Inversion_junctions versus Inversion_estimate
+ggplot(Bee_inver_trans_prot, aes(perc_identity, Inversion_junctions)) +    
+  geom_star(aes(fill = factor(FirstSpecies,  levels = my_species_order )    ), size=2, starshape=19) +
+  geom_star(aes(fill = SecondSpecies), size=2, starshape=20) +
+  scale_shape_manual(values = c(1:length(species_vec)))+
+  ggtitle("Percent identity and Inversion junction count") + 
+  theme_classic() + 
+  theme(legend.text = 
+          element_text(size = 8),
+        legend.title = element_text(size = 8)) 
+ggsave(filename = "percentidentityVSinversion_junction-all.pdf", width= 8, height=8 , device = "pdf")
+
+
+# plot 5: Trans_mimimum_count versus Inversion_estimate
+ggplot(Bee_inver_trans_prot, aes(perc_identity, Translocation_junctions)) +    
+  geom_star(aes(fill = factor(FirstSpecies,  levels = my_species_order )    ), size=2, starshape=19) +
+  geom_star(aes(fill = SecondSpecies), size=2, starshape=20) +
+  scale_shape_manual(values = c(1:length(species_vec)))+
+  ggtitle("Percent identity and Translocation junction count") +  
+  theme_classic() + 
+  theme(legend.text = 
+          element_text(size = 8),
+        legend.title = element_text(size = 8)) 
+ggsave(filename = "percentidentityVStranslocation_junction-all.pdf", width= 8, height=8 , device = "pdf")

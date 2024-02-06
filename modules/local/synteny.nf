@@ -13,7 +13,7 @@ process SYNTENY {
     tuple val(sample_id), path(fasta), path(gff), val(sample_id2), path(fasta2), path(gff2)
 
     output:
-    path("${sample_id}.${sample_id2}.anchors"), emit: anchors
+    path("${sample_id}.${sample_id2}.lifted.anchors"), emit: anchors
     tuple path("${sample_id}.${sample_id2}.pdf"), path("${sample_id}.${sample_id2}.depth.pdf"), path("${sample_id}.${sample_id2}.karyotype.pdf"), emit: pdf
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
     path("${sample_id}.${sample_id2}.last.filtered"), emit: last
@@ -21,23 +21,33 @@ process SYNTENY {
 
     script:
     """
+    #main code block
     python -m jcvi.compara.catalog ortholog ${sample_id} ${sample_id2} --no_strip_names
     python -m jcvi.compara.synteny depth --histogram ${sample_id}.${sample_id2}.anchors
     cut -f 3 ${sample_id}.${sample_id2}.last.filtered  | awk '{ sum += \$1; n++ } END { if (n > 0) print sum / n; }' > ${sample_id}.${sample_id2}.percent.similarity
     python -m jcvi.compara.synteny screen --minspan=30 --simple ${sample_id}.${sample_id2}.anchors ${sample_id}.${sample_id2}.anchors.new
+    
+
+    #Echo a layout format based on the input file name
     echo "# y, xstart, xend, rotation, color, label, va,  bed" > layout
     echo ".6,     .1,    .8,       0,      , ${sample_id}, top, ${sample_id}.bed" >> layout
     echo ".4,     .1,    .8,       0,      , ${sample_id2}, top, ${sample_id2}.bed" >> layout
     echo "# edges" >> layout
     echo "e, 0, 1, ${sample_id}.${sample_id2}.anchors.simple" >> layout
+    
+
     syntenous_chromosomes.pl ${sample_id}.bed ${sample_id2}.bed ${sample_id}.${sample_id2}.anchors.new
     python -m jcvi.graphics.karyotype seqids_karyotype.txt layout
     mv karyotype.pdf ${sample_id}.${sample_id2}.karyotype.pdf
 
+
+
+    #md5 sums for unit testing
     md5sum "${sample_id}.${sample_id2}.anchors" > "${sample_id}.${sample_id2}.anchors.md5"
     md5sum "${sample_id}.${sample_id2}.percent.similarity" > "${sample_id}.${sample_id2}.percent.similarity.md5"
     md5sum "${sample_id}.${sample_id2}.last.filtered" > "${sample_id}.${sample_id2}.last.filtered.md5"
 
+    #Versions print to file
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Python version: \$(python --version  | sed 's/[^0-9]*//')

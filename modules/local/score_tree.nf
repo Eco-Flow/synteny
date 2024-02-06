@@ -16,7 +16,10 @@ process SCORE_TREE {
     path(anchors)
     path(simularity)
     path(gffs)
+    path(beds)
+    path(last)
     path(tree)
+
 
     output:
     path("My_scores.tsv"), emit: score_combine
@@ -60,6 +63,12 @@ process SCORE_TREE {
     Trans_location_Inversion_score_treeSort.pl
 
     Rscript "${projectDir}/bin/plotting-inversions-treeSort.R" > R_output.txt
+
+    #Refined junction scores:
+    Best_synteny_classifier_v6.pl
+    Best_synteny_classifier_v6.classify.pl
+
+    #Rscript "${projectDir}/bin/plotting-junctions.R" > R_output.txt
 
     md5sum My_scores.tsv > My_scores.tsv.md5
     md5sum My_sim_cores.tsv > My_sim_cores.tsv.md5

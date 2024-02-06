@@ -16,6 +16,8 @@ process SCORE {
     path(anchors)
     path(simularity)
     path(gffs)
+    path(beds)
+    path(last)
 
     output:
     path("My_scores.tsv"), emit: score_combine
@@ -52,6 +54,16 @@ process SCORE {
 
     Trans_location_Inversion_score.pl
 
+    
+
+    #Refined junction scores:
+    Best_synteny_classifier_v6.pl
+    Best_synteny_classifier_v6.classify.pl
+
+    #Merge the two outputs
+    paste -d'\t' Trans_location_version.out.txt Trans_Inversion_junction_count.txt > filec
+
+    #Plot percent protein identity versus scores
     Rscript "${projectDir}/bin/plotting-inversions.R" > R_output.txt
 
     md5sum My_scores.tsv > My_scores.tsv.md5

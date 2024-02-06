@@ -137,11 +137,11 @@ workflow {
 
     if (params.tree) {
         tree_in = Channel.fromPath(params.tree)
-        SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), tree_in )
+        SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), tree_in )
         ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
     }
     else {
-        SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect() )
+        SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
 	ch_versions = ch_versions.mix(SCORE.out.versions)
     }
     if (params.go) {
