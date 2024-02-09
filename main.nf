@@ -58,7 +58,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftw
 include { validateParameters; paramsHelp; paramsSummaryLog; fromSamplesheet } from 'plugin/nf-validation'
 include { SCORE_PLOTS } from './modules/local/plot_score.nf'
 include { SCORE_TREE_PLOTS } from './modules/local/plot_tree.nf'
-include { TEMP_R_PLOTS } from './modules/local/go_summarise_r.nf'
+include { SUMMARISE_PLOTS } from './modules/local/summarise_plots.nf'
 
 Channel
     .fromPath(params.hex)
@@ -159,7 +159,7 @@ workflow {
 	ch_versions = ch_versions.mix(GO.out.versions.first())
         GO_SUMMARISE ( GO.out.go_table.collect() )
 	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
-        TEMP_R_PLOTS(GO_SUMMARISE.out.go_summary_table)
+        SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

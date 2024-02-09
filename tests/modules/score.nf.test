@@ -19,6 +19,9 @@ nextflow_process {
                 input[1] = Channel.fromPath( "${projectDir}/data/score_input/*.percent.similarity").collect()
                 Channel.fromPath( "${projectDir}/data/jcvi_input/Drosophila_yakuba.gff_for_jvci.gff3.gz").set{ gff_ch }
                 input[2] = Channel.fromPath( "${projectDir}/data/score_input/*.gff_for_jvci.gff3.gz").collect().combine(gff_ch)
+                Channel.fromPath ( "${projectDir}/data/go_input/Drosophila_yakuba.bed").set { bed_ch }
+                input[3] = Channel.fromPath( "${projectDir}/data/synteny_input/*.bed").collect().combine(bed_ch)
+                input[4] = Channel.fromPath( "${projectDir}/data/score_input/*.last.filtered").collect()
                 """
             }
         }
@@ -59,8 +62,6 @@ nextflow_process {
               assert trans_inver_summary.size() == 1
               //check file corruption
               assert path(trans_inver_summary[0]).md5 == '5eab2ef82b406b9f930adb5b1ad86a8f'
-              //checks one file exists in emeline_plots channel
-              assert emeline_plots.size() == 1
             }
         }
     }

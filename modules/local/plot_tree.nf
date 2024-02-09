@@ -1,7 +1,7 @@
 process SCORE_TREE_PLOTS {
 
     label 'process_single'
-    tag "$sample_id"
+    tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"*-all.pdf"
 
