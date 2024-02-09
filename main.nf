@@ -56,6 +56,9 @@ include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftwareversions'
 include { validateParameters; paramsHelp; paramsSummaryLog; fromSamplesheet } from 'plugin/nf-validation'
+include { SCORE_PLOTS } from './modules/local/plot_score.nf'
+include { SCORE_TREE_PLOTS } from './modules/local/plot_tree.nf'
+include { TEMP_R_PLOTS } from './modules/local/go_summarise_r.nf'
 
 Channel
     .fromPath(params.hex)
@@ -139,10 +142,12 @@ workflow {
         tree_in = Channel.fromPath(params.tree)
         SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), tree_in )
         ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
+        SCORE_TREE_PLOTS(SCORE_TREE.out.filec, SCORE_TREE.out.species_order)
     }
     else {
         SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
 	ch_versions = ch_versions.mix(SCORE.out.versions)
+        SCORE_PLOTS(SCORE.out.filec)
     }
     if (params.go) {
         go_folder = Channel.fromPath(params.go)
@@ -154,6 +159,7 @@ workflow {
 	ch_versions = ch_versions.mix(GO.out.versions.first())
         GO_SUMMARISE ( GO.out.go_table.collect() )
 	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
+        TEMP_R_PLOTS(GO_SUMMARISE.out.go_summary_table)
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

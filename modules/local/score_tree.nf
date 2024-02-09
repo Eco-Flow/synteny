@@ -2,7 +2,7 @@ process SCORE_TREE {
 
     label 'process_low'
     tag "All genes"
-    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
     publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
@@ -30,7 +30,8 @@ process SCORE_TREE {
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
-    path("*-all_treesort.pdf"), emit:emeline_plots
+    path("filec"), emit: filec
+    path("species_order"), emit: species_order
     path "versions.yml", emit: versions
 
     script:
@@ -62,13 +63,11 @@ process SCORE_TREE {
 
     Trans_location_Inversion_score_treeSort.pl
 
-    Rscript "${projectDir}/bin/plotting-inversions-treeSort.R" > R_output.txt
-
     #Refined junction scores:
     Best_synteny_classifier_v6.pl
     Best_synteny_classifier_v6.classify.pl
 
-    #Rscript "${projectDir}/bin/plotting-junctions.R" > R_output.txt
+    paste -d'\t' Trans_location_version.out.txt Trans_Inversion_junction_count.txt > filec
 
     md5sum My_scores.tsv > My_scores.tsv.md5
     md5sum My_sim_cores.tsv > My_sim_cores.tsv.md5
