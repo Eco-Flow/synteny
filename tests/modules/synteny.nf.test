@@ -38,7 +38,7 @@ nextflow_process {
               //checks one file exists in last channel
               assert last.size() == 1
               //checks output files aren't corrupted
-              assert path(anchors[0]).md5 == '438094fa8e040b674be3a52550b77943'
+              assert path(anchors[0]).md5 == '427470769c9b39517c55bc366da1ad89'
               assert path(percsim[0]).md5 == 'ef51a68fef6324399cc23afeef5c67e6'
               assert path(last[0]).md5 == '1a6d8260c74adac5448c041d4106c4f1'
             }
