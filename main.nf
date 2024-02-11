@@ -88,15 +88,15 @@ workflow {
         .splitCsv()
         .branch {
             ncbi: it.size() == 2
-            local: it.size() == 3
+            path: it.size() == 3
         }
         .set { input_type }
 
     DOWNLOAD_NCBI ( input_type.ncbi )
     ch_versions = ch_versions.mix(DOWNLOAD_NCBI.out.versions.first())
 
-    //Ensures absolute paths are used if user inputs fasta and gff files
-    input_type.local.map{ name, fasta , gff -> full_fasta = new File(fasta).getAbsolutePath(); full_gff = new File(gff).getAbsolutePath(); [name, full_fasta, full_gff] }.set{ local_full_tuple }
+    //Checks if paths are S3 objects if not ensures absolute paths are used for user inputted fasta and gff files
+    input_type.path.map{ name, fasta , gff -> if (fasta =~ /^s3:\/\//) { full_fasta = fasta } else { full_fasta = new File(fasta).getAbsolutePath()}; if (gff =~ /^s3:\/\//) { full_gff = gff } else { full_gff = new File(gff).getAbsolutePath()}; [name, full_fasta, full_gff] }.set{ local_full_tuple }
 
     //Split channel into 2, keep tuple the same for gffread and take just sample id and fasta for fastavalidator
     DOWNLOAD_NCBI.out.genome.mix(local_full_tuple)
@@ -105,7 +105,6 @@ workflow {
              tuple: [[ id: it[0]], it[1]]
           }
           .set { fasta_inputs }
-
     FASTAVALIDATOR ( fasta_inputs.tuple )
     ch_versions = ch_versions.mix(FASTAVALIDATOR.out.versions.first())
 
