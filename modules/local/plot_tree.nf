@@ -12,7 +12,6 @@ process SCORE_TREE_PLOTS {
     output:
     path("*-all.pdf")
 
-    shell:
     '''
     #!/usr/bin/Rscript
     # import data

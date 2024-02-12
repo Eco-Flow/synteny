@@ -10,6 +10,7 @@ process SUMMARISE_PLOTS {
 
    output:
    path( "*.pdf" ), emit: go_summary_pdf
+
    '''
    #!/usr/bin/Rscript
    library(pheatmap)
