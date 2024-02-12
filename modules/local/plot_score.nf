@@ -8,6 +8,10 @@ process SCORE_PLOTS {
     input:
     path(filec), stageAs: "filec"
 
+    output:
+    path("*-all.pdf")
+
+    shell:
     '''
     #!/usr/bin/Rscript
     Bee_inver_trans_prot <- read.delim("filec", stringsAsFactors=FALSE)

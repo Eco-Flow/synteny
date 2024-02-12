@@ -9,6 +9,10 @@ process SCORE_TREE_PLOTS {
     path(trans_inver_summary), stageAs: "filec"
     path(species_order), stageAs: "species_order"
 
+    output:
+    path("*-all.pdf")
+
+    shell:
     '''
     #!/usr/bin/Rscript
     # import data
