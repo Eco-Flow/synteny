@@ -6,6 +6,7 @@ on:
 env:
   NEXTFLOW_VERSION: 23.10.1
   NF_TEST_VERSION: 0.8.3
+  AWS_CLI_VERSION: 2.15.19
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_PUBLIC_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
   AWS_DEFAULT_REGION: 'us-east-1'
@@ -35,7 +36,7 @@ jobs:
       run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
 
     - name: Install aws cli
-      run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"; unzip awscliv2.zip; sudo ./aws/install
+      run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-${AWS_CLI_VERSION}.zip" -o "awscliv2.zip"; unzip awscliv2.zip; sudo ./aws/install --update
 
     - name: Add software to path
       run: echo "/opt" >> $GITHUB_PATH;
