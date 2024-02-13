@@ -6,6 +6,9 @@ on:
 env:
   NEXTFLOW_VERSION: 23.10.1
   NF_TEST_VERSION: 0.8.3
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_PUBLIC_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+  AWS_DEFAULT_REGION: 'us-east-1'
 
 jobs:
 
@@ -31,6 +34,9 @@ jobs:
     - name: Install nf-test
       run: sudo bash; cd /opt; wget "https://github.com/askimed/nf-test/releases/download/v${NF_TEST_VERSION}/nf-test-${NF_TEST_VERSION}.tar.gz"; tar -xvf "nf-test-${NF_TEST_VERSION}.tar.gz"; chmod +x nf-test; rm "/opt/nf-test-${NF_TEST_VERSION}.tar.gz"
 
+    - name: Install aws cli
+      run: curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"; unzip awscliv2.zip; sudo ./aws/install
+
     - name: Add software to path
       run: echo "/opt" >> $GITHUB_PATH;
 
@@ -43,8 +49,8 @@ jobs:
     - name: Run jcvi test
       run: nf-test test tests/modules/jcvi.nf.test
 
-    - name: download synteny test cds files
-      run: cd data/synteny_input; wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1-sgGEBdkcDiw2XHwuapH53HCdzeil-F1' -O Drosophila_santomea.cds; wget --no-check-certificate 'https://docs.google.com/uc?export=download&id='1Sc8rD8ioxBJPIxZoCPkY_IkCBX1L_LwL -O Drosophila_simulans.cds 
+    - name: Download synteny module test cds files
+      run:  aws s3 cp s3://synteny-test-data/data/synteny_input/Drosophila_santomea.cds data/synteny_input/Drosophila_santomea.cds; aws s3 cp s3://synteny-test-data/data/synteny_input/Drosophila_simulans.cds data/synteny_input/Drosophila_simulans.cds
 
     - name: Run synteny test
       run: nf-test test tests/modules/synteny.nf.test
