@@ -3,8 +3,6 @@ Results
 Go
 .nextflow*
 .DS_Store
-.nf-test
-.nf-test.log
-test-results
+.nf-test*
 nextflow
 nf-test
