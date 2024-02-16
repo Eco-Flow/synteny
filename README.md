@@ -41,6 +41,7 @@ This csv can take 2 forms:
 * `--clean` - A true or false value assigned to this parameter will determine whether the work directory is automatically deleted or not if the pipeline is successful. Deleting the work directory saves space however it will not be possible to use this work directory in future for caching (**Default:** `true`).
 * `--architecture` - An `amd` or `arm` value assigned to this parameter determines whether containers built for the amd or arm CPU architecture are used (**Default:** `amd`).
 * `--help` - A true value assinged to this parameter will cause the help message to be displayed instead of pipeline running (**Default:** `false`).
+* `--custom_config` - A path or URL to a custom configuration file.
 
 ## Profiles
 
@@ -52,10 +53,12 @@ Please select one of the following profiles when running the pipeline.
 
 * `docker` - This profile uses the container software Docker when running the pipeline. This container software requires root permissions so is used when running on cloud infrastructure or your local machine (depending on permissions). **Please Note:** You must have Docker installed to use this profile.
 * `singularity` - This profile uses the container software Singularity when running the pipeline. This container software does not require root permissions so is used when running on on-premise HPCs or you local machine (depending on permissions). **Please Note:** You must have Singularity installed to use this profile.
+* `apptainer` - This profile uses the container software Apptainer when running the pipeline. This container software does not require root permissions so is used when running on on-premise HPCs or you local machine (depending on permissions). **Please Note:** You must have Apptainer installed to use this profile.
 
 ### Optional Profiles
 
 * `local` - This profile is used if you are running the pipeline on your local machine.
+* `aws_batch` - This profile is used if you are running the pipeline on AWS utilising the AWS Batch functionality. **Please Note:** You must use the `Docker` profile with with AWS Batch.
 * `test` - This profile is used if you want to test running the pipeline on your infrastructure. **Please Note:** You do not provide any input parameters if this profile is selected but you still provide a container profile.
 
 ## Custom Configuration
@@ -73,10 +76,10 @@ If you want to run this pipeline on your institute's on-premise HPC or specific 
 `nextflow run main.nf -profile singularity,test`
 
 * Running the pipeline with all parameters:
-`nextflow run main.nf -profile singularity,local -resume --input data/Example-local.csv --clean false --architecture arm --go data/go_input/hash_files --tree data/score_tree_input/tree.txt`
+`nextflow run main.nf -profile apptainer,local -resume --input data/Example-local.csv --clean false --architecture arm --go data/go_input/hash_files --tree data/score_tree_input/tree.txt`
 
 * Running the pipeline with a custom config file:
-`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv --custom_config /path/to/custom/config`
+`nextflow run main.nf -profile docker,aws_batch -resume --input data/Example-accession.csv --custom_config /path/to/custom/config`
 
 ## Results
 
@@ -104,4 +107,4 @@ If you need any support do not hesitate to contact us at any of:
 
 `c.wyatt [at] ucl.ac.uk` 
 
-`ecoflowucl [at] gmail.com`
+`ecoflow.ucl [at] gmail.com`
