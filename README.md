@@ -1,6 +1,30 @@
-# nf-synteny 
+# nf-synteny
+
+A simple pipeline to run macro/micro synteny analyses. 
+
+Synteny is the study of chromosome arrangement and gene order. Over evolutionary time, two species diverge from the state of the common ancestor, due to a variety of structural changes. These include:
+"indels", insertions and deletions of genes, 
+"inversions", where segments of the genome are rearranged in the reverse order, 
+"translocations", where regions of other chromosomes are moved to another chromosome,
+"fusions", where two chromosomes fuse together
+"fissions", where a chromosome breaks into typically two pieces
+"duplications", where genes replicate themselves, often due to unequal crossing over, replication errors and Transposable elements.
+
+The pipeline takes a plain text file as input, with information about the species you wish to compare and its RefSeq ID. Then it will run a series of programs to help understand the syntenic changes that have occured between all pairwise input species.
+
+The main pipeline logic is as follows:
+Download-> Extract Sequences -> Reformat for MSCanX -> Find orthologous genes (Last, within JCVI program)-> Find syntenous regions (MSCanX, within JCVI program)-> Plot figures and Create output tables.
+
+## nf-synteny tutorials
+
+We have a few short tutorials to help you test and explore the pipeline:
+
+1. Running a basic pipeline run ([click here](https://github.com/Eco-Flow/synteny/docs/Gitpod_tutorial.md))
+2. Running with gene ontology (In development)
 
 ## Installation
+
+
 
 ### Prerequistites
 
@@ -31,6 +55,20 @@ This csv can take 2 forms:
 * A 3 field csv where each row is a unique species name, followed by an absolute path to a genome fasta file, followed by an absolute path to an annotation gff3 (or gff augustus) file i.e. `data/Example-local.csv`.
 
 **Please Note:** The genome has to be chromosome level not contig level.
+
+2 field:
+```
+Drosophila_yakuba,GCF_016746365.2
+Drosophila_simulans,GCF_016746395.2
+Drosophila_santomea,GCF_016746245.2
+```
+
+3 field:
+```
+Drosophila_yakuba,data/Drosophila_yakuba/genome.fna.gz,data/Drosophila_yakuba/genomic.gff.gz
+Drosophila_simulans,data/Drosophila_simulans/genome.fna.gz,data/Drosophila_simulans/genomic.gff.gz
+Drosophila_santomea,data/Drosophila_santomea/genome.fna.gz,data/Drosophila_santomea/genomic.gff.gz
+```
 
 ### Optional 
 
@@ -83,13 +121,31 @@ If you want to run this pipeline on your institute's on-premise HPC or specific 
 
 ## Results
 
-Once completed, your output directory should have a folder called Jcvi_results, in which there should be a:
+Once completed, your output directory should be called `Results`, unless you specified another name:
 
-1. Dot plot (<Species1><Species2>.pdf). Showing the chromosome synteny as a dot plot.
-2. Chromosome synteny plot (<Species1><Species2>.macro.pdf). Showing a 1 to 1 chromosome mapping with lines drawn between syntenic chromosomes.
-3. Depth plot (<Species1><Species2>.depth.pdf). Number of 1to1 or 1toMany orthologs detected.
-4. Chromosome painted mappings (). Showing on graphic chromosomes, which sections are syntenic between two species.
-5. Anchors. (<Species1><Species2>.anchors). This shows the syntenic blocks, gene by gene.
+Subdirectories:
+
+*/Figures*
+1. *Karyotype_plots*. Karyotype plots of each pairwise comparison.(<Species1><Species2>.karyotype.pdf). Showing a 1 to 1 chromosome mapping with lines drawn between syntenic chromosomes.
+2. *Dotplot*. (<Species1><Species2>.pdf). Showing the chromosome synteny as a dot plot.
+3. *Depth plot*. (<Species1><Species2>.depth.pdf). Percentage of genome that correspond to non-orthlogous (0), 1to1 or 1toMany orthologs detected.
+4. *Painted_chromosomes*. (<Species1><Species2>.chromo.pdf).Showing on graphic chromosomes, which sections are syntenic between two species in colours.
+
+*/Data*
+1. *Gffread*. Species gene fasta files (<Species>.nucl.fa), plus reformatted gff files (<Species>.gff_for_jvci.gff3).
+2. *Anchors*. (<Species1><Species2>.anchors). Anchor files documenting the MSCanX genes in syntenic blocks. Using the lifted function from JCVI.
+3. *Last*. Filtered last results for each pairwise run. Filtered using default settings from JCVI.
+
+*/Tables*
+1. *Trans_Inversion_junction_merged.txt*. A summary of the types of syntenic break between sets of anchors.
+2. *Paired_anchor_change_junction_prediction*. A folder with each pairwise analysis of junction changes between syntenic blocks.
+3. My_scores.tsv. A table (pairwise) of number of syntenic gene pairs, as well as the max and average syntenic block length (in numbers of genes)
+4. Synteny_matrix.tsv. A Matrix of syntenic gene pair totals (pairwise).
+5. Trans_location_version.out.txt. A Table of scores (pairwise), documenting numbers of scaffolds, syntenic block, genes, as well as a variety of scores.
+6. Synt_gene_scores. A folder with pairwise gene scores. Scores are based on the distance to nearest syntenic break. Where '1' means a gene in on the edge of a sytenic block. 
+7. My_sim_cores.tsv. A Matrix containing nucleotide percentage similarities.
+8. My_comp_synteny_similarity.tsv. A Matrix containing pairwise nucleotide percentages and total number of syntenic genes.
+
 
 All of the pipeline run information can be found inside `pipeline_info`.
 
@@ -97,7 +153,11 @@ The CO2 emissions of your pipeline can be found inside `co2_emissions`.
 
 ## Citation
 
-Please cite : "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science".
+This pipeline is not yet published. If you use this pipeline for your research please cite the main tool set we use (JCVI):
+
+"Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science".
+
+Ensure you record the *release* of the pipeline that you ran. 
 
 ## Contact Us
 

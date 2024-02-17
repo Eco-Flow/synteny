@@ -3,6 +3,7 @@ process GO_SUMMARISE {
     label 'process_single'
     tag "summary of go s"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+    publishDir "$params.outdir/Data/GO_results" , mode: "copy", pattern:"*.tsv"
 
     input:
     path(go)

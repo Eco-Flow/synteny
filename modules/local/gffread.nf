@@ -3,7 +3,7 @@ process GFFREAD {
     label 'process_single'
     tag "$sample_id"
     container = 'ecoflowucl/gffread_python:python-3.10_Linux_x86_64'
-    publishDir "$params.outdir/Gffread_results" , mode: "copy"
+    publishDir "$params.outdir/Data/Gffread" , mode: "copy"
 
     input:
     tuple val(sample_id), path(fasta), path(gff)

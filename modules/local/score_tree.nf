@@ -3,14 +3,14 @@ process SCORE_TREE {
     label 'process_low'
     tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_pair_synteny_identity.pdf"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Synteny_matrix.tsv"
-    publishDir "$params.outdir/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Trans_location_version.out.txt"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"*-all_treesort.pdf"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"My_scores.tsv"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"My_sim_cores.tsv"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
+    publishDir "$params.outdir/Figures/Synteny_comparisons" , mode: "copy", pattern:"My_pair_synteny_identity.pdf"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"Synteny_matrix.tsv"
+    publishDir "$params.outdir/Tables/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"Trans_location_version.out.txt"
+    publishDir "$params.outdir/Figures/Synteny_comparisons" , mode: "copy", pattern:"*-all_treesort.pdf"
 
     input:
     path(anchors)

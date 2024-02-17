@@ -3,14 +3,16 @@ process SCORE {
     label 'process_low'
     tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38' 
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_scores.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_sim_cores.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"My_pair_synteny_identity.pdf"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Synteny_matrix.tsv"
-    publishDir "$params.outdir/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"Trans_location_version.out.txt"
-    publishDir "$params.outdir/Summary" , mode: "copy", pattern:"*-all.pdf"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"My_scores.tsv"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"My_sim_cores.tsv"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"My_comp_synteny_similarity.tsv"
+    publishDir "$params.outdir/Figures/Synteny_comparisons" , mode: "copy", pattern:"My_pair_synteny_identity.pdf"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"Synteny_matrix.tsv"
+    publishDir "$params.outdir/Tables/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"Trans_location_version.out.txt"
+    publishDir "$params.outdir/Figures/Synteny_comparisons" , mode: "copy", pattern:"*-all.pdf"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"Trans_Inversion_junction_merged.txt"
+    publishDir "$params.outdir/Tables/Paired_anchor_change_junction_prediction" , mode: "copy", pattern:"*Classification_summary.tsv"
 
     input:
     path(anchors)
@@ -28,7 +30,7 @@ process SCORE {
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
-    path("filec"), emit: filec
+    path("Trans_Inversion_junction_merged.txt"), emit: filec
     path "versions.yml", emit: versions
 
     script:
@@ -59,7 +61,7 @@ process SCORE {
     Best_synteny_classifier_v6.classify.pl
 
     #Merge the two outputs
-    paste -d'\t' Trans_location_version.out.txt Trans_Inversion_junction_count.txt > filec
+    paste -d'\t' Trans_location_version.out.txt Trans_Inversion_junction_count.txt > Trans_Inversion_junction_merged.txt
 
     md5sum My_scores.tsv > My_scores.tsv.md5
     md5sum My_sim_cores.tsv > My_sim_cores.tsv.md5

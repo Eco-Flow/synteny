@@ -2,11 +2,11 @@ process SYNTENY {
 
     label 'process_single'
     tag "${sample_id}_VS_${sample_id2}"
-    publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.anchors"
-    publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.pdf"
-    publishDir "$params.outdir/Jcvi_results" , mode: "copy", pattern: "*.percent.similarity"
-    publishDir "$params.outdir/Karyotype_results" , mode: "copy", pattern: "*.karyotype.pdf"
-    publishDir "$params.outdir/Last" , mode: "copy", pattern: "*last.filtered"
+    publishDir "$params.outdir/Data/Anchors" , mode: "copy", pattern: "*.anchors"
+    publishDir "$params.outdir/Figures/Dotplots" , mode: "copy", pattern: "*dotplot.pdf"
+    publishDir "$params.outdir/Figures/Depth_plots" , mode: "copy", pattern: "*depth.pdf"
+    publishDir "$params.outdir/Figures/Karyotype_plots" , mode: "copy", pattern: "*.karyotype.pdf"
+    publishDir "$params.outdir/Data/Last" , mode: "copy", pattern: "*last.filtered"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 
     input:
@@ -14,7 +14,7 @@ process SYNTENY {
 
     output:
     path("${sample_id}.${sample_id2}.lifted.anchors"), emit: anchors
-    tuple path("${sample_id}.${sample_id2}.pdf"), path("${sample_id}.${sample_id2}.depth.pdf"), path("${sample_id}.${sample_id2}.karyotype.pdf"), emit: pdf
+    tuple path("${sample_id}.${sample_id2}.dotplot.pdf"), path("${sample_id}.${sample_id2}.depth.pdf"), path("${sample_id}.${sample_id2}.karyotype.pdf"), emit: pdf
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
     path("${sample_id}.${sample_id2}.last.filtered"), emit: last
     path "versions.yml", emit: versions
@@ -39,7 +39,7 @@ process SYNTENY {
     syntenous_chromosomes.pl ${sample_id}.bed ${sample_id2}.bed ${sample_id}.${sample_id2}.anchors.new
     python -m jcvi.graphics.karyotype seqids_karyotype.txt layout
     mv karyotype.pdf ${sample_id}.${sample_id2}.karyotype.pdf
-
+    mv ${sample_id}.${sample_id2}.pdf ${sample_id}.${sample_id2}.dotplot.pdf
 
 
     #md5 sums for unit testing
