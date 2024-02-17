@@ -3,28 +3,28 @@
 A simple pipeline to run macro/micro synteny analyses. 
 
 Synteny is the study of chromosome arrangement and gene order. Over evolutionary time, two species diverge from the state of the common ancestor, due to a variety of structural changes. These include:
-"indels", insertions and deletions of genes, 
-"inversions", where segments of the genome are rearranged in the reverse order, 
-"translocations", where regions of other chromosomes are moved to another chromosome,
-"fusions", where two chromosomes fuse together
-"fissions", where a chromosome breaks into typically two pieces
-"duplications", where genes replicate themselves, often due to unequal crossing over, replication errors and Transposable elements.
+"indels": insertions and deletions of genes, 
+"inversions": where segments of the genome are rearranged in the reverse order, 
+"translocations": where regions of other chromosomes are moved to another chromosome,
+"fusions": where two chromosomes fuse together,
+"fissions": where a chromosome breaks into typically two pieces,
+"duplications": where genes replicate themselves, often due to unequal crossing over, replication errors and Transposable elements.
 
-The pipeline takes a plain text file as input, with information about the species you wish to compare and its RefSeq ID. Then it will run a series of programs to help understand the syntenic changes that have occured between all pairwise input species.
+The pipeline takes a plain text file as input, with information about the species you wish to compare and their RefSeq ID. Then it will run a series of programs to help understand the syntenic changes that have occured between all pairwise input species.
 
 The main pipeline logic is as follows:
-Download-> Extract Sequences -> Reformat for MSCanX -> Find orthologous genes (Last, within JCVI program)-> Find syntenous regions (MSCanX, within JCVI program)-> Plot figures and Create output tables.
+Download genome and gene annotation-> Extract gene fasta sequences -> Reformat input data for MSCanX -> Find orthologous genes (Last, within JCVI program)-> Find syntenous regions (MSCanX, within JCVI program)-> Plot figures and create summary output tables.
 
 ## nf-synteny tutorials
 
 We have a few short tutorials to help you test and explore the pipeline:
 
-1. Running a basic pipeline run ([click here](https://github.com/Eco-Flow/synteny/docs/Gitpod_tutorial.md))
+1. Running a basic pipeline run ([click here](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/Gitpod_tutorial.md))
 2. Running with gene ontology (In development)
 
 ## Installation
 
-
+Nextflow pipelines require a few prerequisites. There is further documentation on the nf-core webpage ([here]https://nf-co.re/docs/usage/installation), about how to install Nextflow.
 
 ### Prerequistites
 
@@ -52,18 +52,18 @@ This will produce a directory in the current directory called `synteny-VERSION` 
 
 This csv can take 2 forms:
 * A 2 field csv where each row is a unique species name followed by a Refseq genome reference ID (**NOT** a Genbank reference ID) i.e. `data/Example-accession.csv`. The pipeline will download the relevant genome fasta file and annotation gff3 (or gff augustus) file.
-* A 3 field csv where each row is a unique species name, followed by an absolute path to a genome fasta file, followed by an absolute path to an annotation gff3 (or gff augustus) file i.e. `data/Example-local.csv`.
+* A 3 field csv where each row is a unique species name, followed by an absolute path to a genome fasta file, followed by an absolute path to an annotation gff3 (or gff augustus) file i.e. `data/Example-local.csv`. Input can be gzipped (.gz) or not.
 
 **Please Note:** The genome has to be chromosome level not contig level.
 
-2 field:
+2 fields (Name,Refseq_ID):
 ```
 Drosophila_yakuba,GCF_016746365.2
 Drosophila_simulans,GCF_016746395.2
 Drosophila_santomea,GCF_016746245.2
 ```
 
-3 field:
+3 fields (Name,genome.fna,annotation.gff):
 ```
 Drosophila_yakuba,data/Drosophila_yakuba/genome.fna.gz,data/Drosophila_yakuba/genomic.gff.gz
 Drosophila_simulans,data/Drosophila_simulans/genome.fna.gz,data/Drosophila_simulans/genomic.gff.gz
