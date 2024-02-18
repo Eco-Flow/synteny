@@ -11,6 +11,8 @@ process SCORE_TREE {
     publishDir "$params.outdir/Tables/Synt_gene_scores" , mode: "copy", pattern:"*geneScore.tsv"
     publishDir "$params.outdir/Tables" , mode: "copy", pattern:"Trans_location_version.out.txt"
     publishDir "$params.outdir/Figures/Synteny_comparisons" , mode: "copy", pattern:"*-all_treesort.pdf"
+    publishDir "$params.outdir/Tables" , mode: "copy", pattern:"Trans_Inversion_junction_merged.txt"
+    publishDir "$params.outdir/Tables/Paired_anchor_change_junction_prediction" , mode: "copy", pattern:"*Classification_summary.tsv"
 
     input:
     path(anchors)
@@ -32,6 +34,7 @@ process SCORE_TREE {
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
     path("filec"), emit: filec
     path("species_order"), emit: species_order
+    path("*Classification_summary.tsv"), emit:classifications
     path "versions.yml", emit: versions
 
     script:

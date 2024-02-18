@@ -31,6 +31,7 @@ process SCORE {
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Trans_location_version.out.txt"), emit:trans_inver_summary
     path("Trans_Inversion_junction_merged.txt"), emit: filec
+    path("*Classification_summary.tsv"), emit:classifications
     path "versions.yml", emit: versions
 
     script:
