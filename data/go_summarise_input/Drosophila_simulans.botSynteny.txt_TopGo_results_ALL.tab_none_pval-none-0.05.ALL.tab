@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0042600	egg chorion	5.92
+CC	GO:0034706	sodium channel complex	6.42
+CC	GO:0001518	voltage-gated sodium channel complex	6.42
+CC	GO:0005921	gap junction	6.52
+CC	GO:0005964	phosphorylase kinase complex	7.80
+CC	GO:0061176	type Ib terminal bouton	7.82
+CC	GO:0005920	smooth septate junction	9.66
+CC	GO:0061689	tricellular tight junction	12.10
+CC	GO:0098839	postsynaptic density membrane	15.31
+CC	GO:0099634	postsynaptic specialization membrane	15.77
+BLANK			
+MF	GO:0022829	wide pore channel activity	5.66
+MF	GO:0005248	voltage-gated sodium channel activity	5.82
+MF	GO:0045504	dynein heavy chain binding	6.40
+MF	GO:0005243	gap junction channel activity	6.54
+MF	GO:0045503	dynein light chain binding	6.85
+MF	GO:0034452	dynactin binding	7.66
+MF	GO:0019205	nucleobase-containing compound kinase ac...	9.77
+MF	GO:0016776	phosphotransferase activity, phosphate g...	10.00
+MF	GO:0050145	nucleoside monophosphate kinase activity	11.96
+MF	GO:0004385	guanylate kinase activity	15.00
+BLANK			
+BP	GO:0009126	purine nucleoside monophosphate metaboli...	11.26
+BP	GO:0045197	establishment or maintenance of epitheli...	12.04
+BP	GO:0009132	nucleoside diphosphate metabolic process	12.20
+BP	GO:0009185	ribonucleoside diphosphate metabolic pro...	13.62
+BP	GO:0052128	positive energy taxis	13.89
+BP	GO:0046956	positive phototaxis	13.89
+BP	GO:0009179	purine ribonucleoside diphosphate metabo...	14.42
+BP	GO:0009135	purine nucleoside diphosphate metabolic ...	14.42
+BP	GO:0046710	GDP metabolic process	15.00
+BP	GO:0046037	GMP metabolic process	15.48

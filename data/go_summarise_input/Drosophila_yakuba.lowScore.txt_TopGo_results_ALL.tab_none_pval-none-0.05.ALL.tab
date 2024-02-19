@@ -1,35 +1,35 @@
 TYPE	GO	TERM	LogP-none
 BLANK			
 BLANK			
-CC	GO:0005773	vacuole	2.97
-CC	GO:0005635	nuclear envelope	3.04
-CC	GO:0106094	nuclear membrane microtubule tethering c...	3.05
-CC	GO:0034993	meiotic nuclear membrane microtubule tet...	3.05
-CC	GO:0034992	microtubule organizing center attachment...	3.05
-CC	GO:0097361	CIA complex	3.09
-CC	GO:0035301	Hedgehog signaling complex	3.41
-CC	GO:0098852	lytic vacuole membrane	3.60
-CC	GO:0005765	lysosomal membrane	3.60
-CC	GO:0031965	nuclear membrane	3.77
+CC	GO:0005868	cytoplasmic dynein complex	3.15
+CC	GO:0036126	sperm flagellum	3.17
+CC	GO:0099080	supramolecular complex	5.43
+CC	GO:0043292	contractile fiber	6.38
+CC	GO:0030016	myofibril	6.44
+CC	GO:0030017	sarcomere	6.48
+CC	GO:0099081	supramolecular polymer	6.72
+CC	GO:0099512	supramolecular fiber	6.77
+CC	GO:0031674	I band	7.92
+CC	GO:0030018	Z disc	8.02
 BLANK			
-MF	GO:0005042	netrin receptor activity	3.43
-MF	GO:0001002	RNA polymerase III type 1 promoter seque...	3.43
-MF	GO:0045503	dynein light chain binding	3.43
-MF	GO:0003823	antigen binding	3.47
-MF	GO:0034452	dynactin binding	3.77
-MF	GO:0000994	RNA polymerase III core binding	3.96
-MF	GO:0019207	kinase regulator activity	4.52
-MF	GO:0019887	protein kinase regulator activity	4.70
-MF	GO:0019900	kinase binding	5.89
-MF	GO:0019901	protein kinase binding	6.51
+MF	GO:0045504	dynein heavy chain binding	3.44
+MF	GO:0045503	dynein light chain binding	3.55
+MF	GO:0000977	RNA polymerase II transcription regulato...	3.68
+MF	GO:0009881	photoreceptor activity	3.74
+MF	GO:0000981	DNA-binding transcription factor activit...	3.77
+MF	GO:0005516	calmodulin binding	3.80
+MF	GO:0034452	dynactin binding	3.82
+MF	GO:0004674	protein serine/threonine kinase activity	4.14
+MF	GO:0008307	structural constituent of muscle	4.64
+MF	GO:0016286	small conductance calcium-activated pota...	4.66
 BLANK			
-BP	GO:0034093	positive regulation of maintenance of si...	3.66
-BP	GO:0034091	regulation of maintenance of sister chro...	3.66
-BP	GO:0071168	protein localization to chromatin	3.92
-BP	GO:1905634	regulation of protein localization to ch...	4.44
-BP	GO:0007063	regulation of sister chromatid cohesion	4.44
-BP	GO:0034088	maintenance of mitotic sister chromatid ...	4.92
-BP	GO:0034086	maintenance of sister chromatid cohesion	4.92
-BP	GO:0007064	mitotic sister chromatid cohesion	5.52
-BP	GO:0120187	positive regulation of protein localizat...	5.66
-BP	GO:0034502	protein localization to chromosome	6.29
+BP	GO:0042682	regulation of compound eye cone cell fat...	4.66
+BP	GO:0042679	compound eye cone cell fate specificatio...	4.66
+BP	GO:0007015	actin filament organization	4.85
+BP	GO:0071689	muscle thin filament assembly	5.41
+BP	GO:0018210	peptidyl-threonine modification	5.46
+BP	GO:0018107	peptidyl-threonine phosphorylation	5.52
+BP	GO:0018209	peptidyl-serine modification	6.28
+BP	GO:0018105	peptidyl-serine phosphorylation	6.30
+BP	GO:0032231	regulation of actin filament bundle asse...	6.41
+BP	GO:0032233	positive regulation of actin filament bu...	7.12

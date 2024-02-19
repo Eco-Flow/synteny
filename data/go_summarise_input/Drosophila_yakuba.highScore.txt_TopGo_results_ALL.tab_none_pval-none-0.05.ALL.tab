@@ -1,35 +1,35 @@
 TYPE	GO	TERM	LogP-none
 BLANK			
 BLANK			
-CC	GO:0005576	extracellular region	9.80
-CC	GO:0005730	nucleolus	10.07
-CC	GO:0005762	mitochondrial large ribosomal subunit	10.09
-CC	GO:0000315	organellar large ribosomal subunit	10.09
-CC	GO:0015934	large ribosomal subunit	10.51
-CC	GO:0098798	mitochondrial protein-containing complex	10.72
-CC	GO:0030684	preribosome	12.05
-CC	GO:0044391	ribosomal subunit	15.55
-CC	GO:0005840	ribosome	16.13
-CC	GO:0005739	mitochondrion	16.72
+CC	GO:0005918	septate junction	5.64
+CC	GO:0071212	subsynaptic reticulum	5.77
+CC	GO:0070160	tight junction	5.77
+CC	GO:0042600	egg chorion	6.28
+CC	GO:0016328	lateral plasma membrane	6.82
+CC	GO:0061176	type Ib terminal bouton	9.89
+CC	GO:0005920	smooth septate junction	10.54
+CC	GO:0061689	tricellular tight junction	13.48
+CC	GO:0099634	postsynaptic specialization membrane	15.68
+CC	GO:0098839	postsynaptic density membrane	16.44
 BLANK			
-MF	GO:0004175	endopeptidase activity	9.37
-MF	GO:0004497	monooxygenase activity	9.46
-MF	GO:0004252	serine-type endopeptidase activity	9.89
-MF	GO:0016491	oxidoreductase activity	10.31
-MF	GO:0005214	structural constituent of chitin-based c...	10.32
-MF	GO:0008233	peptidase activity	10.68
-MF	GO:0140640	catalytic activity, acting on a nucleic ...	10.89
-MF	GO:0042302	structural constituent of cuticle	10.92
-MF	GO:0003824	catalytic activity	15.18
-MF	GO:0003735	structural constituent of ribosome	15.44
+MF	GO:0016899	oxidoreductase activity, acting on the C...	4.89
+MF	GO:0004709	MAP kinase kinase kinase activity	5.03
+MF	GO:0004180	carboxypeptidase activity	6.10
+MF	GO:0047875	ecdysone oxidase activity	6.25
+MF	GO:0003824	catalytic activity	6.26
+MF	GO:0004181	metallocarboxypeptidase activity	6.77
+MF	GO:0019205	nucleobase-containing compound kinase ac...	9.82
+MF	GO:0016776	phosphotransferase activity, phosphate g...	11.36
+MF	GO:0050145	nucleoside monophosphate kinase activity	11.92
+MF	GO:0004385	guanylate kinase activity	15.37
 BLANK			
-BP	GO:0006508	proteolysis	14.08
-BP	GO:0071704	organic substance metabolic process	14.17
-BP	GO:0044238	primary metabolic process	14.54
-BP	GO:0034470	ncRNA processing	15.92
-BP	GO:0008152	metabolic process	16.09
-BP	GO:0006364	rRNA processing	16.17
-BP	GO:0016072	rRNA metabolic process	16.72
-BP	GO:0022613	ribonucleoprotein complex biogenesis	17.82
-BP	GO:0034660	ncRNA metabolic process	18.43
-BP	GO:0042254	ribosome biogenesis	23.96
+BP	GO:0009167	purine ribonucleoside monophosphate meta...	12.02
+BP	GO:0009126	purine nucleoside monophosphate metaboli...	12.02
+BP	GO:0009132	nucleoside diphosphate metabolic process	12.17
+BP	GO:0009185	ribonucleoside diphosphate metabolic pro...	13.52
+BP	GO:0009179	purine ribonucleoside diphosphate metabo...	14.28
+BP	GO:0009135	purine nucleoside diphosphate metabolic ...	14.28
+BP	GO:0052128	positive energy taxis	15.29
+BP	GO:0046956	positive phototaxis	15.29
+BP	GO:0046710	GDP metabolic process	15.42
+BP	GO:0046037	GMP metabolic process	15.92

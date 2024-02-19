@@ -1,142 +1,167 @@
-# nf-synteny 
+# nf-synteny
 
-Nextflow pipeline to run Synteny analysis using JCVI
+A simple pipeline to run a macro synteny analysis.
 
-Please cite : "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science",
-if you use this Nextflow wrapper of JCVI MCSxanX software.
+Synteny is the study of chromosome arrangement and gene order. Over evolutionary time, two species diverge from the state of the common ancestor, due to a variety of structural changes. These include indels, inversions, translocations, fusions and fissions. This pipeline aims to produce common synteny plots, as well as tables documenting the types of syntenic changes.
 
-# General information
+The pipeline takes a csv (comma separated value) file as input, which contains the species you wish to compare followed by their RefSeq ID. Genomes must be chromosome level assemblies, with a maximum of 50 chromosomes/scaffolds. 
 
-This is a developmental Nextflow workflow running JCVI, to look at gene synteny with chromosome level assemblies (less than 40 chromosomes or scaffolds ideally- for better visualisation). We will paint chromosomes from one species to another, translate scaffolds between species, and produce dot plots and basic statistics.
+The main pipeline logic is as follows:
 
-All you need is either a genome in fasta format with an annotation file in gff3 (or gff augustus). 
-**OR** you can supply a Refseq genome reference ID (which will be automatically downloaded; e.g. GCF_000001215.4).
-Do not submit a Genbank reference ID, as these will not work.
+![image info](./docs/img/pipeline.png)
 
-There is one main branch.
-'main': which can run 2 or more samples against eachother pairwise, producing dotplots and chromosome plots, along with species wise statistics and gene statistics.
+* Downloads the genome and gene annotation files `[DOWNLOAD]`.
+* Extract gene fasta sequences `[GFFREAD]`.
+* Finds orthologous genes using last `[JCVI]`.
+* Find syntenic block using MCScanX `[SYNTENY]`.
+* Plot figures and create summary output tables `[PLOT_SCORE]`, `[PLOT_TREE]` and `[SUMMARISE_PLOTS]`.
 
-To run on different platforms, you may need to create a profile. We recommend using the prebuilt Docker and local profiles (to run locally or through Gitpod), though if you are running on a HPC, you will need to change this. Please open an issue and I can help create a profile for your environment. Use the flag `-profile` to choose the environment in the script command. These are found in the folder `conf`.
+## Tutorial
 
-# Run with Gitpod (recommended)
+We have a short [tutorial](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/Gitpod_tutorial.md) to help you test and explore the pipeline.
 
-Prerequistites : 
-- A browser (Ideally, Chrome or Firefox \[tested\]).
-- Github account.
+## Installation
 
-Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`.
+Nextflow pipelines require a few prerequisites. There is further documentation on the nf-core webpage [here](https://nf-co.re/docs/usage/installation), about how to install Nextflow.
 
-The simplest way to run the pipeline is to use Gitpod. This is a free (up to 50 hours a month) cloud environment, which has been loaded with all the tools you need.
+### Prerequisites
 
-Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-nextflow
+- [Docker](https://docs.docker.com/engine/install/) or [Singularity](https://docs.sylabs.io/guides/3.11/admin-guide/installation.html).
+- [Java](https://www.java.com/en/download/help/download_options.html) and [openJDK](https://openjdk.org/install/) >= 8 (**Please Note:** When installing Java versions are `1.VERSION` so `Java 8` is `Java 1.8`).
+- [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html) >= `v23.07.0`.
 
-Then login in to Github, which will open up an environment to run the code, using the same command listed above (nextflow...).
+### Install
 
-The example run is below (using three public Drosophila genomes):
+To install the pipeline please use the following commands but replace VERSION with a [release](https://github.com/Eco-Flow/synteny/releases).
 
-`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
+`wget https://github.com/Eco-Flow/synteny/archive/refs/tags/VERSION.tar.gz -O - | tar -xvf -`
 
-# Run locally
+or
 
-Prerequistites : 
-- Docker. Make sure it is active log in on your machine.
-- Java at least 1.8.
-- Nextflow installed (https://www.nextflow.io/; v22 and above [DSL2].)
-- Git.
+`curl -L https://github.com/Eco-Flow/synteny/archive/refs/tags/VERSION.tar.gz --output - | tar -xvf -`
 
-To clone the repo: `git clone https://github.com/Eco-Flow/synteny.git`
+This will produce a directory in the current directory called `synteny-VERSION` which contains the pipeline.
 
-Then `cd` into the repository on your machine.
+## Inputs
 
-To run Nextflow (locally with docker installed), use the following command:
+### Required
 
-`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
+* `--input /path/to/csv/file` - A singular csv file as input in one of the two formats stated below.
 
-## Architecture
-If you are running on a Mac or any arm64 architecture then please add the flag:
-`--architecture arm`
+This csv can take 2 forms:
+* A 2 field csv where each row is a unique species name followed by a Refseq genome reference ID (**NOT** a Genbank reference ID) i.e. `data/Example-accession.csv`. The pipeline will download the relevant genome fasta file and annotation gff3 (or gff augustus) file.
+* A 3 field csv where each row is a unique species name, followed by an absolute path to a genome fasta file, followed by an absolute path to an annotation gff3 (or gff augustus) file i.e. `data/Example-local.csv`. Input can be gzipped (.gz) or not.
 
-Notice, we use one `-` for Nextflow options, and two `--` for pipeline options.
+**Please Note:** The genome has to be chromosome level not contig level.
 
-# Changing the input 
-
-Our example input template looks like this (data/Example-accession.csv):
-
+2 fields (Name,Refseq_ID):
 ```
 Drosophila_yakuba,GCF_016746365.2
 Drosophila_simulans,GCF_016746395.2
 Drosophila_santomea,GCF_016746245.2
 ```
 
-You can also run your own genomes through this program (or mixed with NCBI ones), using the following format (data/Example-local.csv):
-
+3 fields (Name,genome.fna,annotation.gff):
 ```
 Drosophila_yakuba,data/Drosophila_yakuba/genome.fna.gz,data/Drosophila_yakuba/genomic.gff.gz
 Drosophila_simulans,data/Drosophila_simulans/genome.fna.gz,data/Drosophila_simulans/genomic.gff.gz
 Drosophila_santomea,data/Drosophila_santomea/genome.fna.gz,data/Drosophila_santomea/genomic.gff.gz
 ```
 
-The example  data was downloaded from the following NCBI FTP locations:
-```
-https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/365/GCF_016746365.2_Prin_Dyak_Tai18E2_2.1
-https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/395/GCF_016746395.2_Prin_Dsim_3.1
-https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/245/GCF_016746245.2_Prin_Dsan_1.1
-```
+### Optional 
 
-Where NCBI input has two comma separated columns and your own data has three coloumns (Name, Genome.fasta and GFF file). To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified (or mix and match them). 
+* `--outdir /path/to/output/directory` - A path to the output directory where the results will be written to (**Default:** `Results`).
+* `--hex /path/to/hex/file` - A path to a file containing a singular, unique hex code on each line to be used when painting chromosomes (**Default:** `data/unique_hex`).
+* `--go /path/to/directory/containing/species/hash/files` - A path to a directory containing a hash file for each species in the analysis i.e. `data/go_input/hash_files`. These hash files can be generated by running the [Goatee](https://github.com/chriswyatt1/Goatee) pipeline.
+* `--tree /path/to/tree/file` - A path to a file containing a phylogenetic tree for all species in Newick format i.e. `data/score_tree_input/tree.txt`.
+* `--clean` - A true or false value assigned to this parameter will determine whether the work directory is automatically deleted or not if the pipeline is successful. Deleting the work directory saves space however it will not be possible to use this work directory in future for caching (**Default:** `true`).
+* `--architecture` - An `amd` or `arm` value assigned to this parameter determines whether containers built for the amd or arm CPU architecture are used (**Default:** `amd`).
+* `--help` - A true value assigned to this parameter will cause the help message to be displayed instead of pipeline running (**Default:** `false`).
+* `--custom_config` - A path or URL to a custom configuration file.
 
-# To run with Gene Ontology information:
+## Profiles
 
-You need to provide the transcript Gene Ontology annotations from [chriswyatt1/Goatee](https://github.com/chriswyatt1/Goatee). These should be in the results/Go folder and are the ones labelled *transcript*.
+This pipeline is designed to run in various modes that can be supplied as a comma separated list i.e. `-profile profile1,profile2`.
 
-Copy the *transcript* into a new folder, and then point to them with the flag `--go`.e.g. :
- 
-`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv --go /path/to/go/transcripts/folder`
+### Container Profiles
 
-# Run with Gitpod (for development of the pipeline). *For admins*
+Please select one of the following profiles when running the pipeline.
 
-Prerequistites : 
-- A browser (Ideally, Chrome or Firefox \[tested\]).
-- Github account.
+* `docker` - This profile uses the container software Docker when running the pipeline. This container software requires root permissions so is used when running on cloud infrastructure or your local machine (depending on permissions). **Please Note:** You must have Docker installed to use this profile.
+* `singularity` - This profile uses the container software Singularity when running the pipeline. This container software does not require root permissions so is used when running on on-premise HPCs or you local machine (depending on permissions). **Please Note:** You must have Singularity installed to use this profile.
+* `apptainer` - This profile uses the container software Apptainer when running the pipeline. This container software does not require root permissions so is used when running on on-premise HPCs or you local machine (depending on permissions). **Please Note:** You must have Apptainer installed to use this profile.
 
-Optional: Add a PDF viewer extension in Gitpod. Go to Extensions on left hand side, and install `vscode.pdf`. 
+### Optional Profiles
 
-The simplest way to run the pipeline is to use Gitpod. This is a free (up to 50 hours a month) cloud environment, which has been loaded with all the tools you need.
+* `local` - This profile is used if you are running the pipeline on your local machine.
+* `aws_batch` - This profile is used if you are running the pipeline on AWS utilising the AWS Batch functionality. **Please Note:** You must use the `Docker` profile with with AWS Batch.
+* `test` - This profile is used if you want to test running the pipeline on your infrastructure. **Please Note:** You do not provide any input parameters if this profile is selected but you still provide a container profile.
 
-Simply click this link: https://gitpod.io/#https://github.com/chriswyatt1/jcvi-nextflow
+## Custom Configuration
 
-Then login in to Github, which will open up an environment to run the code, using the same command listed above (nextflow...).
+If you want to run this pipeline on your institute's on-premise HPC or specific cloud infrastructure then please contact us and we will help you build and test a custom config file. This config file will be published to our [configs repository](https://github.com/Eco-Flow/configs). 
 
-To upload data simply drop an drag your files into the explorer on the left hand side. Or use public data as previously specified. The example run is below:
+## Running the Pipeline
 
+**Please note:** The `-resume` flag uses previously cached successful runs of the pipeline.
+
+* Running the pipeline with local and Docker profiles:
 `nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
 
-# Results
+* Running the pipeline with Singularity and test profiles:
+`nextflow run main.nf -profile singularity,test`
 
-Once completed, you should have a folder called Results/Jcvi_results, in which there should be a:
+* Running the pipeline with all parameters:
+`nextflow run main.nf -profile apptainer,local -resume --input data/Example-local.csv --clean false --architecture arm --go data/go_input/hash_files --tree data/score_tree_input/tree.txt`
 
-1. Dot plot (<Species1><Species2>.pdf). Showing the chromosome synteny as a dot plot.
-2. Chromosome synteny plot (<Species1><Species2>.macro.pdf). Showing a 1 to 1 chromosome mapping with lines drawn between syntenic chromosomes.
-3. Depth plot (<Species1><Species2>.depth.pdf). Number of 1to1 or 1toMany orthologs detected.
-4. Chromosome painted mappings (). Showing on graphic chromosomes, which sections are syntenic between two species.
-5. Anchors. (<Species1><Species2>.anchors). This shows the syntenic blocks, gene by gene.
+* Running the pipeline with a custom config file:
+`nextflow run main.nf -profile docker,aws_batch -resume --input data/Example-accession.csv --custom_config /path/to/custom/config`
 
-# Testing scripts in Docker 
+## Results
 
-To try out the individual scripts used in this workflow, check out the various containers used in modules/**.nf.
+Once completed, your output directory should be called `Results`, unless you specified another name:
 
-You can enter containers using the docker run command i.e.:
+Subdirectories:
 
-`docker run -it --rm ecoflowucl/jcvi:python-3.10_last-1522 bash`
+`Figures`
+1. `Karyotype_plots` - Karyotype plots of each pairwise comparison.(<Species1><Species2>.karyotype.pdf). Showing a 1 to 1 chromosome mapping with lines drawn between syntenic chromosomes.
+2. `Dotplot` - (<Species1><Species2>.pdf). Showing the chromosome synteny as a dot plot.
+3. `Depth_plot` - (<Species1><Species2>.depth.pdf). Percentage of genome that correspond to non-orthlogous (0), 1to1 or 1toMany orthologs detected.
+4. `Painted_chromosomes` - (<Species1><Species2>.chromo.pdf).Showing on graphic chromosomes, which sections are syntenic between two species in colours.
 
-e.g. in the above container you should have jcvi, so you can execute the following line:
+`Data`
+1. `Gffread` -  Species gene fasta files (<Species>.nucl.fa), plus reformatted gff files (<Species>.gff_for_jvci.gff3).
+2. `Anchors` - (<Species1><Species2>.anchors). Anchor files documenting the MSCanX genes in syntenic blocks. Using the lifted function from JCVI.
+3. `Last` - Filtered last results for each pairwise run. Filtered using default settings from JCVI.
 
-`python -m jcvi.formats.gff ACTION`
+`Tables`
+1. `Trans_Inversion_junction_merged.txt` - A summary of the types of syntenic break between sets of anchors.
+2. `Paired_anchor_change_junction_prediction` - A folder with each pairwise analysis of junction changes between syntenic blocks.
+3. `My_scores.tsv` - A table (pairwise) of number of syntenic gene pairs, as well as the max and average syntenic block length (in numbers of genes)
+4. `Synteny_matrix.tsv` - A Matrix of syntenic gene pair totals (pairwise).
+5. `Trans_location_version.out.txt` - A Table of scores (pairwise), documenting numbers of scaffolds, syntenic block, genes, as well as a variety of scores.
+6. `Synt_gene_scores` -  A folder with pairwise gene scores. Scores are based on the distance to nearest syntenic break. Where '1' means a gene in on the edge of a syntenic block. 
+7. `My_sim_cores.tsv` -  A Matrix containing nucleotide percentage similarities.
+8. `My_comp_synteny_similarity.tsv` - A Matrix containing pairwise nucleotide percentages and total number of syntenic genes.
 
-use exit to leave the container:
+All of the pipeline run information can be found inside `pipeline_info`.
 
-`exit`
+To see the full output structure expected of a run [click here](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/img/result.md).
 
-You can also enter docker with the same filesystem using:
+## Citation
 
-`docker run -it --rm -v "$PWD":"$PWD" ecoflowucl/jcvi:python-3.10_last-1522 bash`
+This pipeline is not yet published. If you use this pipeline for your research please cite the main tool set we use (JCVI):
+
+"Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science".
+
+Ensure you record the *release* of the pipeline that you ran. 
+
+## Contact Us
+
+If you need any support do not hesitate to contact us at any of:
+
+`simon.murray [at] ucl.ac.uk`
+
+`c.wyatt [at] ucl.ac.uk` 
+
+`ecoflow.ucl [at] gmail.com`

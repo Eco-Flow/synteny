@@ -1,7 +1,7 @@
 nextflow_process {
 
     name "Test Process GO_SUMMARISE"
-    script "modules/go_summarise.nf"
+    script "modules/local/go_summarise.nf"
     process "GO_SUMMARISE"
 
     test("Should run without failures") {
@@ -9,12 +9,12 @@ nextflow_process {
         when {
             params {
                 // define parameters here. Example:
-                clean = true
+                clean = false
             }
             process {
                 """
                 // define inputs of the process here. Example:
-                Channel.of( [file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averhigh.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averhigh.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averlow.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.averlow.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.botSynteny.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.botSynteny.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.highScore.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.highScore.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.lowScore.txt_TopGo_results_ALL.tab"), file("${projectDir}/data/go_summarise_input/Drosophila_yakuba.lowScore.txt_TopGo_results_ALL.tab_none_pval-none-0.05.ALL.tab")] ).set{ in_channel }
+                Channel.fromPath("${projectDir}/data/go_summarise_input/*.tab").collect().set{ in_channel }
                 input[0] = in_channel
                 """
             }
@@ -25,8 +25,12 @@ nextflow_process {
             assert process.success
             //analyze trace file
             assert process.trace.tasks().size() == 1
+            with(process.out) {
+              //checks one tuple exists in go_summary_table channel
+              assert go_summary_table.size() == 1
+              //checks seven files exist in go_summary_table channel
+              assert go_summary_table[0].size() == 7
+            }
         }
-
     }
-
 }

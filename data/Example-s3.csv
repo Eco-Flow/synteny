@@ -1,0 +1,3 @@
+Drosophila_yakuba,s3://synteny-test-data/data/Drosophila_yakuba/genome.fna.gz,s3://synteny-test-data/data/Drosophila_yakuba/genomic.gff.gz
+Drosophila_simulans,s3://synteny-test-data/data/Drosophila_simulans/genome.fna.gz,s3://synteny-test-data/data/Drosophila_simulans/genomic.gff.gz
+Drosophila_santomea,s3://synteny-test-data/data/Drosophila_santomea/genome.fna.gz,s3://synteny-test-data/data/Drosophila_santomea/genomic.gff.gz

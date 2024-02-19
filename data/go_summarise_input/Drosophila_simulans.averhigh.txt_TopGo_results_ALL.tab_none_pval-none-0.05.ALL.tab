@@ -1,0 +1,35 @@
+TYPE	GO	TERM	LogP-none
+BLANK			
+BLANK			
+CC	GO:0001518	voltage-gated sodium channel complex	6.09
+CC	GO:0042734	presynaptic membrane	6.15
+CC	GO:0071212	subsynaptic reticulum	6.19
+CC	GO:0005964	phosphorylase kinase complex	6.55
+CC	GO:0042600	egg chorion	6.74
+CC	GO:0061176	type Ib terminal bouton	8.92
+CC	GO:0005920	smooth septate junction	10.82
+CC	GO:0061689	tricellular tight junction	13.33
+CC	GO:0099634	postsynaptic specialization membrane	15.89
+CC	GO:0098839	postsynaptic density membrane	16.60
+BLANK			
+MF	GO:0016899	oxidoreductase activity, acting on the C...	4.66
+MF	GO:0004181	metallocarboxypeptidase activity	4.74
+MF	GO:0033764	steroid dehydrogenase activity, acting o...	4.89
+MF	GO:0004709	MAP kinase kinase kinase activity	5.35
+MF	GO:0005248	voltage-gated sodium channel activity	5.54
+MF	GO:0047875	ecdysone oxidase activity	5.68
+MF	GO:0019205	nucleobase-containing compound kinase ac...	11.03
+MF	GO:0016776	phosphotransferase activity, phosphate g...	11.43
+MF	GO:0050145	nucleoside monophosphate kinase activity	13.26
+MF	GO:0004385	guanylate kinase activity	16.34
+BLANK			
+BP	GO:0009126	purine nucleoside monophosphate metaboli...	12.70
+BP	GO:0045197	establishment or maintenance of epitheli...	13.42
+BP	GO:0009132	nucleoside diphosphate metabolic process	13.49
+BP	GO:0009185	ribonucleoside diphosphate metabolic pro...	14.92
+BP	GO:0052128	positive energy taxis	15.10
+BP	GO:0046956	positive phototaxis	15.10
+BP	GO:0009179	purine ribonucleoside diphosphate metabo...	15.77
+BP	GO:0009135	purine nucleoside diphosphate metabolic ...	15.77
+BP	GO:0046710	GDP metabolic process	16.35
+BP	GO:0046037	GMP metabolic process	16.89
