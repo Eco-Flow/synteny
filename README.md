@@ -1,19 +1,18 @@
 # nf-synteny
 
-A simple pipeline to run macro/micro synteny analyses. 
+A simple pipeline to run a macro synteny analysis.
 
-Synteny is the study of chromosome arrangement and gene order. Over evolutionary time, two species diverge from the state of the common ancestor, due to a variety of structural changes. These include:
-"indels": insertions and deletions of genes, 
-"inversions": where segments of the genome are rearranged in the reverse order, 
-"translocations": where regions of other chromosomes are moved to another chromosome,
-"fusions": where two chromosomes fuse together,
-"fissions": where a chromosome breaks into typically two pieces,
-"duplications": where genes replicate themselves, often due to unequal crossing over, replication errors and Transposable elements.
+Synteny is the study of chromosome arrangement and gene order. Over evolutionary time, two species diverge from the state of the common ancestor, due to a variety of structural changes. These include indels, inversions, translocations, fusions and fissions. This pipeline aims to produce common synteny plots, as well as tables documenting the types of syntenic changes.
 
-The pipeline takes a plain text file as input, with information about the species you wish to compare and their RefSeq ID. Then it will run a series of programs to help understand the syntenic changes that have occured between all pairwise input species.
+The pipeline takes a csv (comma separated value) file as input, which contains the species you wish to compare followed by their RefSeq ID. Genomes must be chromosome level assemblies, with a maximum of 50 chromosomes/scaffolds. 
 
 The main pipeline logic is as follows:
-Download genome and gene annotation-> Extract gene fasta sequences -> Reformat input data for MSCanX -> Find orthologous genes (Last, within JCVI program)-> Find syntenous regions (MSCanX, within JCVI program)-> Plot figures and create summary output tables.
+
+![image info](./docs/img/pipeline.png)
+
+In full:
+
+The pipeline downloads the genome and gene annotation [DOWNLOAD], extracts gene fasta sequences [GFFREAD] -> Finds orthologous genes (Last, within JCVI program) [JCVI]-> Find syntenic block (MSCanX, within JCVI program) [SYNTENY]-> Plot figures and create summary output tables [SCORE] [SCORE_TREE] [PLOT_SCORE].
 
 ## nf-synteny tutorials
 
@@ -125,18 +124,18 @@ Once completed, your output directory should be called `Results`, unless you spe
 
 Subdirectories:
 
-`/Figures`
+`Figures`
 1. `Karyotype_plots` - Karyotype plots of each pairwise comparison.(<Species1><Species2>.karyotype.pdf). Showing a 1 to 1 chromosome mapping with lines drawn between syntenic chromosomes.
 2. `Dotplot` - (<Species1><Species2>.pdf). Showing the chromosome synteny as a dot plot.
 3. `Depth_plot` - (<Species1><Species2>.depth.pdf). Percentage of genome that correspond to non-orthlogous (0), 1to1 or 1toMany orthologs detected.
 4. `Painted_chromosomes` - (<Species1><Species2>.chromo.pdf).Showing on graphic chromosomes, which sections are syntenic between two species in colours.
 
-`/Data`
+`Data`
 1. `Gffread` -  Species gene fasta files (<Species>.nucl.fa), plus reformatted gff files (<Species>.gff_for_jvci.gff3).
 2. `Anchors` - (<Species1><Species2>.anchors). Anchor files documenting the MSCanX genes in syntenic blocks. Using the lifted function from JCVI.
 3. `Last` - Filtered last results for each pairwise run. Filtered using default settings from JCVI.
 
-`/Tables`
+`Tables`
 1. `Trans_Inversion_junction_merged.txt` - A summary of the types of syntenic break between sets of anchors.
 2. `Paired_anchor_change_junction_prediction` - A folder with each pairwise analysis of junction changes between syntenic blocks.
 3. `My_scores.tsv` - A table (pairwise) of number of syntenic gene pairs, as well as the max and average syntenic block length (in numbers of genes)
@@ -146,8 +145,9 @@ Subdirectories:
 7. `My_sim_cores.tsv` -  A Matrix containing nucleotide percentage similarities.
 8. `My_comp_synteny_similarity.tsv` - A Matrix containing pairwise nucleotide percentages and total number of syntenic genes.
 
-
 All of the pipeline run information can be found inside `pipeline_info`.
+
+To see the full output structure expected of a run, ([click here](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/img/result.png))
 
 ## Citation
 
