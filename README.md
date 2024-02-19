@@ -10,22 +10,21 @@ The main pipeline logic is as follows:
 
 ![image info](./docs/img/pipeline.png)
 
-In full:
+* Downloads the genome and gene annotation files `[DOWNLOAD]`.
+* Extract gene fasta sequences `[GFFREAD]`.
+* Finds orthologous genes using last `[JCVI]`.
+* Find syntenic block using MCScanX `[SYNTENY]`.
+* Plot figures and create summary output tables `[PLOT_SCORE]`, `[PLOT_TREE]` and `[SUMMARISE_PLOTS]`.
 
-The pipeline downloads the genome and gene annotation [DOWNLOAD], extracts gene fasta sequences [GFFREAD] -> Finds orthologous genes (Last, within JCVI program) [JCVI]-> Find syntenic block (MSCanX, within JCVI program) [SYNTENY]-> Plot figures and create summary output tables [SCORE] [SCORE_TREE] [PLOT_SCORE].
+## Tutorial
 
-## nf-synteny tutorials
-
-We have a few short tutorials to help you test and explore the pipeline:
-
-1. Running a basic pipeline run ([click here](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/Gitpod_tutorial.md))
-2. Running with gene ontology (In development)
+We have a short [tutorial](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/Gitpod_tutorial.md) to help you test and explore the pipeline.
 
 ## Installation
 
 Nextflow pipelines require a few prerequisites. There is further documentation on the nf-core webpage [here](https://nf-co.re/docs/usage/installation), about how to install Nextflow.
 
-### Prerequistites
+### Prerequisites
 
 - [Docker](https://docs.docker.com/engine/install/) or [Singularity](https://docs.sylabs.io/guides/3.11/admin-guide/installation.html).
 - [Java](https://www.java.com/en/download/help/download_options.html) and [openJDK](https://openjdk.org/install/) >= 8 (**Please Note:** When installing Java versions are `1.VERSION` so `Java 8` is `Java 1.8`).
@@ -77,7 +76,7 @@ Drosophila_santomea,data/Drosophila_santomea/genome.fna.gz,data/Drosophila_santo
 * `--tree /path/to/tree/file` - A path to a file containing a phylogenetic tree for all species in Newick format i.e. `data/score_tree_input/tree.txt`.
 * `--clean` - A true or false value assigned to this parameter will determine whether the work directory is automatically deleted or not if the pipeline is successful. Deleting the work directory saves space however it will not be possible to use this work directory in future for caching (**Default:** `true`).
 * `--architecture` - An `amd` or `arm` value assigned to this parameter determines whether containers built for the amd or arm CPU architecture are used (**Default:** `amd`).
-* `--help` - A true value assinged to this parameter will cause the help message to be displayed instead of pipeline running (**Default:** `false`).
+* `--help` - A true value assigned to this parameter will cause the help message to be displayed instead of pipeline running (**Default:** `false`).
 * `--custom_config` - A path or URL to a custom configuration file.
 
 ## Profiles
@@ -141,7 +140,7 @@ Subdirectories:
 3. `My_scores.tsv` - A table (pairwise) of number of syntenic gene pairs, as well as the max and average syntenic block length (in numbers of genes)
 4. `Synteny_matrix.tsv` - A Matrix of syntenic gene pair totals (pairwise).
 5. `Trans_location_version.out.txt` - A Table of scores (pairwise), documenting numbers of scaffolds, syntenic block, genes, as well as a variety of scores.
-6. `Synt_gene_scores` -  A folder with pairwise gene scores. Scores are based on the distance to nearest syntenic break. Where '1' means a gene in on the edge of a sytenic block. 
+6. `Synt_gene_scores` -  A folder with pairwise gene scores. Scores are based on the distance to nearest syntenic break. Where '1' means a gene in on the edge of a syntenic block. 
 7. `My_sim_cores.tsv` -  A Matrix containing nucleotide percentage similarities.
 8. `My_comp_synteny_similarity.tsv` - A Matrix containing pairwise nucleotide percentages and total number of syntenic genes.
 
