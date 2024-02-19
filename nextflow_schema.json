@@ -31,7 +31,7 @@
         },
         "hex": {
           "type": "string",
-          "default": "data/unique_hex",
+          "default": "s3://synteny-test-data/data/unique_hex",
           "description": "A path to a file containing a singular, unique hex code on each line to be used when painting chromosomes."
         },
         "go": {
