@@ -18,7 +18,7 @@ The main pipeline logic is as follows:
 
 ## Tutorial
 
-We have a short [tutorial](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/Gitpod_tutorial.md) to help you test and explore the pipeline.
+We have a short [tutorial](https://github.com/Eco-Flow/synteny/blob/main/docs/Gitpod_tutorial.md) to help you test and explore the pipeline.
 
 ## Installation
 
