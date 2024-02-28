@@ -35,6 +35,7 @@ def errorMessage() {
 
 include { DOWNLOAD_NCBI } from './modules/local/download_ncbi.nf'
 include { GFFREAD } from './modules/local/gffread.nf'
+include { LONGEST } from './modules/local/longest.nf'
 include { JCVI } from './modules/local/jcvi.nf'
 include { SYNTENY } from './modules/local/synteny.nf'
 include { CHROMOPAINT } from './modules/local/chromo.nf'
@@ -111,7 +112,10 @@ workflow {
     GFFREAD ( fasta_inputs.gffread )
     ch_versions = ch_versions.mix(GFFREAD.out.versions.first())
 
-    JCVI ( GFFREAD.out.proteins )
+    LONGEST ( GFFREAD.out.proteins )
+    ch_versions = ch_versions.mix(LONGEST.out.versions.first())
+
+    JCVI ( LONGEST.out.longest_proteins )
     ch_versions = ch_versions.mix(JCVI.out.versions.first())
 
     //Do a pairwise combination of each species' JCVI output but filter out combinations of the same species
@@ -135,7 +139,7 @@ workflow {
     }
     else {
         SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
-	ch_versions = ch_versions.mix(SCORE.out.versions)
+        ch_versions = ch_versions.mix(SCORE.out.versions)
         SCORE_PLOTS(SCORE.out.filec)
     }
     if (params.go) {
@@ -145,9 +149,9 @@ workflow {
         //creating 3 instances of a channel with the GO hash files and species summary files 
         go_folder.combine(species_summary.flatten()).set{ go_and_summary }
         GO ( go_and_summary, JCVI.out.beds.collect() )
-	ch_versions = ch_versions.mix(GO.out.versions.first())
+        ch_versions = ch_versions.mix(GO.out.versions.first())
         GO_SUMMARISE ( GO.out.go_table.collect() )
-	ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
+        ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
         SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
     }
 
