@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 $min_p=$ARGV[1];
 $num_results=$ARGV[2];
 $open_me=$ARGV[3];

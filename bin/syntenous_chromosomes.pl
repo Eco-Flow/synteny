@@ -1,4 +1,3 @@
-#Bed_to_histogram.pl
 use warnings;
 use strict;
 
