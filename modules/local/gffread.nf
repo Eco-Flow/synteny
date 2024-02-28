@@ -2,7 +2,7 @@ process GFFREAD {
 
     label 'process_single'
     tag "$sample_id"
-    container = 'ecoflowucl/gffread_python:python-3.10_linux_x86_64'
+    container = 'ecoflowucl/gffread_python:python-3.10_Linux_x86_64'
     publishDir "$params.outdir/output_data/gffread" , mode: "copy"
 
     input:
