@@ -16,6 +16,8 @@ process LONGEST {
     """
     perl ${projectDir}/bin/ncbi_gffread_to_gene_universal.pl ${fasta} ${sample_id}
 
+    md5sum "${sample_id}.largestIsoform.fa" > "${sample_id}.largestIsoform.fa.md5"
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')

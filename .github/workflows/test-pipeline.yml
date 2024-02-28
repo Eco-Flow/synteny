@@ -47,6 +47,9 @@ jobs:
     - name: Run gffread test
       run: nf-test test tests/modules/gffread.nf.test
 
+    - name: Run longest test
+      run: nf-test test tests/modules/longest.nf.test
+
     - name: Run jcvi test
       run: nf-test test tests/modules/jcvi.nf.test
 

@@ -1,0 +1,37 @@
+nextflow_process {
+
+    name "Test Process LONGEST"
+    script "modules/local/longest.nf"
+    process "LONGEST"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                // define parameters here. Example:
+                clean = false
+            }
+            process {
+                """
+                 Channel.of( ["Drosophila_yakuba", file("${projectDir}/data/longest_input/Drosophila_yakuba.nucl.fa"), file("${projectDir}/data/longest_input/Drosophila_yakuba.gff_for_jvci.gff3")] ).set{ in_channel }
+                input[0] = in_channel
+                """
+            }
+        }
+        then {
+            //check if test case succeeded
+            assert process.success
+            //analyze trace file
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+              //checks one tuple exists in longest_proteins channel
+              assert longest_proteins.size() == 1
+              //checks longest_proteins tuple contains 3 elements
+              assert longest_proteins[0].size() == 3
+              //checks output files aren't corrupted
+              assert path(longest_proteins[0].get(1)).md5 == '150c7a838b8187519d18a52abadc0c75'
+            }
+        }
+    }
+}
+
