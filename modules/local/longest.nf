@@ -7,10 +7,10 @@ process LONGEST {
 
     input:
     tuple val(sample_id), path(fasta), path(gff)
-    path "versions.yml", emit: versions
 
     output:
     tuple val (sample_id), path( "${sample_id}.largestIsoform.fa" ), path( "${sample_id}.gff_for_jvci.gff3" ), emit: longest_proteins
+    path "versions.yml", emit: versions
 
     script:
     """
