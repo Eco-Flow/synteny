@@ -3,7 +3,7 @@ process SCORE_PLOTS {
     label 'process_single'
     tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
-    publishDir "$params.outdir/Figures/Synteny_comparisons" , mode: "copy", pattern:"*-all.pdf"
+    publishDir "$params.outdir/figures/synteny_comparisons" , mode: "copy", pattern:"*-all.pdf"
 
     input:
     path(filec), stageAs: "filec"

@@ -1,32 +1,22 @@
-/*
- * Copyright (c) 2022
- */
-
-/*
- * Authors:
- * - Chris Wyatt <c.wyatt@ucl.ac.uk>
- * - Simon Murray <simon.murray@ucl.ac.uk>
- */
-
-/*
- * Default pipeline parameters (on test data). They can be overriden on the command line eg.
- * given `params.name` specify on the run command line `--name My_run_v1`.
- */
+#!/usr/bin/env nextflow
 
 log.info """\
- ===================================
+ =========================================
 
  nf-synteny (v4.0.0)
 
- ===================================
- input file                           : ${params.input}
- output directory                     : ${params.outdir}
- running go ?                         : ${params.go}
- """
+ -----------------------------------------
 
-//================================================================================
-// Include modules
-//================================================================================
+ Authors:
+   - Chris Wyatt <c.wyatt@ucl.ac.uk>
+   - Simon Murray <simon.murray@ucl.ac.uk>
+
+ -----------------------------------------
+
+ Copyright (c) 2022
+
+ =========================================""".stripIndent()
+
 
 def errorMessage() {
     log.info"""
@@ -109,14 +99,14 @@ workflow {
     ch_versions = ch_versions.mix(FASTAVALIDATOR.out.versions.first())
 
     //Manipulate successful and error logs of fasta validator to be saved into output directory
-    FASTAVALIDATOR.out.success_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/Input_validation/fasta_validator/successful" )
-    FASTAVALIDATOR.out.error_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/Input_validation/fasta_validator/error" )
+    FASTAVALIDATOR.out.success_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/input_validation/fasta_validator/successful" )
+    FASTAVALIDATOR.out.error_log.map{ speciesname, logfile -> [ speciesname.id, logfile ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/input_validation/fasta_validator/error" )
 
     SEQKIT_STATS( fasta_inputs.tuple )
     ch_versions = ch_versions.mix(SEQKIT_STATS.out.versions.first())
 
     //Manipulate eqkit_stats tsv to be saved into output directory
-    SEQKIT_STATS.out.stats.map{ speciesname, tsv -> [ speciesname.id, tsv ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/Input_validation/seqkit_stats" )
+    SEQKIT_STATS.out.stats.map{ speciesname, tsv -> [ speciesname.id, tsv ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/input_validation/seqkit_stats" )
  
     GFFREAD ( fasta_inputs.gffread )
     ch_versions = ch_versions.mix(GFFREAD.out.versions.first())
