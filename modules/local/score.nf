@@ -45,21 +45,21 @@ process SCORE {
 
     #Run score for genome X in terms of size of syntenic blacks to species Y.
 
-    summarise_anchors.pl
+    perl ${projectDir}/bin/summarise_anchors.pl
 
-    summarise_similarity.pl
+    perl ${projectDir}/bin/summarise_similarity.pl
 
-    syntenicVSsimilarity.pl
+    perl ${projectDir}/bin/syntenicVSsimilarity.pl
 
-    Synteny_gene_score.pl
+    perl ${projectDir}/bin/Synteny_gene_score.pl
 
-    SyntenyScoreSummary.pl
+    perl ${projectDir}/bin/SyntenyScoreSummary.pl
 
-    Trans_location_Inversion_score.pl
+    perl ${projectDir}/bin/Trans_location_Inversion_score.pl
 
     #Refined junction scores:
-    Best_synteny_classifier_v6.pl
-    Best_synteny_classifier_v6.classify.pl
+    perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
+    perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
 
     #Merge the two outputs
     paste -d'\t' Trans_location_version.out.txt Trans_Inversion_junction_count.txt > Trans_Inversion_junction_merged.txt

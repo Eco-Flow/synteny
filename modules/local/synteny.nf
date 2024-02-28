@@ -36,7 +36,7 @@ process SYNTENY {
     echo "e, 0, 1, ${sample_id}.${sample_id2}.anchors.simple" >> layout
     
 
-    syntenous_chromosomes.pl ${sample_id}.bed ${sample_id2}.bed ${sample_id}.${sample_id2}.anchors.new
+    perl ${projectDir}/bin/syntenous_chromosomes.pl ${sample_id}.bed ${sample_id2}.bed ${sample_id}.${sample_id2}.anchors.new
     python -m jcvi.graphics.karyotype seqids_karyotype.txt layout
     mv karyotype.pdf ${sample_id}.${sample_id2}.karyotype.pdf
     mv ${sample_id}.${sample_id2}.pdf ${sample_id}.${sample_id2}.dotplot.pdf

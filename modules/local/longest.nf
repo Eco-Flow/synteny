@@ -2,7 +2,7 @@ process LONGEST {
  
     label 'process_single'
     tag "$sample_id"
-    container = 'quay.io/ecoflowucl/bioseqio:perl-5.39.8'
+    container = 'quay.io/ecoflowucl/bioseqio:perl-5.34.0'
     publishDir "$params.outdir/longest" , mode: "copy"
 
     input:
@@ -14,7 +14,7 @@ process LONGEST {
 
     script:
     """
-    ncbi_gffread_to_gene_universal.pl ${fasta} ${sample_id}
+    perl ${projectDir}/bin/ncbi_gffread_to_gene_universal.pl ${fasta} ${sample_id}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

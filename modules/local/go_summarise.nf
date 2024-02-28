@@ -14,7 +14,7 @@ process GO_SUMMARISE {
 
     script:
     """
-    Summarise_go.pl
+    perl ${projectDir}/bin/Summarise_go.pl
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -16,7 +16,7 @@ process GO {
 
     script:
     """
-    Synteny_go.pl
+    perl ${projectDir}/bin/Synteny_go.pl
     for tab_file in *.tab; do
       md5sum \$tab_file > \$tab_file.md5
     done

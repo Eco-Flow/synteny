@@ -18,7 +18,7 @@ process CHROMOPAINT {
     echo '${anchors}' | rev | cut -d'/' -f 1 | rev > Name
     A="\$(cut -d'.' -f1 Name)"
     B="\$(cut -d'.' -f2 Name)"
-    anchor.pl \$A.bed \$B.bed ${anchors} ${hex}
+    perl ${projectDir}/bin/anchor.pl \$A.bed \$B.bed ${anchors} ${hex}
     python -m jcvi.graphics.chromosome Chromopaint.txt colour.idmap
     mv Chromopaint.pdf "\$A.\$B.chromo.pdf"
 

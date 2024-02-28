@@ -48,15 +48,15 @@ process SCORE_TREE {
 
     #Run score for genome X in terms of size of syntenic blacks to species Y.
 
-    summarise_anchors.pl
+    perl ${projectDir}/bin/summarise_anchors.pl
 
-    summarise_similarity.pl
+    perl ${projectDir}/bin/summarise_similarity.pl
 
-    syntenicVSsimilarity.pl
+    perl ${projectDir}/bin/syntenicVSsimilarity.pl
 
-    Synteny_gene_score.pl
+    perl ${projectDir}/bin/Synteny_gene_score.pl
 
-    SyntenyScoreSummary.pl
+    perl ${projectDir}/bin/SyntenyScoreSummary.pl
 
     #Now we run newick tools to get the correct species order, based on the phylogenetic tree in nw format.
 
@@ -64,11 +64,11 @@ process SCORE_TREE {
 
     nw_labels $tree | grep -v 'N[0-9]' > species_order
 
-    Trans_location_Inversion_score_treeSort.pl
+    perl ${projectDir}/bin/Trans_location_Inversion_score_treeSort.pl
 
     #Refined junction scores:
-    Best_synteny_classifier_v6.pl
-    Best_synteny_classifier_v6.classify.pl
+    perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
+    perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
 
     paste -d'\t' Trans_location_version.out.txt Trans_Inversion_junction_count.txt > filec
 

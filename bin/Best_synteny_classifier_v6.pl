@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 use warnings;
 use strict;
 use List::Util qw(max);

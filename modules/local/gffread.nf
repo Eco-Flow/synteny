@@ -15,7 +15,7 @@ process GFFREAD {
 
     script:
     """
-    gffread_unzip.pl ${sample_id} ${fasta} ${gff}
+    perl ${projectDir}/bin/gffread_unzip.pl ${sample_id} ${fasta} ${gff}
     md5sum "${sample_id}.nucl.fa" > "${sample_id}.nucl.fa.md5"
     md5sum "${sample_id}.gff_for_jvci.gff3" > "${sample_id}.gff_for_jvci.gff3.md5"
 
