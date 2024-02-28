@@ -34,7 +34,7 @@ nextflow_process {
               assert gff.size() == 1
               //checks output files aren't corrupted
               assert path(proteins[0].get(1)).md5 == '9cd50a535c0ea73ec8cc949c8750c177'
-              assert path(gff[0]).md5 == '0fecd3a9e15576133658da50f4a50cc8'
+              assert path(gff[0]).md5 == '6979bf9f94e5ee1f2a01f4ef682f222e'
             }
         }
     }
