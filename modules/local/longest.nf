@@ -2,7 +2,7 @@ process LONGEST {
  
     label 'process_single'
     tag "$sample_id"
-    container = 'quay.io/ecoflowucl/bioseqio:perl-5.34.0'
+    container = 'ecoflowucl/bioseqio:perl-5.34.0'
     publishDir "$params.outdir/longest" , mode: "copy", pattern: "*${sample_id}*"
 
     input:
