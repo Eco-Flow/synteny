@@ -2,21 +2,20 @@ process LONGEST {
  
     label 'process_single'
     tag "$sample_id"
-    container = 'ecoflowucl/bioseqio:perl-5.39.8'
-    publishDir "$params.outdir/longest" , mode: "copy", pattern: "*${sample_id}*"
+    container = 'quay.io/biocontainers/agat:0.8.0--pl5262hdfd78af_0'
 
     input:
-    tuple val(sample_id), path(fasta), path(gff)
+    tuple val (sample_id), path(fasta), path(gff)
 
     output:
-    tuple val (sample_id), path( "${sample_id}.largestIsoform.fa" ), path( "${sample_id}.gff_for_jvci.gff3" ), emit: longest_proteins
+    tuple val (sample_id), path(fasta), path( "${sample_id}.longest.gff3" ), emit: longest_proteins
     path "versions.yml", emit: versions
 
     script:
     """
-    perl ${projectDir}/bin/ncbi_gffread_to_gene_universal.pl ${fasta} ${sample_id}
-
-    md5sum "${sample_id}.largestIsoform.fa" > "${sample_id}.largestIsoform.fa.md5"
+    agat_sp_keep_longest_isoform.pl -gff ${gff} -o ${sample_id}.longest.gff3 
+    
+    md5sum "${sample_id}.longest.gff3" > "${sample_id}.longest.gff3.md5"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

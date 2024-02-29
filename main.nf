@@ -109,13 +109,13 @@ workflow {
     //Manipulate eqkit_stats tsv to be saved into output directory
     SEQKIT_STATS.out.stats.map{ speciesname, tsv -> [ speciesname.id, tsv ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/input_validation/seqkit_stats" )
  
-    GFFREAD ( fasta_inputs.gffread )
-    ch_versions = ch_versions.mix(GFFREAD.out.versions.first())
-
-    LONGEST ( GFFREAD.out.proteins )
+    LONGEST ( fasta_inputs.gffread )
     ch_versions = ch_versions.mix(LONGEST.out.versions.first())
 
-    JCVI ( LONGEST.out.longest_proteins )
+    GFFREAD ( LONGEST.out.longest_proteins )
+    ch_versions = ch_versions.mix(GFFREAD.out.versions.first())
+
+    JCVI ( GFFREAD.out.proteins )
     ch_versions = ch_versions.mix(JCVI.out.versions.first())
 
     //Do a pairwise combination of each species' JCVI output but filter out combinations of the same species
