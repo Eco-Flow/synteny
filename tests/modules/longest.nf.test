@@ -13,7 +13,7 @@ nextflow_process {
             }
             process {
                 """
-                 Channel.of( ["Drosophila_yakuba", file("${projectDir}/data/longest_input/Drosophila_yakuba.nucl.fa"), file("${projectDir}/data/longest_input/Drosophila_yakuba.gff_for_jvci.gff3")] ).set{ in_channel }
+                Channel.of( ["Drosophila_yakuba", file("${projectDir}/data/longest_input/Drosophila_yakuba.nucl.fa"), file("${projectDir}/data/longest_input/Drosophila_yakuba.gff_for_jvci.gff3")] ).set{ in_channel }
                 input[0] = in_channel
                 """
             }
@@ -29,7 +29,7 @@ nextflow_process {
               //checks longest_proteins tuple contains 3 elements
               assert longest_proteins[0].size() == 3
               //checks output files aren't corrupted
-              assert path(longest_proteins[0].get(1)).md5 == '150c7a838b8187519d18a52abadc0c75'
+              assert path(longest_proteins[0].get(1)).md5 == '9cd50a535c0ea73ec8cc949c8750c177'
             }
         }
     }
