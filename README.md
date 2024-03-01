@@ -146,8 +146,6 @@ Subdirectories:
 
 All of the pipeline run information can be found inside `pipeline_info`.
 
-To see the full output structure expected of a run [click here](https://github.com/Eco-Flow/synteny/blob/nf-test-dev/docs/img/result.md).
-
 ## Citation
 
 This pipeline is not yet published. If you use this pipeline for your research please cite the main tool set we use (JCVI):
