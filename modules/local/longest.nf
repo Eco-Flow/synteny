@@ -2,26 +2,27 @@ process LONGEST {
  
     label 'process_single'
     tag "$sample_id"
-    container = 'quay.io/biocontainers/agat:0.8.0--pl5262hdfd78af_0'
+    container = 'biocontainers/agat:0.8.0--pl5262hdfd78af_0'
 
     input:
     tuple val (sample_id), path(fasta), path(gff)
 
     output:
-    tuple val (sample_id), path("${fasta}"), path( "${sample_id}.longest.gff3" ), emit: longest_proteins
+    tuple val (sample_id), path( "${fasta}" ), path( "${sample_id}.longest.gff3" ), emit: longest_proteins
     path "versions.yml", emit: versions
 
     script:
     """
     #if gzipped, un gzip and then run agat to find longest orf for each gene
-    if [[ ${gff} =~ .gff.gz ]];
-    then gunzip -c ${gff} > ${gff}.norm; agat_sp_keep_longest_isoform.pl -gff ${gff}.norm -o ${sample_id}.longest.gff3;
-    else agat_sp_keep_longest_isoform.pl -gff ${gff} -o ${sample_id}.longest.gff3;
+    if [[ ${gff} =~ .gff.gz ]]; then 
+        gunzip -c ${gff} > ${gff}.norm; agat_sp_keep_longest_isoform.pl -gff ${gff}.norm -o ${sample_id}.longest.gff3;
+    else 
+        agat_sp_keep_longest_isoform.pl -gff ${gff} -o ${sample_id}.longest.gff3;
     fi
 
     #un gzip the genome so it can be used in gffread
-    if [[ ${fasta} =~ .fna.gz ]];
-    then gunzip -c ${fasta};
+    if [[ ${fasta} =~ .fna.gz ]]; then 
+        gunzip -c ${fasta};
     fi
 
     md5sum "${sample_id}.longest.gff3" > "${sample_id}.longest.gff3.md5"
@@ -31,4 +32,5 @@ process LONGEST {
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
     END_VERSIONS
     """
+
 }
