@@ -1,6 +1,7 @@
 process LONGEST {
  
     label 'process_single'
+    label 'process_long'
     tag "$sample_id"
     container = 'biocontainers/agat:0.8.0--pl5262hdfd78af_0'
 

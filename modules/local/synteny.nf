@@ -1,6 +1,7 @@
 process SYNTENY {
 
     label 'process_single'
+    label 'process_long'
     tag "${sample_id}_VS_${sample_id2}"
     publishDir "$params.outdir/output_data/anchors" , mode: "copy", pattern: "*.anchors"
     publishDir "$params.outdir/figures/dotplots" , mode: "copy", pattern: "*dotplot.pdf"
