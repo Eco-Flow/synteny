@@ -3,7 +3,7 @@ process LONGEST {
     label 'process_single'
     label 'process_long'
     tag "$sample_id"
-    container = 'biocontainers/agat:0.8.0--pl5262hdfd78af_0'
+    container = 'biocontainers/agat:1.3.0--pl5321hdfd78af_0'
 
     input:
     tuple val (sample_id), path(fasta), path(gff)
