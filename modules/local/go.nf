@@ -3,7 +3,7 @@ process GO {
     label 'process_single'
     tag "$speciessummaries"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
-    publishDir "$params.outdir/output_data/go_results" , mode: "copy"
+    publishDir "$params.outdir/output_data/go_results" , mode: "${params.publish_dir_mode}"
 
     input:
     tuple path(go, stageAs: 'Go'), path(speciessummaries)

@@ -3,11 +3,11 @@ process SYNTENY {
     label 'process_single'
     label 'process_long'
     tag "${sample_id}_VS_${sample_id2}"
-    publishDir "$params.outdir/output_data/anchors" , mode: "copy", pattern: "*.anchors"
-    publishDir "$params.outdir/figures/dotplots" , mode: "copy", pattern: "*dotplot.pdf"
-    publishDir "$params.outdir/figures/depth_plots" , mode: "copy", pattern: "*depth.pdf"
-    publishDir "$params.outdir/figures/karyotype_plots" , mode: "copy", pattern: "*.karyotype.pdf"
-    publishDir "$params.outdir/output_data/last" , mode: "copy", pattern: "*last.filtered"
+    publishDir "$params.outdir/output_data/anchors" , mode: "${params.publish_dir_mode}", pattern: "*.anchors"
+    publishDir "$params.outdir/figures/dotplots" , mode: "${params.publish_dir_mode}", pattern: "*dotplot.pdf"
+    publishDir "$params.outdir/figures/depth_plots" , mode: "${params.publish_dir_mode}", pattern: "*depth.pdf"
+    publishDir "$params.outdir/figures/karyotype_plots" , mode: "${params.publish_dir_mode}", pattern: "*.karyotype.pdf"
+    publishDir "$params.outdir/output_data/last" , mode: "${params.publish_dir_mode}", pattern: "*last.filtered"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 
     input:

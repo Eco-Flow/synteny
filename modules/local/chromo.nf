@@ -2,7 +2,7 @@ process CHROMOPAINT {
 
     label 'process_single'
     tag "${sample1} with ${sample2}"
-    publishDir "$params.outdir/figures/painted_chromosomes" , mode: "copy", pattern:"*chromo.pdf"
+    publishDir "$params.outdir/figures/painted_chromosomes" , mode: "${params.publish_dir_mode}", pattern:"*chromo.pdf"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522'
 
     input:

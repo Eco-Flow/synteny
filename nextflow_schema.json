@@ -27,7 +27,7 @@
           "format": "directory-path",
           "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure..",
           "fa_icon": "fas fa-folder-open",
-          "default": "Results"
+          "default": "results"
         },
         "hex": {
           "type": "string",
@@ -105,6 +105,31 @@
         "custom_config": {
           "type": "string",
           "description": "A path to a custom configuration file."
+        },
+        "publish_dir_mode": {
+          "type": "string",
+          "default": "copy",
+          "description": "Specify how nextflow add files to output directory."
+        }
+      }
+    },
+    "nf_core_module_options": {
+      "title": "Nf-core module options",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "seqkit_basename": {
+          "type": "boolean",
+          "description": "Seqkit option for only including basename of fastq file in output."
+        },
+        "seqkit_fq_encoding": {
+          "type": "string",
+          "description": "Seqkit option to specify the fastq encoding. Available options are: 'sanger', 'solexa', 'illumina-1.3+', 'illumina-1.5+', 'illumina-1.8+'."
+        },
+        "seqkit_gap_letters": {
+          "type": "string",
+          "description": "Seqkit option to specify gap letters. Each symbol is separated by a space i.e. \"- .\"."
         }
       }
     }
@@ -118,6 +143,9 @@
     },
     {
       "$ref": "#/definitions/generic_options"
+    },
+    {
+      "$ref": "#/definitions/nf_core_module_options"
     }
   ]
 }
