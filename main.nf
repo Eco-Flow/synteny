@@ -106,7 +106,7 @@ workflow {
     SEQKIT_STATS( fasta_inputs.tuple )
     ch_versions = ch_versions.mix(SEQKIT_STATS.out.versions.first())
 
-    //Manipulate eqkit_stats tsv to be saved into output directory
+    //Manipulate seqkit_stats tsv to be saved into output directory
     SEQKIT_STATS.out.stats.map{ speciesname, tsv -> [ speciesname.id, tsv ] }.collectFile( name: { it[0] }, storeDir: "${params.outdir}/input_validation/seqkit_stats" )
  
     LONGEST ( fasta_inputs.gffread )
