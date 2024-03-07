@@ -14,12 +14,8 @@ process LONGEST {
 
     script:
     """
-    #if gzipped, un gzip and then run agat to find longest orf for each gene
-    if [[ (${gff} =~ .gff.gz) || (${gff} =~ .gff3.gz) ]]; then 
-        gunzip -c ${gff} > ${gff}.norm; agat_sp_keep_longest_isoform.pl -gff ${gff}.norm -o ${sample_id}.longest.gff3;
-    else 
-        agat_sp_keep_longest_isoform.pl -gff ${gff} -o ${sample_id}.longest.gff3;
-    fi
+    # Run agat to find longest orf for each gene 
+    agat_sp_keep_longest_isoform.pl -gff ${gff} -o ${sample_id}.longest.gff3;
 
     #un gzip the genome so it can be used in gffread
     if [[ ${fasta} =~ .fna.gz ]]; then 
