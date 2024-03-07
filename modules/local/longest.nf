@@ -9,18 +9,13 @@ process LONGEST {
     tuple val (sample_id), path(fasta), path(gff)
 
     output:
-    tuple val (sample_id), path( "${fasta}" ), path( "${sample_id}.longest.gff3" ), emit: longest_proteins
+    tuple val (sample_id), path( fasta ), path( "${sample_id}.longest.gff3" ), emit: longest_proteins
     path "versions.yml", emit: versions
 
     script:
     """
     # Run agat to find longest orf for each gene 
     agat_sp_keep_longest_isoform.pl -gff ${gff} -o ${sample_id}.longest.gff3;
-
-    #un gzip the genome so it can be used in gffread
-    if [[ ${fasta} =~ .fna.gz ]]; then 
-        gunzip -c ${fasta};
-    fi
 
     md5sum "${sample_id}.longest.gff3" > "${sample_id}.longest.gff3.md5"
 
