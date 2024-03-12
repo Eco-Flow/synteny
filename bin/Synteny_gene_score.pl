@@ -1,9 +1,6 @@
 use warnings;
 use strict;
 
-
-print "Please be in folder with all the anchor files\n";
-
 my @files=`ls *.anchors`;
 
 #Initiate hash for matrix store
@@ -18,10 +15,11 @@ foreach my $file (@files){
 	my @split_name=split(/\./, $file);
 	my $sp1=$split_name[0];
 	my $sp2=$split_name[1];
-
+    %in_syn_block=();
+    %last=();
     my $outfile="$sp1\.$sp2\.geneScore.tsv";
     open(my $outhandle, ">", $outfile)   or die "Could not open $outfile \n";
-
+    print $outhandle "Start\n";
 
 	#Now per file:
     open(my $filein, "<", $file)   or die "Could not open $file\n";
@@ -29,6 +27,7 @@ foreach my $file (@files){
     
     while (my $line=<$filein>){
         chomp $line;
+        print "$sp1 $sp2 $line\n";
         if ($line =~ m/^#/){
             #new orthoblock starts
             $syn_block++;
@@ -71,7 +70,7 @@ foreach my $file (@files){
         }
     }
 
-    undef %in_syn_block;
+    %in_syn_block=();
 
 }
 
