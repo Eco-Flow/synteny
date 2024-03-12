@@ -1,11 +1,9 @@
 use warnings;
 use strict;
 
-
 print "SYNTENY SCORING SCRIPT\n\nPlease be in folder with all the gff files, the anchors and geneScores run\n\n";
 
-
-my $outname="Trans_location_version.out.txt";
+my $outname="Summary_of_pairwise_comparisons.tsv";
 open(my $OUT, ">", $outname)   or die "Could not open $outname\n";
 #Print header of output file- see after 236 where we print this line
 print $OUT "Comparison\t#sca_total_sp1\t#sca_total_sp2\t#sca_syntenic_sp1\t#sca_syntenic_sp2\t#genes sp1\t#genes sp2\t#syntenic_blocks\ttranslocation_score\tinversion score\tperc_identity\tGenome_length(sp1)\tGenome_length(sp2)\(bps\)\tLengthTransScore\tLengthInversionScore\tTranslocationScore_byNumberAndLength\tTrans_mimimum_count\tInversion_estimate\n";

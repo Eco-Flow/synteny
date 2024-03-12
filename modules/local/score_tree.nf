@@ -9,7 +9,7 @@ process SCORE_TREE {
     publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"My_pair_synteny_identity.pdf"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Synteny_matrix.tsv"
     publishDir "$params.outdir/tables/synt_gene_scores" , mode: "${params.publish_dir_mode}", pattern:"*geneScore.tsv"
-    publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_location_version.out.txt"
+    publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Summary_of_pairwise_comparisons.tsv"
     publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"*-all_treesort.pdf"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
     publishDir "$params.outdir/tables/paired_anchor_change_junction_prediction" , mode: "${params.publish_dir_mode}", pattern:"*Classification_summary.tsv"
@@ -31,7 +31,7 @@ process SCORE_TREE {
     path("Synteny_matrix.tsv"), emit:synmat
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary
-    path("Trans_location_version.out.txt"), emit:trans_inver_summary
+    path("Summary_of_pairwise_comparisons.tsv"), emit:trans_inver_summary
     path("filec"), emit: filec
     path("species_order"), emit: species_order
     path("*Classification_summary.tsv"), emit:classifications
@@ -70,13 +70,13 @@ process SCORE_TREE {
     perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
     perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
 
-    paste -d'\t' Trans_location_version.out.txt Trans_Inversion_junction_count.txt > filec
+    paste -d'\t' Summary_of_pairwise_comparisons.tsv Trans_Inversion_junction_count.txt > filec
 
     md5sum My_scores.tsv > My_scores.tsv.md5
     md5sum My_sim_cores.tsv > My_sim_cores.tsv.md5
     md5sum My_comp_synteny_similarity.tsv > My_comp_synteny_similarity.tsv.md5
     md5sum Synteny_matrix.tsv > Synteny_matrix.tsv.md5
-    md5sum Trans_location_version.out.txt > Trans_location_version.out.txt.md5
+    md5sum Summary_of_pairwise_comparisons.tsv > Summary_of_pairwise_comparisons.tsv.md5
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
