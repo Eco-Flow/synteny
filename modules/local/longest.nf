@@ -1,6 +1,5 @@
 process LONGEST {
  
-    label 'process_single'
     label 'process_high_memory'
     tag "$sample_id"
     container = 'biocontainers/agat:1.3.0--pl5321hdfd78af_0'
