@@ -2,7 +2,7 @@ process GO {
 
     label 'process_single'
     tag "$speciessummaries"
-    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results" , mode: "${params.publish_dir_mode}"
 
     input:
