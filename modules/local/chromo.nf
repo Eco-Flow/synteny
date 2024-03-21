@@ -4,6 +4,7 @@ process CHROMOPAINT {
     tag "${sample1} with ${sample2}"
     publishDir "$params.outdir/figures/painted_chromosomes" , mode: "${params.publish_dir_mode}", pattern:"*chromo.pdf"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522'
+    errorStrategy = 'ignore'
 
     input:
     tuple path (hex), val(sample1), val(sample2), path(anchors)
