@@ -131,29 +131,30 @@ workflow {
     CHROMOPAINT ( hex_labelled_anchors, JCVI.out.beds.collect() )
     ch_versions = ch_versions.mix(CHROMOPAINT.out.versions.first())
 
-    if (params.tree) {
-        tree_in = Channel.fromPath(params.tree)
-        SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), tree_in )
-        ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
-        SCORE_TREE_PLOTS(SCORE_TREE.out.filec, SCORE_TREE.out.species_order)
-    }
-    else {
-        SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
-        ch_versions = ch_versions.mix(SCORE.out.versions)
-        SCORE_PLOTS(SCORE.out.filec)
-    }
-    if (params.go) {
-        go_folder = Channel.fromPath(params.go)
-        //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
-        species_summary = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.out.speciesSummary
-        //creating 3 instances of a channel with the GO hash files and species summary files 
-        go_folder.combine(species_summary.flatten()).set{ go_and_summary }
-        GO ( go_and_summary, JCVI.out.beds.collect() )
-        ch_versions = ch_versions.mix(GO.out.versions.first())
-        GO_SUMMARISE ( GO.out.go_table.collect() )
-        ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
-        SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
-    }
+//Code in progress:
+//if (params.tree) {
+//        tree_in = Channel.fromPath(params.tree)
+//        SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), tree_in )
+//        ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
+//       SCORE_TREE_PLOTS(SCORE_TREE.out.filec, SCORE_TREE.out.species_order)
+//    }
+//    else {
+//        SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
+//        ch_versions = ch_versions.mix(SCORE.out.versions)
+//        SCORE_PLOTS(SCORE.out.filec)
+//    }
+//    if (params.go) {
+//      go_folder = Channel.fromPath(params.go)
+//        //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
+//        species_summary = params.tree != null ? SCORE_TREE.out.speciesSummary : SCORE.out.speciesSummary
+//        //creating 3 instances of a channel with the GO hash files and species summary files 
+//        go_folder.combine(species_summary.flatten()).set{ go_and_summary }
+//        GO ( go_and_summary, JCVI.out.beds.collect() )
+//        ch_versions = ch_versions.mix(GO.out.versions.first())
+//        GO_SUMMARISE ( GO.out.go_table.collect() )
+//        ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
+//        SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
+//    }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.collectFile(name: 'collated_versions.yml')
