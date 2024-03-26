@@ -1,6 +1,9 @@
 # nf-synteny
 
-A simple pipeline to run a macro synteny analysis.
+A simple pipeline to run a macro synteny analysis. 
+
+It is under development, so if you wish to use the pipeline for your own research, please contact us (ecoflow.ucl [at] gmail.com). 
+We can give you the up to date detail for the methods and the up to date figures. When it is published we will release a final version.
 
 Synteny is the study of chromosome arrangement and gene order. Over evolutionary time, two species diverge from the state of the common ancestor, due to a variety of structural changes. These include indels, inversions, translocations, fusions and fissions. This pipeline aims to produce common synteny plots, as well as tables documenting the types of syntenic changes.
 
