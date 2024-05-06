@@ -1,6 +1,6 @@
 # Running the synteny pipeline (Quick start)
 
-To run the pipeline quickly (on small datasets, <3 species), you can take advantage of a free online code development platform (Gitpod).
+To test that the pipeline work quickly, you can try it by running on a small dataset (just 3 samples) on Gitpod (a free [up to 10 hours/ month] online code development platform). If you want this pipeline on your own real (large) dataset, you would need to run it on your local machine or on an HPC (instructions for this are in the main README.md)
 
 ## Prerequistites
 
@@ -37,5 +37,7 @@ On Gitpod my "path/to" is `/workspace/synteny/Drosophila_Refseq_List.csv`
 
 NOTICE: We remove the test profile, and just use docker (our container engine, to get the software).
 
-9. Once completed, explore the `Results` folder to see some of the output. On the main README on this repository you will find full explanation of the output files.
+9. Once completed, explore the `Results` folder to see some of the output.
+
+On the main README.md on this repository you will find full explanation of the output files.
 
