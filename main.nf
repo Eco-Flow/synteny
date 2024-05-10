@@ -128,8 +128,10 @@ workflow {
     //Combine hex path with each tuple of species and anchor files for parallelisation of process
     in_hex.combine(labelled_anchors).set{ hex_labelled_anchors }
 
-    CHROMOPAINT ( hex_labelled_anchors, JCVI.out.beds.collect() )
-    ch_versions = ch_versions.mix(CHROMOPAINT.out.versions.first())
+    if ( params.chromopaint ){
+        CHROMOPAINT ( hex_labelled_anchors, JCVI.out.beds.collect() )
+        ch_versions = ch_versions.mix(CHROMOPAINT.out.versions.first())
+    }
 
 //Code in progress:
 //if (params.tree) {
