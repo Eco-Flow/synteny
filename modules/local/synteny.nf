@@ -15,6 +15,7 @@ process SYNTENY {
 
     output:
     path("${sample_id}.${sample_id2}.lifted.anchors"), emit: anchors
+    path("${sample_id}.${sample_id2}.anchors"), emit: anchors_notlifted
     tuple path("${sample_id}.${sample_id2}.dotplot.pdf"), path("${sample_id}.${sample_id2}.depth.pdf"), path("${sample_id}.${sample_id2}.karyotype.pdf"), emit: pdf
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
     path("${sample_id}.${sample_id2}.last.filtered"), emit: last

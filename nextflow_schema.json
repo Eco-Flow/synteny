@@ -152,6 +152,16 @@
                   "type": "string",
                   "description": "A path to a file containing a phylogenetic tree for all species in Newick format."
               },
+              "score": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Calculate synteny scores for each species."
+              },
+              "lifted": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Choose whether to use lifted or raw anchors from MSCanX."
+              },            
               "hex": {
                   "type": "string",
                   "default": "s3://synteny-test-data/data/unique_hex",
