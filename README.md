@@ -17,7 +17,7 @@ The main pipeline logic is as follows:
 * Extract gene fasta sequences `[GFFREAD]`.
 * Finds orthologous genes using last `[JCVI]`.
 * Find syntenic block using MCScanX `[SYNTENY]`.
-* Plot figures and create summary output tables `[PLOT_SCORE]`, `[PLOT_TREE]` and `[SUMMARISE_PLOTS]`.
+* **FUTURE**: Plot figures and create summary output tables `[PLOT_SCORE]`, `[PLOT_TREE]` and `[SUMMARISE_PLOTS]`.
 
 ## Tutorial
 
@@ -155,7 +155,7 @@ This pipeline is not yet published. If you use this pipeline for your research p
 
 "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science".
 
-Ensure you record the *release* of the pipeline that you ran. 
+Ensure you record the *release* of the pipeline that you ran, as versions will change over time, so it is important to record exact releases. 
 
 ## Contact Us
 
