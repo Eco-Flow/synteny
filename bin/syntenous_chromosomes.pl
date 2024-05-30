@@ -1,6 +1,11 @@
 use warnings;
 use strict;
 
+# This script sorts out the best order of chromosomes on the plot. 
+# It counts up the number of matches of each pair from the anchor files,
+# and takes the first chromosome as the one with the most hits and its
+# partner (in sp2). If they have already been used in a pair (it is ignored). 
+
 die "Provide the name of the first bed, second bed, anchor (.new) file file\n" if (@ARGV!=3); 
 
 print "Script is running\n";
