@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 use warnings;
 use strict;
 use Statistics::Basic qw(:all);
