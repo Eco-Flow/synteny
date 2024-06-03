@@ -149,8 +149,6 @@ workflow {
                 SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
                 ch_versions = ch_versions.mix(SCORE.out.versions)
                 SCORE_PLOTS(SCORE.out.filec)
-                ribbon_in = Channel.from(params.ribbon)
-                RIBBON ( SYNTENY.out.anchors_notlifted.collect(), JCVI.out.beds.collect(), ribbon_in )
             }
         }
         else {
@@ -164,10 +162,11 @@ workflow {
                 SCORE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
                 ch_versions = ch_versions.mix(SCORE.out.versions)
                 SCORE_PLOTS(SCORE.out.filec)
-                ribbon_in = Channel.from(params.ribbon)
-                RIBBON ( SYNTENY.out.anchors_notlifted.collect(), JCVI.out.beds.collect(), ribbon_in )
+
             }
         }
+        ribbon_in = Channel.from(params.ribbon)
+        RIBBON ( SYNTENY.out.anchors_notlifted.collect(), JCVI.out.beds.collect(), ribbon_in )
     }
 
 
