@@ -76,7 +76,7 @@ for (@species){
 		
 		
 		$p=$p-$intervals;
-		print $out " .$p,     .1,    .8,      0,      , $_, bottom, $_.bed.flipped.bed\n";
+		print $out " .$p,     .1,    .8,      0,      , $_, top, $_.bed.flipped.bed\n";
 
 		#Make sure the previous is now set:
 		$previous="$_";

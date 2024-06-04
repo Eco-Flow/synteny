@@ -134,12 +134,17 @@ workflow {
         ch_versions = ch_versions.mix(CHROMOPAINT.out.versions.first())
     }
 
+    //To run the ribbon plot
+    if ( params.ribbon ){
+        ribbon_in = Channel.from(params.ribbon)
+        RIBBON ( SYNTENY.out.anchors_notlifted.collect(), JCVI.out.beds.collect(), ribbon_in )
+    }
 
     
     //Code to measure a synteny scores for each species.
-    if (params.score){
-        if (params.lifted){
-            if (params.tree) {
+    if ( params.score ){
+        if ( params.lifted ){
+            if ( params.tree ) {
                 tree_in = Channel.fromPath(params.tree)
                 SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), tree_in )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
@@ -152,7 +157,7 @@ workflow {
             }
         }
         else {
-            if (params.tree) {
+            if ( params.tree ) {
                 tree_in = Channel.fromPath(params.tree)
                 SCORE_TREE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), tree_in )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
@@ -165,13 +170,11 @@ workflow {
 
             }
         }
-        ribbon_in = Channel.from(params.ribbon)
-        RIBBON ( SYNTENY.out.anchors_notlifted.collect(), JCVI.out.beds.collect(), ribbon_in )
     }
 
 
     //If you choose to run go.
-    if (params.go && params.score) {
+    if ( params.go && params.score ) {
         go_folder = Channel.fromPath(params.go)
         //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
 
