@@ -22,7 +22,8 @@ my $len=scalar(@species);
 # Run through the species in the order they are presented, and run the set up for the karyotype plots. 
 my @store_comparisons;
 my $n=0;
-my $p=7;
+my $p=8;
+my $intervals=$p/$len;
 
 my $previous;
 for (@species){
@@ -74,7 +75,7 @@ for (@species){
 		}
 		
 		
-		$p=$p-2;
+		$p=$p-$intervals;
 		print $out " .$p,     .1,    .8,      0,      , $_, bottom, $_.bed.flipped.bed\n";
 
 		#Make sure the previous is now set:
@@ -82,7 +83,7 @@ for (@species){
 	}
 	else{
 
-		print $out " .7,     .1,    .8,      0,      , $_, top, $_.bed\n";
+		print $out " .9,     .1,    .8,      0,      , $_, top, $_.bed\n";
 		#No previous to make a consecutive comparison.
 		$previous=$_;
 	}

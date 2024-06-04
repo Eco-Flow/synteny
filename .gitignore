@@ -6,3 +6,4 @@ Go
 .nf-test*
 nextflow
 nf-test
+apptainer
