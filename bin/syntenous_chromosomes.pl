@@ -22,10 +22,11 @@ open(my $ANCH, "<", $ANCHORS) or die "Could not open $ANCHORS\n";
 my $outfile="seqids_karyotype.txt";
 open(my $out, "> $outfile") or die "error opening $outfile. $!";
 
-#pairs to save for later
-my @sp_dot1=split("\.", $BED_file1);
-my @sp_dot2=split("\.", $BED_file2);
-my $outfile2="$sp_dot1[0]\_$sp_dot2[0]\_pairs.txt";
+#pairs to save for later. These are the best pairs of chromosomes in order, we can use this later to organise the ribbon plot.
+my $word="$BED_file1";
+my @sp_dot1=split(/\./, $word);
+my @sp_dot2=split(/\./, $BED_file2);
+my $outfile2="$sp_dot1[0]\.$sp_dot2[0]\.pairs.txt";
 open(my $out_pairs, "> $outfile2") or die "error opening $outfile2. $!";
 
 #Variables to store chromosome lengths:
@@ -313,8 +314,9 @@ foreach my $key ( sort {$chromo_pairs{$b} <=> $chromo_pairs{$a}} keys %chromo_pa
     }
     else{
         push (@final_list_sp1, "$spl[0]");
-        $done_check_sp1{$spl[0]}="yes"
+        $done_check_sp1{$spl[0]}="yes";
         print $out_pairs "$spl[0]\t$spl[1]\n";
+        #print "CABBAGE\n";
     }
 
     if ($done_check_sp2{$spl[1]}){
@@ -322,7 +324,7 @@ foreach my $key ( sort {$chromo_pairs{$b} <=> $chromo_pairs{$a}} keys %chromo_pa
     }
     else{
         push (@final_list_sp2, "$spl[1]");
-        $done_check_sp2{$spl[1]}="yes"
+        $done_check_sp2{$spl[1]}="yes";
     }
 
 }
