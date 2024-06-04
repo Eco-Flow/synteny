@@ -66,16 +66,35 @@ for (@species){
 
 			my @value_2nd=split("\,", $actual_previous_2nd);
 			my @value_3rd;
+			my %done;
 			foreach my $order_2nd (@value_2nd){
 				print "2nd line values $order_2nd\n";
 				if ($prev_hash{$order_2nd}){
 					#if we have a match to the preivous chromosome number, good,. use it.
-					push (@value_3rd, $prev_hash{$order_2nd});
+					if ($done{"$prev_hash{$order_2nd}"}){
+						#already done, don't push
+					}
+					else{
+						push (@value_3rd, $prev_hash{$order_2nd});
+						$done{"$prev_hash{$order_2nd}"}="YES";
+					}
 				}
 				else{
 					#Else, ignore it, we don't have an equivalent. 
 				}
 			}
+
+			#Add on any missing chromosomes that are unique to next species:
+			my @second_species_all_chromosomes=split("\,", $seconline);
+			foreach my $chros (@second_species_all_chromosomes){
+				if ($done{"$prev_hash{$chros}"}){
+					#fine its done
+				}
+				else{
+					push (@value_3rd, $chros);
+				}
+			}
+
 
 			my $join_new_3rd=join("\,", @value_3rd);
 
