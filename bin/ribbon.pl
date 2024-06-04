@@ -24,6 +24,7 @@ my @store_comparisons;
 my $n=0;
 my $p=90;
 my $intervals=int(80/$len);
+my $actual_previous_2nd;
 
 my $previous;
 for (@species){
@@ -49,9 +50,39 @@ for (@species){
 			open(my $SPEC, "<", $fin) or die "Could not open $fin\n";
 			my $firstline=<$SPEC>;
 			my $seconline=<$SPEC>;
+			chomp $firstline;
 			chomp $seconline;
-			print $out2 "$seconline\n";
+			print "FIRST $firstline\n";
+
+			#Match up to previous order. 
+			my %prev_hash;
+			my $hash = "$previous\.$_\.pairs.txt";
+			open(my $PREHASH, "<", $hash) or die "Could not open $hash\n";
+			while (my $line= <$PREHASH>){
+				chomp $line;
+				my @sp=split("\t", $line);
+				$prev_hash{$sp[0]}=$sp[1];
+			}
+
+			my @value_2nd=split("\,", $actual_previous_2nd);
+			my @value_3rd;
+			foreach my $order_2nd (@value_2nd){
+				print "2nd line values $order_2nd\n";
+				if ($prev_hash{$order_2nd}){
+					#if we have a match to the preivous chromosome number, good,. use it.
+					push (@value_3rd, $prev_hash{$order_2nd});
+				}
+				else{
+					#Else, ignore it, we don't have an equivalent. 
+				}
+			}
+
+			my $join_new_3rd=join("\,", @value_3rd);
+
+			print $out2 "$join_new_3rd\n";
+			$actual_previous_2nd=$join_new_3rd;
 			close $SPEC;
+			close $PREHASH;
 		}
 		else{
 			print "syntenous_chromosomes.pl $previous.bed $_.bed $previous\.$_\.anchors\n";
@@ -71,6 +102,7 @@ for (@species){
 			chomp $firstline;
 			chomp $seconline;
 			print $out2 "$firstline\n$seconline\n";
+			$actual_previous_2nd=$seconline;
 			close $SPEC;
 		}
 		

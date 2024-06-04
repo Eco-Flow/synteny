@@ -134,7 +134,7 @@ workflow {
         ch_versions = ch_versions.mix(CHROMOPAINT.out.versions.first())
     }
 
-    //To run the ribbon plot
+    //To run the ribbon plot for each species given
     if ( params.ribbon ){
         ribbon_in = Channel.from(params.ribbon)
         RIBBON ( SYNTENY.out.anchors_notlifted.collect(), JCVI.out.beds.collect(), ribbon_in )

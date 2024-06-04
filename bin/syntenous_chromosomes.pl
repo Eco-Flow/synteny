@@ -22,6 +22,12 @@ open(my $ANCH, "<", $ANCHORS) or die "Could not open $ANCHORS\n";
 my $outfile="seqids_karyotype.txt";
 open(my $out, "> $outfile") or die "error opening $outfile. $!";
 
+#pairs to save for later
+my @sp_dot1=split("\.", $BED_file1);
+my @sp_dot2=split("\.", $BED_file2);
+my $outfile2="$sp_dot1[0]\_$sp_dot2[0]\_pairs.txt";
+open(my $out_pairs, "> $outfile2") or die "error opening $outfile2. $!";
+
 #Variables to store chromosome lengths:
 my %sp1_chromo_lengths;
 my %sp2_chromo_lengths;
@@ -252,7 +258,7 @@ foreach my $key ( keys %Orientation_score ) {
         #print "$block\n";
     }
     my $result= correlation(\@sp1_coords,\@sp2_coords);
-    if ($result <= -0.5){
+    if ($result <= -0.1){
         my @sp_key=split("\_\@\_", $key);
         #print "$result\n";
         $Chromosomes_in_sp2_to_be_flipped{$sp_key[1]}="TRUE";
@@ -267,6 +273,8 @@ foreach my $key ( keys %Orientation_score ) {
 open(my $BED2_tbc, "<", $BED_file2) or die "Could not open $BED_file2\n";
 my $outfile_bed="$BED_file2\.flipped.bed";
 open(my $out_bed, "> $outfile_bed") or die "error opening $outfile_bed. $!";
+
+
 
 #Read through species 2 bed file and flip the coordinates of chromosomes in wrong order. 
 while (my $line=<$BED2_tbc>) {
@@ -306,6 +314,7 @@ foreach my $key ( sort {$chromo_pairs{$b} <=> $chromo_pairs{$a}} keys %chromo_pa
     else{
         push (@final_list_sp1, "$spl[0]");
         $done_check_sp1{$spl[0]}="yes"
+        print $out_pairs "$spl[0]\t$spl[1]\n";
     }
 
     if ($done_check_sp2{$spl[1]}){
@@ -315,6 +324,7 @@ foreach my $key ( sort {$chromo_pairs{$b} <=> $chromo_pairs{$a}} keys %chromo_pa
         push (@final_list_sp2, "$spl[1]");
         $done_check_sp2{$spl[1]}="yes"
     }
+
 }
 
 my $join_sp1=join("\,", @final_list_sp1);

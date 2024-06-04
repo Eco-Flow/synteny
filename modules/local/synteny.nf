@@ -1,5 +1,5 @@
 process SYNTENY {
-
+    stageInMode = 'copy'
     label 'process_single'
     label 'process_long'
     tag "${sample_id}_VS_${sample_id2}"
