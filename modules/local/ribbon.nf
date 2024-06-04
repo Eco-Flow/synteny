@@ -1,6 +1,6 @@
 process RIBBON {
 
-    label 'process_low'
+    label 'process_single'
     tag "plot ribbon"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522_StatisticsBasic' 
     publishDir "$params.outdir/figures/ribbon" , mode: "${params.publish_dir_mode}", pattern:"Ribbon.pdf"

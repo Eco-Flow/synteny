@@ -22,8 +22,8 @@ my $len=scalar(@species);
 # Run through the species in the order they are presented, and run the set up for the karyotype plots. 
 my @store_comparisons;
 my $n=0;
-my $p=8;
-my $intervals=$p/$len;
+my $p=90;
+my $intervals=int(80/$len);
 
 my $previous;
 for (@species){
