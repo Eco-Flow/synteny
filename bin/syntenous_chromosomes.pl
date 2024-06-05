@@ -156,6 +156,7 @@ close $ANCH;
 
 
 #Try to check the syntenic block order and see if it makes more sense to flip the chromosome. 
+## THIS SECTION TO close $ANCH2 could probably be dleetd in future versions
 my %Orientation_score;
 
 print "Checking if chromosomes are in the correct orientation\n\n";
@@ -289,8 +290,6 @@ foreach my $key ( keys %Orientation_allgenes_score ) {
     my @sp1_coords;
     my @sp2_coords;
 
-    #print "Correlation ( $key ):\n";
-
     foreach my $block (@pairs){
         my @spl=split("\t", $block);
         push (@sp1_coords, $spl[0]);
@@ -356,7 +355,6 @@ foreach my $key ( sort {$chromo_pairs{$b} <=> $chromo_pairs{$a}} keys %chromo_pa
         push (@final_list_sp1, "$spl[0]");
         $done_check_sp1{$spl[0]}="yes";
         print $out_pairs "$spl[0]\t$spl[1]\n";
-        #print "CABBAGE\n";
     }
 
     if ($done_check_sp2{$spl[1]}){
@@ -373,11 +371,3 @@ my $join_sp1=join("\,", @final_list_sp1);
 my $join_sp2=join("\,", @final_list_sp2);
 
 print $out "$join_sp1\n$join_sp2\n";
-
-sub correl{
-        my ($ssxx, $ssyy, $ssxy) = @_;
-        my $sign = $ssxy/abs($ssxy);
-        my $correl = $sign*sqrt($ssxy*$ssxy/($ssxx*$ssyy));
-        return $correl;
-}
-

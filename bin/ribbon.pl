@@ -70,7 +70,7 @@ for (@species){
 			foreach my $order_2nd (@value_2nd){
 				print "2nd line values $order_2nd\n";
 				if ($prev_hash{$order_2nd}){
-					#if we have a match to the preivous chromosome number, good,. use it.
+					#if we have a match to the previous chromosome number, good,. use it.
 					if ($done{"$prev_hash{$order_2nd}"}){
 						#already done, don't push
 					}
@@ -86,8 +86,9 @@ for (@species){
 
 			#Add on any missing chromosomes that are unique to next species:
 			my @second_species_all_chromosomes=split("\,", $seconline);
+
 			foreach my $chros (@second_species_all_chromosomes){
-				if ($done{"$prev_hash{$chros}"}){
+				if ($done{"$chros"}){
 					#fine its done
 				}
 				else{
