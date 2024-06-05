@@ -154,6 +154,7 @@ while (my $line3=<$ANCH>) {
 close $ANCH;
 
 
+
 #Try to check the syntenic block order and see if it makes more sense to flip the chromosome. 
 my %Orientation_score;
 
@@ -169,6 +170,7 @@ while (my $line4=<$ANCH2>) {
     chomp $line4;
     my @spl=split ("\t", $line4);
     my $len=scalar(@spl);
+    #Block wise counting:
     if ($line4 =~ "###"){
         my $first_line_of_block=<$ANCH2>;
         chomp $first_line_of_block;
@@ -241,12 +243,49 @@ while (my $line4=<$ANCH2>) {
 
 close $ANCH2;
 
+
+open(my $ANCH3, "<", $ANCHORS) or die "Could not open $ANCHORS\n";
+
+# New score to measure the pair of coordinates for each anchor point (gene), to be used for flipping chromosomes.
+my %Orientation_allgenes_score;
+
+while (my $line5=<$ANCH3>) {
+    chomp $line5;
+    if ($line5 =~ "###"){
+        #Do nothing
+    }
+    else{
+        my @spl=split ("\t", $line5);
+        my $len=scalar(@spl);
+        #Individual gene counting:
+        my $IND_gene_sp1=$spl[0];
+        my $IND_gene_sp2=$spl[1];
+        my $IND_cord_sp1=$SP1_start_coord{"$IND_gene_sp1"};
+        my $IND_cord_sp2=$SP2_start_coord{"$IND_gene_sp2"};
+        my $IND_chro_sp1=$SP1{$IND_gene_sp1};
+        my $IND_chro_sp2=$SP2{$IND_gene_sp2};
+        my $join="$IND_chro_sp1\_\@\_$IND_chro_sp2";
+        if ($Orientation_allgenes_score{$join}){
+            my $oldun=$Orientation_allgenes_score{$join};
+            my $joint="$oldun\n$IND_cord_sp1\t$IND_cord_sp2";
+            $Orientation_allgenes_score{$join}="$joint";
+        }
+        else{
+            $Orientation_allgenes_score{$join}="$IND_cord_sp1\t$IND_cord_sp2";
+        }
+    }
+}
+
+close $ANCH3;
+
+
+
 #Now check orientation data and run correlation analysis, to check if a chromosome is in general positively or negatively correlated, which will tell us the best orientation.
 my %Chromosomes_in_sp2_to_be_flipped;
 
-foreach my $key ( keys %Orientation_score ) {
-    my @pairs=split("\n", $Orientation_score{$key});
-    #print "$pairs[0]\n";
+foreach my $key ( keys %Orientation_allgenes_score ) {
+    my @pairs=split("\n", $Orientation_allgenes_score{$key});
+    print "$key $pairs[0] ccand  $pairs[1]\n";
     my @sp1_coords;
     my @sp2_coords;
 
@@ -259,6 +298,7 @@ foreach my $key ( keys %Orientation_score ) {
         #print "$block\n";
     }
     my $result= correlation(\@sp1_coords,\@sp2_coords);
+    print "$result\n";
     if ($result <= -0.1){
         my @sp_key=split("\_\@\_", $key);
         #print "$result\n";
