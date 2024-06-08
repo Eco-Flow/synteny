@@ -24,7 +24,7 @@ process RIBBON {
     #Perl script to wrote input layout for the species chosen.
     ribbon.pl
 
-    python -m jcvi.graphics.karyotype seqids_karyotype_all.txt layout_all
+    python --nocircles -m jcvi.graphics.karyotype seqids_karyotype_all.txt layout_all
 
     mv karyotype.pdf Ribbon.pdf
 
