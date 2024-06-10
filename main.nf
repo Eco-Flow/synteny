@@ -185,9 +185,12 @@ workflow {
             species_summary = SCORE.out.speciesSummary
         }
 
+        //Add input params cutoff for go
+        our_cutoff = Channel.value(params.cutoff)
+
         //creating 3 instances of a channel with the GO hash files and species summary files 
         go_folder.combine(species_summary.flatten()).set{ go_and_summary }
-        GO ( go_and_summary, JCVI.out.beds.collect() )
+        GO ( go_and_summary, JCVI.out.beds.collect(), our_cutoff)
         ch_versions = ch_versions.mix(GO.out.versions.first())
         GO_SUMMARISE ( GO.out.go_table.collect() )
         ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)

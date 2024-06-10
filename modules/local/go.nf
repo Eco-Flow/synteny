@@ -8,6 +8,7 @@ process GO {
     input:
     tuple path(go, stageAs: 'Go'), path(speciessummaries)
     path(beds)
+    val (cutoff)
 
     output:
     path( "*.pdf" ), emit: go_pdf
@@ -16,7 +17,7 @@ process GO {
 
     script:
     """
-    perl ${projectDir}/bin/Synteny_go.pl
+    perl ${projectDir}/bin/Synteny_go.pl ${cutoff} 
     for tab_file in *.tab; do
       md5sum \$tab_file > \$tab_file.md5
     done
