@@ -3,6 +3,8 @@ use strict;
 
 
 print "Please be in folder with all the SpeciesScoreSummary and the Go folder\n";
+die "Please specify a percentage cutoff\n" unless(@ARGV==1);
+my $cutoff = $ARGV[0];
 
 #For each species in your Go hash folder work out species name
 my %go_key;
@@ -26,7 +28,7 @@ my $species=$split[0];
 my $bed=`ls $species\.bed`;
 chomp $bed;
 my %all_genes;
-my @hit_genes;
+
 open(my $bedin, "<", $bed)   or die "Could not open $bed\n";
 while (my $lineB = <$bedin>){
     chomp $lineB;
@@ -57,11 +59,173 @@ open(my $out7, ">", $outname7)   or die "Could not open $outname7\n";
 my $background="$species\.bg.txt";
 open(my $out8, ">", $background)   or die "Could not open $background\n";
 
+
+# Open the SpeciesScoreSummary and caluclate the total number of species total.
+# And calculate the average distance to break scores, so we can find top/bottom 10%.
+
 open(my $filein, "<", $file)   or die "Could not open $file\n";
 my $header=<$filein>;
+my $max_number_species=0;
+my $total_genes=0;
 while (my $line = <$filein>){
     chomp $line;
-    print "$line\n";
+    #print "$line\n";
+    my @splitl=split("\t", $line);
+    my $gene=$splitl[1];
+    my $score=$splitl[2];
+    my $count=$splitl[3];
+    my $average=$splitl[4];
+
+    #Check for max:
+    if ($count >= $max_number_species){
+        $max_number_species=$count;
+    }
+    $total_genes++;
+}
+close $filein;
+
+my $top_percentage=$total_genes/$cutoff;
+
+print "Total number of genes: $total_genes\n";
+print "What percentage of genes are in the top $cutoff \%: $top_percentage\n";
+
+#Sort the file by specific columns:
+open (my $data , '<', $file)|| die "could not open $file:\n$!";
+my $head_del=<$data>;
+my @array=(<$data>);
+my @sorted=sort {(split(/\t/,$a))[2]<=>(split(/\t/,$b))[2]} @array;
+
+#TOP : Print off the x percentage of the distance value:
+for (my $i=0; $i<=$top_percentage; $i++){
+    #print "$sorted[$i]";
+    my @spl=split("\t", $sorted[$i]);
+    my $gene=$spl[1];
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    print $out3 "$gene\n";
+};
+
+#BOT : Print off the last percentage of the distance value:
+my $top_minus_cut=$total_genes-$top_percentage;
+for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
+    #print "$sorted[$i]";
+    my @spl=split("\t", $sorted[$i]);
+    my $gene=$spl[1];
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    print $out4 "$gene\n";
+};
+
+#Sort by total number of species syntenic to:
+my @sorted2=sort {(split(/\t/,$a))[3]<=>(split(/\t/,$b))[3]} @array;
+
+#Print off the x percentage of the distance value:
+for (my $i=0; $i<=$top_percentage; $i++){
+    #print "$sorted2[$i]";
+    my @spl=split("\t", $sorted2[$i]);
+    my $gene=$spl[1];
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    print $out1 "$gene\n";    
+};
+#Print off the last percentage of the distance value:
+for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
+    #print "$sorted2[$i]";
+    my @spl=split("\t", $sorted2[$i]);
+    my $gene=$spl[1];
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    print $out2 "$gene\n";
+};
+
+#Sort by average distance to break :
+my @sorted3=sort {(split(/\t/,$a))[4]<=>(split(/\t/,$b))[4]} @array;
+
+#Print off the x percentage of the distance value:
+for (my $i=0; $i<=$top_percentage; $i++){
+    #print "$sorted3[$i]";
+    my @spl=split("\t", $sorted3[$i]);
+    my $gene=$spl[1];
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    print $out5 "$gene\n";
+};
+#Print off the last percentage of the distance value:
+for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
+    #print "$sorted3[$i]";
+    my @spl=split("\t", $sorted3[$i]);
+    my $gene=$spl[1];
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    print $out6 "$gene\n";
+};
+
+
+# Go through the Hits from target species to all other species
+# Ending SpeciesScoreSummary.txt 
+# 1: Species name (target), 2: gene name, 3: count of distance to syntenic break, 4: total species also within a syntenic block, 5: average score (distance to break).
+
+my @hit_genes;
+
+open(my $filein2, "<", $file)   or die "Could not open $file\n";
+my $header2=<$filein2>;
+while (my $line = <$filein2>){
+    chomp $line;
+    #print "$line\n";
     my @splitl=split("\t", $line);
     my $gene=$splitl[1];
     
@@ -75,64 +239,15 @@ while (my $line = <$filein>){
         my @sp1=split(/\-/, $gene);
         $gene=$sp1[1];
     }
-    #Print out background geens to file:
+
+    #Print out background genes to file:
     print $out8 "$gene\n";
     push (@hit_genes, $gene);
     my $score=$splitl[2];
     my $count=$splitl[3];
     my $average=$splitl[4];
 
-    my @top;
-    if ($count >= 5){
-        print "HERE3: $count $score $gene\n";
-        push (@top, $gene);
-        #print "$gene\n";
-    }
-    my @bot;
-    if ($count <= 2){
-        push (@bot, $gene);
-    }
-    my @high;
-    if ($score >= 30){
-        push (@high, $gene);
-    }
-    my @low;
-    if ($score <= 5){
-        push (@low, $gene);
-    }
-    my @averhigh;
-    if ($average >= 10){
-        push (@averhigh, $gene);
-    }
-    my @averlow;
-    if ($average <= 5){
-        push (@averlow, $gene);
-    }
-    
-    foreach my $ele1 (@top){
-        print $out1 "$ele1\n";
-        #print "HERE4 $ele1\n";
-    }
 
-    foreach my $ele2 (@bot){
-        print $out2 "$ele2\n";
-    }
-
-    foreach my $ele3 (@high){
-        print $out3 "$ele3\n";
-    }
-
-    foreach my $ele4 (@low){
-        print $out4 "$ele4\n";
-    }
-
-    foreach my $ele5 (@averhigh){
-        print $out5 "$ele5\n";
-    }
-
-    foreach my $ele6 (@averlow){
-        print $out6 "$ele6\n";
-    }
 
 }
 
@@ -181,4 +296,4 @@ close $out4;
 close $out5;
 close $out6;
 close $out7;
-close $filein;
+close $filein2;
