@@ -17,7 +17,23 @@ process GO {
 
     script:
     """
-    perl ${projectDir}/bin/Synteny_go.pl ${cutoff} 
+    #Run GO on a variety of cutoffs, plus a user parameter (default 10, call params.cutoff)
+ 
+    perl ${projectDir}/bin/Synteny_go.pl 5
+    mkdir Res5
+    mv *.pdf Res5
+    mv *.tab Res5
+    perl ${projectDir}/bin/Synteny_go.pl 15
+    mkdir Res15
+    mv *.pdf Res15
+    mv *.tab Res15
+    perl ${projectDir}/bin/Synteny_go.pl 20
+    mkdir Res20
+    mv *.pdf Res20
+    mv *.tab Res20
+    perl ${projectDir}/bin/Synteny_go.pl ${cutoff}
+
+
     for tab_file in *.tab; do
       md5sum \$tab_file > \$tab_file.md5
     done

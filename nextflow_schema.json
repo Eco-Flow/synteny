@@ -161,6 +161,11 @@
           "type": "boolean",
           "description": "Calculate synteny scores for each species."
         },
+        "cutoff": {
+          "type": "integer",
+          "default": "10",
+          "description": "Cut off for GO analysis. Integer for percentage of top and bottom genes to test (default = 10)"
+        },
         "ribbon": {
           "type": "string",
           "description": "If you want to plot a ribbon plot for selected species"

@@ -13,7 +13,6 @@ foreach my $sp (@gos){
     my @split=split(/\./, $sp);
     my @sp_folder=split("\/", $split[0]);
     $go_key{$sp_folder[1]}=$sp;
-    #print "$sp_folder[1] $sp\n";
 }
 
 #Read in the species score summary and work out the species being tested.
@@ -37,31 +36,28 @@ while (my $lineB = <$bedin>){
 }
 
 
-
-
 print "We run with species $species\n";
 
-
-my $outname1="$species\.topSynteny.txt";
+my $outname1="$species\.$cutoff\.topSynteny.txt";
 open(my $out1, ">", $outname1)   or die "Could not open $outname1\n";
-my $outname2="$species\.botSynteny.txt";
+my $outname2="$species\.$cutoff\.botSynteny.txt";
 open(my $out2, ">", $outname2)   or die "Could not open $outname2\n";
-my $outname3="$species\.highScore.txt";
+my $outname3="$species\.$cutoff\.highScore.txt";
 open(my $out3, ">", $outname3)   or die "Could not open $outname3\n";
-my $outname4="$species\.lowScore.txt";
+my $outname4="$species\.$cutoff\.lowScore.txt";
 open(my $out4, ">", $outname4)   or die "Could not open $outname4\n";
-my $outname5="$species\.averhigh.txt";
+my $outname5="$species\.$cutoff\.averhigh.txt";
 open(my $out5, ">", $outname5)   or die "Could not open $outname5\n";
-my $outname6="$species\.averlow.txt";
+my $outname6="$species\.$cutoff\.averlow.txt";
 open(my $out6, ">", $outname6)   or die "Could not open $outname6\n";
-my $outname7="$species\.zeros.txt";
+my $outname7="$species\.$cutoff\.zeros.txt";
 open(my $out7, ">", $outname7)   or die "Could not open $outname7\n";
-my $background="$species\.bg.txt";
+my $background="$species\.$cutoff\.bg.txt";
 open(my $out8, ">", $background)   or die "Could not open $background\n";
 
 
 # Open the SpeciesScoreSummary and caluclate the total number of species total.
-# And calculate the average distance to break scores, so we can find top/bottom 10%.
+# And calculate the average distance to break scores, so we can find top/bottom 10% (or user choice cutoff).
 
 open(my $filein, "<", $file)   or die "Could not open $file\n";
 my $header=<$filein>;
@@ -69,7 +65,6 @@ my $max_number_species=0;
 my $total_genes=0;
 while (my $line = <$filein>){
     chomp $line;
-    #print "$line\n";
     my @splitl=split("\t", $line);
     my $gene=$splitl[1];
     my $score=$splitl[2];
@@ -253,7 +248,9 @@ while (my $line = <$filein2>){
 
 close $out8;
 
-#My zero calculate:
+#My zero calculate. 
+#Lot of genes in each species could be unique, so they would end up with a score of zero for being in or out of synteny.
+#This section stores all these genes in a file:
 my $score=0;
 my $zscore=0;
 my $zhit;
@@ -281,13 +278,13 @@ print "$score matches and $zscore zeros\n";
 #Now run Chopgo
 print "Now run ChopGO : e.g. : ChopGO_VTS.pl -i $species\.top.txt --GO_file $go_key{$species}\n";
 
-`ChopGO_VTS2.pl -i $species\.topSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2.pl -i $species\.botSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2.pl -i $species\.highScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2.pl -i $species\.lowScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2.pl -i $species\.averhigh.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2.pl -i $species\.averlow.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2.pl -i $species\.zeros.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.$cutoff\.topSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.$cutoff\.botSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.$cutoff\.highScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.$cutoff\.lowScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.$cutoff\.averhigh.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.$cutoff\.averlow.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2.pl -i $species\.$cutoff\.zeros.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
 
 close $out1;
 close $out2;
