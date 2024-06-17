@@ -68,6 +68,7 @@ process SYNTENY {
     "${task.process}":
         Python version: \$(python --version  | sed 's/[^0-9]*//')
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
+        Last version: \$(lastal --version | sed 's/[^0-9]*//')
     END_VERSIONS
     """
 }
