@@ -6,7 +6,7 @@ process GO_SUMMARISE {
     publishDir "$params.outdir/output_data/go_results" , mode: "${params.publish_dir_mode}", pattern:"*.tsv"
 
     input:
-    path(go)
+    tuple val(cutoff), path("*")
 
     output:
     path( "Go_summary*.tsv" ), emit: go_summary_table

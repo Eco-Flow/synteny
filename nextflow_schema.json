@@ -162,7 +162,7 @@
           "description": "Calculate synteny scores for each species."
         },
         "cutoff": {
-          "type": "integer",
+          "type": "string",
           "default": "10",
           "description": "Cut off for GO analysis. Integer for percentage of top and bottom genes to test (default = 10)"
         },

@@ -1,37 +1,31 @@
 process GO {
 
     label 'process_single'
-    tag "$speciessummaries"
+    tag "$speciessummaries ($cutoff percent)"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results" , mode: "${params.publish_dir_mode}"
 
     input:
-    tuple path(go, stageAs: 'Go'), path(speciessummaries)
+    tuple path(go, stageAs: 'Go'), path(speciessummaries), val (cutoff)
     path(beds)
-    val (cutoff)
+
 
     output:
-    path( "Res*/*.pdf" ), emit: go_pdf
-    path( "Res*/*.tab" ), emit: go_table
+    path( "*.pdf" ), emit: go_pdf
+    path( "*ALL.tab" ), emit: go_pvals
+    tuple val(cutoff), path( "*results_ALL.tab" ), emit: go_table
     path "versions.yml", emit: versions
 
     script:
     """
     #Run GO on a variety of cutoffs, plus a user parameter (default 10, call params.cutoff)
-    all_cutoffs=${cutoff}
 
-    for i in \${all_cutoffs//,/ }
-    do
-      echo "\$i"
-      mkdir "Res\$i"
-      perl ${projectDir}/bin/Synteny_go.pl \$i
-      mv *.pdf "Res\$i"
-      mv *.tab "Res\$i"
-    done
+    perl ${projectDir}/bin/Synteny_go.pl ${cutoff}
 
-    for tab_file in Res10/*.tab; do
-      md5sum \$tab_file > \$tab_file.md5
-    done
+    #Hashed out until we can fix issue of md5 when we do not know for certain the cutoff value.
+    #for tab_file in Res10/*.tab; do
+    #  md5sum \$tab_file > \$tab_file.md5
+    #done
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
