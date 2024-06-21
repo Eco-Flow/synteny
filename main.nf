@@ -72,7 +72,9 @@ def flattenCutoffGroups(groups) {
 
 // Caluclate buffer size, to split GO summarise results correctly.
 import java.util.concurrent.atomic.AtomicInteger
-
+import java.nio.file.Files
+import java.nio.file.Paths
+import groovy.io.FileType
 
 workflow {
 
@@ -228,18 +230,26 @@ workflow {
                 //GO_SUMMARISE ( cutoffGroups )
             }
 
-        def filePath = params.input
+        def filePath = new File(params.input)
         // Read file length and save as integer
-        def fileLength = Files.size(Paths.get(filePath)).intValue()
-
+        def fileLength = filePath.readLines().size()
+        count_sp_6 = fileLength * 6
+        //buffer_val = count_sp_6 + 1
+        buffer_val.set(count_sp_6 + 1)
+        //buffer_in = println "${buffer_val.get()}"
         // Print the file length for verification
-        println "File length: $fileLength"
+        println "File length: $fileLength  $buffer_val"
+
+
+        new_ch = GO.out.go_table.groupTuple()
+            .flatten()
+            .buffer( size: buffer_val.get()  )
+
+
 
         //println "Length of the channel: $channelLength"
 
         //def buffer_val = ${count_sp_6} + 1
-
-        //flattenedGroups = flattenCutoffGroups(cutoffGroups)
 
 
 
@@ -247,7 +257,7 @@ workflow {
 
 
         
-        //GO_SUMMARISE ( cutoffGroups )
+        GO_SUMMARISE ( new_ch )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
