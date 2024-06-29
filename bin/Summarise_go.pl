@@ -1,9 +1,25 @@
 use warnings;
 use strict;
 
+my $in_name="files_in";
+open(my $IN_N, "<", $in_name)   or die "Could not open $in_name\n";
+
+my $input=<$IN_N>;
+$input =~ s|\[||g;
+$input =~ s|\]||g;
+
+print "HERE $input\n";
+
+my @ingos=split("\, ", $input);
+
+foreach my $paths_to_run (@ingos){
+    `ln -s $paths_to_run .`;
+}
+
+#set the percent valued used in this test;
+my $comparison_percentage;
 
 print "Please be in folder with all the Species Go Summarys\n";
-
 
 my %go_key;
 my %go_names;
@@ -13,10 +29,13 @@ my $species;
 my $subset;
 foreach my $sp (@gos){
     chomp $sp;
+    print "RUN $sp\n";
+    #my @pathsp=split(/\//, $sp);
     my @split=split(/\./, $sp);
     #my @sp_folder=split("\/", $split[0]);
     $species=$split[0];
-    $subset=$split[1];
+    $comparison_percentage=$split[1];
+    $subset=$split[2];
     #print "$species $subset\n";
     $species_list{$species}="Done";
     open(my $filein, "<", $sp)   or die "Could not open $sp\n";
@@ -41,19 +60,19 @@ foreach my $sp (keys %species_list) {
 my @job_type_array=("topSynteny","botSynteny","averhigh","averlow","highScore","lowScore");
 
 #Create output files
-my $outname="Go_summary_all_merged.tsv";
+my $outname="Go_summary_$comparison_percentage\_all_merged.tsv";
 open(my $outhandle, ">", $outname)   or die "Could not open $outname\n";
-my $outname2="Go_summary_topSynteny.tsv";
+my $outname2="Go_summary_$comparison_percentage\_topSynteny.tsv";
 open(my $outhandle2, ">", $outname2)   or die "Could not open $outname2\n";
-my $outname3="Go_summary_botSynteny.tsv";
+my $outname3="Go_summary_$comparison_percentage\_botSynteny.tsv";
 open(my $outhandle3, ">", $outname3)   or die "Could not open $outname3\n";
-my $outname4="Go_summary_averhigh.tsv";
+my $outname4="Go_summary_$comparison_percentage\_averhigh.tsv";
 open(my $outhandle4, ">", $outname4)   or die "Could not open $outname4\n";
-my $outname5="Go_summary_averlow.tsv";
+my $outname5="Go_summary_$comparison_percentage\_averlow.tsv";
 open(my $outhandle5, ">", $outname5)   or die "Could not open $outname5\n";
-my $outname6="Go_summary_highScore.tsv";
+my $outname6="Go_summary_$comparison_percentage\_highScore.tsv";
 open(my $outhandle6, ">", $outname6)   or die "Could not open $outname6\n";
-my $outname7="Go_summary_lowScore.tsv";
+my $outname7="Go_summary_$comparison_percentage\_lowScore.tsv";
 open(my $outhandle7, ">", $outname7)   or die "Could not open $outname7\n";
 
 print $outhandle "GO_ID\tGO_term";

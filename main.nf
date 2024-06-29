@@ -227,7 +227,7 @@ workflow {
         //GO.out.go_table.view()
 
         // Group the data by the cutoff value
-        //GO.out.go_table.groupTuple()
+        //GO.out.go_table.groupTuple().view()
         //groupedData = mych.groupTuple { item -> item[0] }
 
 
@@ -235,7 +235,7 @@ workflow {
 
         GO_SUMMARISE ( GO.out.go_table.groupTuple() )
         ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
-        //SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
+        SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
     }
 
 
