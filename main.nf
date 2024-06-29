@@ -198,67 +198,46 @@ workflow {
     }
 
     // If you choose to run go
-    if (params.go && params.score) {
-        goFolder = Channel.fromPath(params.go)
-        // Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
+    if ( params.go && params.score ) {
+        go_folder = Channel.fromPath(params.go)
+        //Checks if SCORE_TREE output is not null and uses it, if it is null then SCORE was run instead and use that output
 
-        def speciesSummary = params.tree ? SCORE_TREE.out.speciesSummary : SCORE.out.speciesSummary
+        if ( params.tree ){
+            species_summary = SCORE_TREE.out.speciesSummary 
+        }
+        else{
+            species_summary = SCORE.out.speciesSummary
+        }
 
-        // Creating 3 instances of a channel with the GO hash files and species summary files 
-        goAndSummary = goFolder.combine(speciesSummary.flatten())
-        goAndSummaryCut = goAndSummary.combine(our_cutoff)
+        //creating 3 instances of a channel with the GO hash files and species summary files 
+        go_folder.combine(species_summary.flatten()).set{ go_and_summary }
 
-        GO ( goAndSummaryCut, JCVI.out.beds.collect() )
+        //Add input params cutoff for go
+        our_cutoff = Channel.of(params.cutoff)
+
+        // Split the params.cutoff string into a list of separate entries
+        cutoffValues = Channel.from(params.cutoff.split(','))
+
+        // Combine channels using cross to pair each element of go_and_summary with each element of cutoffValues
+        mergedChannel = go_and_summary.combine(cutoffValues)
+
+        GO ( mergedChannel , JCVI.out.beds.collect() )
         ch_versions = ch_versions.mix(GO.out.versions.first())
 
-        //Calculate size of input and run next piece of code.
-        buffer_val = new AtomicInteger()
-        Channel
-            .fromPath(params.input)
-            .splitCsv()
-            .count()
-            .subscribe { count ->
-                println "The pipeline will run with ${count} species"
-                count_sp = count
-                count_sp_6 = count_sp * 6
-                buffer_val.set(count_sp_6 + 1)
-                println "Buffer is ${buffer_val.get()}"
-                cutoffGroups = GO.out.go_table.groupTuple()
-                .flatten()
-                .buffer(size: buffer_val.get())
-                //cutoffGroups.view()
-                //GO_SUMMARISE ( cutoffGroups )
-            }
+        //GO.out.go_table.view()
 
-        def filePath = new File(params.input)
-        // Read file length and save as integer
-        def fileLength = filePath.readLines().size()
-        count_sp_6 = fileLength * 6
-        //buffer_val = count_sp_6 + 1
-        buffer_val.set(count_sp_6 + 1)
-        //buffer_in = println "${buffer_val.get()}"
-        // Print the file length for verification
-        println "File length: $fileLength  $buffer_val"
-
-
-        new_ch = GO.out.go_table.groupTuple()
-            .flatten()
-            .buffer( size: buffer_val.get()  )
+        // Group the data by the cutoff value
+        //GO.out.go_table.groupTuple()
+        //groupedData = mych.groupTuple { item -> item[0] }
 
 
 
-        //println "Length of the channel: $channelLength"
 
-        //def buffer_val = ${count_sp_6} + 1
-
-
-
-        //println list.size()
-
-
-        
-        GO_SUMMARISE ( new_ch )
+        GO_SUMMARISE ( GO.out.go_table.groupTuple() )
+        ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
+        //SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
     }
+
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.collectFile(name: 'collated_versions.yml')
