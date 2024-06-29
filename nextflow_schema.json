@@ -166,6 +166,10 @@
           "default": "10",
           "description": "Cut off for GO analysis. Integer for percentage of top and bottom genes to test (default = 10)"
         },
+        "gffread_coding": {
+          "type": "boolean",
+          "description": "Choose whether to run only with coding genes or not (default is all genes)"
+        },
         "ribbon": {
           "type": "string",
           "description": "If you want to plot a ribbon plot for selected species"

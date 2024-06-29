@@ -14,8 +14,9 @@ process GFFREAD {
     path "versions.yml", emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     """
-    perl ${projectDir}/bin/gffread_unzip.pl ${sample_id} ${fasta} ${gff}
+    perl ${projectDir}/bin/gffread_unzip.pl ${sample_id} ${fasta} ${gff} ${args}
     md5sum "${sample_id}.nucl.fa" > "${sample_id}.nucl.fa.md5"
     md5sum "${sample_id}.gff_for_jvci.gff3" > "${sample_id}.gff_for_jvci.gff3.md5"
 

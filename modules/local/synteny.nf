@@ -1,7 +1,9 @@
 process SYNTENY {
+
     stageInMode = 'copy'
     label 'process_single'
     label 'process_long'
+    label 'process_med_memory'
     tag "${sample_id}_VS_${sample_id2}"
     publishDir "$params.outdir/output_data/anchors" , mode: "${params.publish_dir_mode}", pattern: "*.anchors"
     publishDir "$params.outdir/figures/dotplots" , mode: "${params.publish_dir_mode}", pattern: "*dotplot.pdf"
@@ -66,6 +68,7 @@ process SYNTENY {
     "${task.process}":
         Python version: \$(python --version  | sed 's/[^0-9]*//')
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
+        Last version: \$(lastal --version | sed 's/[^0-9]*//')
     END_VERSIONS
     """
 }

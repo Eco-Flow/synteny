@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-die "Needs the input sample_id, gff3 file and the fasta file\n" if (@ARGV!=3); 
+#die "Needs 1: input sample_id, 2: genome fasta file, 3: gff3 file, 4: (optional) -C\n" if (@ARGV!=3 || @ARGV!=4); 
 
 #print "Script is running\n";
 
@@ -51,4 +51,10 @@ if ($gff_head=~  m/AUGUSTUS/g){
 	`cp $sample\.gff_for_jvci.gff3\_single.longest.gene.gff3 $sample\.gff_for_jvci.gff3`;
 }
 
-`gffread -w $sample\.nucl.fa -g genome.fa $sample\.gff_for_jvci.gff3`;
+if (defined $ARGV[3]){
+	`gffread -w $sample\.nucl.fa -g genome.fa $sample\.gff_for_jvci.gff3 -C`;
+}
+else{
+	`gffread -w $sample\.nucl.fa -g genome.fa $sample\.gff_for_jvci.gff3`;
+}
+

@@ -1,5 +1,5 @@
 process SUMMARISE_PLOTS {
-
+   
    label 'process_single'
    tag "$sample_id"
    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
