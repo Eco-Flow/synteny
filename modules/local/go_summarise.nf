@@ -6,14 +6,18 @@ process GO_SUMMARISE {
     publishDir "$params.outdir/output_data/go_results" , mode: "${params.publish_dir_mode}", pattern:"*.tsv"
 
     input:
-    path(go)
+    tuple val(cutoff), val(filePaths)
 
     output:
-    path( "Go_summary*.tsv" ), emit: go_summary_table
+    tuple val(cutoff), path( "Go_summary*.tsv" ), emit: go_summary_table
     path "versions.yml", emit: versions
 
     script:
     """
+    # Read in names of files
+    unixfilePaths=\$(echo "$filePaths" )
+    echo \$unixfilePaths > files_in
+
     perl ${projectDir}/bin/Summarise_go.pl
 
     cat <<-END_VERSIONS > versions.yml

@@ -162,9 +162,9 @@
           "description": "Calculate synteny scores for each species."
         },
         "cutoff": {
-          "type": "integer",
-          "default": 10,
-          "description": "Cutoff percentage to find top and bottom syntenic regions for GO."
+          "type": "string",
+          "default": "10",
+          "description": "Cut off for GO analysis. Integer for percentage of top and bottom genes to test (default = 10)"
         },
         "gffread_coding": {
           "type": "boolean",
