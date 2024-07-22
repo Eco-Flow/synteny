@@ -59,7 +59,7 @@ else{
 
 if ($helpFlag or $EXIT_STATUS){
     die "
-usage: ChopGO_.pl -i <INPUT_list> (-sp <SPECIES_CODE> -db </path/to/DB> OR --GO_file Custom_GO_file) [options]
+usage: ChopGO.pl -i <INPUT_list> (-sp <SPECIES_CODE> -db </path/to/DB> OR --GO_file Custom_GO_file) [options]
 
 compulsory:
     -i               Input list of genes (compulsory). Sep by \'\\n\'. Optional second column for subdivisions of list.  
@@ -96,6 +96,10 @@ Pre-requisites:
 "
 }
 
+
+#My length of input:
+my $query_length= `wc -l $input | awk '{print \$1}'`;
+chomp $query_length;
 
 my $path_to_GOs;
 #my inferred file path
@@ -146,7 +150,9 @@ my @ALL_made_files;
 
 my @methods=("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none");
 
-
+#Save out info:
+my $out_info_name="Out_info.txt";
+open(my $out_info, ">", $out_info_name)   or die "Could not open $out_info_name \n";
 
 ### DATABASE CHOICE, print to user
 print "GO = $species GO\nDb = $path_to_DB\n\n" if !defined $GO_file;
@@ -156,11 +162,29 @@ print "GO file = $GO_file\n\n" if defined $GO_file;
 my $outfile="BACKGROUND\.forR";
 my %Background_hash;
 if($background){
+    #print "test1\n";
     ## FIND BACKGROUND GENES
     open(my $IN_b, "<", $background)   or die "Could not open $background \n";
     while (my $line=<$IN_b>){
 	$line=~s/\r//g;
 	chomp $line;
+
+
+    # Rename weird NCBI id rna- prefix
+    if($line =~ m/rna-/){
+        my @sp1=split(/\-/, $line);
+        $line=$sp1[1];
+    }    
+
+
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($line =~ m/\:/){
+        my @sp1=split(/\:/, $line);
+        $line=$sp1[1];
+    }
+
+
+
 	my @input_here=split("\t", $line);
 	if (scalar @input_here > 1.5){
 	    $Background_hash{$input_here[0]}="HIT";
@@ -184,6 +208,7 @@ if($background){
     open(my $outhandle, ">", $outfile)   or die "Could not open $outfile \n";
     my %Gene_Go_Hash;
     my %tot_genes;
+    #print "test2\n";
     while (my $line=<$IN>){
 	$line=~s/\r//g;
 	chomp $line;
@@ -197,27 +222,25 @@ if($background){
 		    my $old=$Gene_Go_Hash{$gene};
 		    #print  "2+ $gene  $old\t$GO\n";
 		    $Gene_Go_Hash{$gene}="$old\",\"$GO";
+                    #print "test3";
 		}
 		else{
 		    $Gene_Go_Hash{$gene}=$GO;
 		    #print "1st $gene $GO\n";
+                    #print "test4";
 		}
 	    }
 	}
     }
     my $n_all=keys %tot_genes;
-    print "BACKGROUND\nOf $n_all total Genes with GO annotation, $n_back were chosen for the background (based on user -b list)\n\n";
+    print "BACKGROUND\n$n_all genes had a GO annotation\n$n_back genes were chosen as a background (based on user -b list)\n\n";
+    
+    print $out_info "GO enrichment of $query_length genes\\nBackground of $n_back genes";
 
-	print $outhandle "Chop.gene2GO<- list()\n";
-	foreach my $key ( keys %Gene_Go_Hash ){
-		if($key =~ m/RefSeq/g){
-			print "Ignore this line\n";
-		}
-		else{
-			print "Correct line\n";
-			print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
-		}	
-	}
+    print $outhandle "Chop.gene2GO<- list()\n";
+    foreach my $key ( keys %Gene_Go_Hash ){
+	print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
+    }
 }
 else {
     #all genes as background. No background chosen by user.
@@ -256,9 +279,10 @@ else {
     }
     
     print $outhandle "Chop.gene2GO<- list()\n";
-    
     foreach my $key ( keys %Gene_Go_Hash ){
-		print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
+	print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
+
+	print $out_info "GO enrichment of $query_length genes\\nBackground of all genes (with GO annotation)";
     }
 }
 
@@ -326,7 +350,10 @@ while (my $line=<$IN>){
 ### RUN R COMPARISONS ###
 
 print $outhandle2 "Chop.WGCNA2Gene<- list()\n";
+
 foreach my $key ( keys %Gene_Go_Hash ){
+
+    #print "test4";
     
     print $outhandle2 "Chop.WGCNA2Gene\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
     
@@ -393,13 +420,13 @@ print $outhandle4 "save.image(\"Image.Rdata\")\nquit(save = \"no\")\n";
 
 print "Start Plotting\n\n";
 
-### RUN HITOGRAM CODE ###
+### RUN HISTOGRAM CODE ###
 
 if (defined $plot){
     my @files=@ALL_made_files;
     foreach my $results (@files){
 	chomp $results;
-	my $in_here="$binPath\/MakeHist_fromChartGO-10.pl";
+	my $in_here="$binPath\/MakeHist_fromChartGO-12.pl";
 	if ($in_here=~ m/ /){
 	    $in_here=~ s/ /\\ /g;
 	}
@@ -409,8 +436,8 @@ if (defined $plot){
 	if ($in_here=~ m/\)/){
 	    $in_here=~ s/\)/\\)/g;
 	}
-	#print "HERE: $in_here\n";
-	`$in_here $results $pval_cutoff $num_cutoff $plot_open $meth $sort_enrich $min_genes $max_genes $infer`;
+	print "HERE: $in_here $results $pval_cutoff $num_cutoff $plot_open $meth $sort_enrich $min_genes $max_genes $infer $query_length\n";
+	`$in_here $results $pval_cutoff $num_cutoff $plot_open $meth $sort_enrich $min_genes $max_genes $infer $query_length`;
     }
 }
 
@@ -458,7 +485,7 @@ else {
     
     foreach my $results (@ALL_made_files){
 	chomp $results;
-	my $in_here="$binPath\/MakeHist_fromChartGO-10.pl";
+	my $in_here="$binPath\/MakeHist_fromChartGO-12.pl";
 	if ($in_here=~ m/ /){
 	    $in_here=~ s/ /\\ /g;
 	}
@@ -469,8 +496,8 @@ else {
 	    $in_here=~ s/\)/\\)/g;
 	}
 	#print "HERE: $in_here\n";
-	print "$in_here $results $pval_cutoff $num_cutoff $plot_open $meth $sort_enrich $min_genes $max_genes $infer\n";
-	`perl $in_here $results $pval_cutoff $num_cutoff $plot_open $meth $sort_enrich $min_genes $max_genes $infer`;
+	print "$in_here $results $pval_cutoff $num_cutoff $plot_open $meth $sort_enrich $min_genes $max_genes $infer $query_length\n";
+	`perl $in_here $results $pval_cutoff $num_cutoff $plot_open $meth $sort_enrich $min_genes $max_genes $infer $query_length`;
     }
 }
 
@@ -478,4 +505,4 @@ print  "Script completed\n\n";
 
 #TIDY UP , temporary files
 $input=~s/\-/\_/g;
-`rm -f ACTUAL_R_CODE BACKGROUND.forR R_CODE_TO_RUN output.ofthis.test $input\.converted $input\.R_GO_subs tmp_file Image.Rdata`;
+
