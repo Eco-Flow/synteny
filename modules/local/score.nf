@@ -41,14 +41,13 @@ process SCORE {
        for gff in *.gff3.gz; do zcat \$gff > "\${gff%.gz}"; done
     fi
 
-    #Run Score for each gene on how close it is to the edge of the syntenic block
-
-    #Run score for genome X in terms of size of syntenic blacks to species Y.
-
+    # Calculate the pairwise, syntenic gene #, max syntenic and average block length.
     perl ${projectDir}/bin/summarise_anchors.pl
 
+    # Calculate average percentage protein identity (pairwise).
     perl ${projectDir}/bin/summarise_similarity.pl
 
+    # Compare syntenic lengths versus protein similarity.
     perl ${projectDir}/bin/syntenicVSsimilarity.pl
 
     #Calculates gene scores for distance to syntenic break:
