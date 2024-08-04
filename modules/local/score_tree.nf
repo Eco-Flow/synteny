@@ -9,6 +9,7 @@ process SCORE_TREE {
     publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"My_pair_synteny_identity.pdf"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Synteny_matrix.tsv"
     publishDir "$params.outdir/tables/synt_gene_scores" , mode: "${params.publish_dir_mode}", pattern:"*geneScore.tsv"
+    publishDir "$params.outdir/tables/synt_species_scores_summaries" , mode: "${params.publish_dir_mode}", pattern:"*SpeciesScoreSummary.txt"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Summary_of_pairwise_comparisons.tsv"
     publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"*-all_treesort.pdf"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
@@ -20,6 +21,7 @@ process SCORE_TREE {
     path(gffs)
     path(beds)
     path(last)
+    path(unfilteredlast)
     path(tree)
 
 
@@ -53,7 +55,7 @@ process SCORE_TREE {
     # Compare syntenic lengths versus protein similarity.
     perl ${projectDir}/bin/syntenicVSsimilarity.pl
 
-    #Calculates gene scores for distance to syntenic break:
+    #Calculates gene scores for presence in syntenic block and distance to syntenic break (Genus_species	gene_name_if syntenic	#Distance in genes to break#):
     perl ${projectDir}/bin/Synteny_gene_score.pl
     
     #Summarises gene counts of multiple species to calculate average distance to break:

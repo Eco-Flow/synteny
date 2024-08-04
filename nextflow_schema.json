@@ -120,7 +120,7 @@
         },
         "clean": {
             "type": "boolean",
-            "default": true,
+            "default": false,
             "description": "Enable cleanup function."
         },
         "custom_config": {
@@ -173,6 +173,11 @@
         "ribbon": {
           "type": "string",
           "description": "If you want to plot a ribbon plot for selected species"
+        },
+        "jcvi_ortholog_arguments": {
+          "type": "string",
+          "default": "--no_strip_names",
+          "description": "Optionally change the flags of the jcvi ortholog line, which runs variants of last"
         }
       }
     }

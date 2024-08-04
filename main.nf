@@ -175,22 +175,22 @@ workflow {
         if (params.lifted) {
             if (params.tree) {
                 treeIn = Channel.fromPath(params.tree)
-                SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), treeIn )
+                SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
                 SCORE_TREE_PLOTS(SCORE_TREE.out.filec, SCORE_TREE.out.species_order)
             } else {
-                SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
+                SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
                 SCORE_PLOTS(SCORE.out.filec)
             }
         } else {
             if (params.tree) {
                 treeIn = Channel.fromPath(params.tree)
-                SCORE_TREE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), treeIn )
+                SCORE_TREE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
                 SCORE_TREE_PLOTS(SCORE_TREE.out.filec, SCORE_TREE.out.species_order)
             } else {
-                SCORE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect())
+                SCORE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
                 SCORE_PLOTS(SCORE.out.filec)
             }

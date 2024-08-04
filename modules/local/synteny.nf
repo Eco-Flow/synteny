@@ -23,12 +23,13 @@ process SYNTENY {
     path("${sample_id}.${sample_id2}.karyotype.flipped.pdf"), emit: pdf_flipped
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
     path("${sample_id}.${sample_id2}.last.filtered"), emit: last
+    path("${sample_id}.${sample_id2}.last"), emit: unfilteredlast
     path "versions.yml", emit: versions
 
     script:
     """
     #main code block
-    python -m jcvi.compara.catalog ortholog ${sample_id} ${sample_id2} --no_strip_names
+    python -m jcvi.compara.catalog ortholog ${sample_id} ${sample_id2} ${params.jcvi_ortholog_arguments}
     python -m jcvi.compara.synteny depth --histogram ${sample_id}.${sample_id2}.anchors
     cut -f 3 ${sample_id}.${sample_id2}.last.filtered  | awk '{ sum += \$1; n++ } END { if (n > 0) print sum / n; }' > ${sample_id}.${sample_id2}.percent.similarity
     python -m jcvi.compara.synteny screen --minspan=30 --simple ${sample_id}.${sample_id2}.anchors ${sample_id}.${sample_id2}.anchors.new
