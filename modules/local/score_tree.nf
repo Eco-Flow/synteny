@@ -44,32 +44,34 @@ process SCORE_TREE {
        for gff in *.gff3.gz; do zcat \$gff > "\${gff%.gz}"; done
     fi
 
-    #Run Score for each gene on how close it is to the edge of the syntenic block
-
-    #Run score for genome X in terms of size of syntenic blacks to species Y.
-
+    # Calculate the pairwise, syntenic gene #, max syntenic and average block length.
     perl ${projectDir}/bin/summarise_anchors.pl
 
+    # Calculate average percentage protein identity (pairwise).
     perl ${projectDir}/bin/summarise_similarity.pl
 
+    # Compare syntenic lengths versus protein similarity.
     perl ${projectDir}/bin/syntenicVSsimilarity.pl
 
+    #Calculates gene scores for distance to syntenic break:
     perl ${projectDir}/bin/Synteny_gene_score.pl
-
+    
+    #Summarises gene counts of multiple species to calculate average distance to break:
     perl ${projectDir}/bin/SyntenyScoreSummary.pl
 
     #Now we run newick tools to get the correct species order, based on the phylogenetic tree in nw format.
 
-    #nw_prune $tree # This is the file called pruned_tree from Goatee
-
+    #This is the file called tree from Goatee, used to sort the species order
     nw_labels $tree | grep -v 'N[0-9]' > species_order
 
+    #Attempts to summarise all the steps run so far to produce a table (Summary_of_pairwise_comparisons.tsv)
     perl ${projectDir}/bin/Trans_location_Inversion_score_treeSort.pl
 
     #Refined junction scores:
     perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
     perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
 
+    #Merge the two outputs
     paste -d'\t' Summary_of_pairwise_comparisons.tsv Trans_Inversion_junction_count.txt > filec
 
     md5sum My_scores.tsv > My_scores.tsv.md5
