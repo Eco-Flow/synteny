@@ -64,7 +64,7 @@ foreach my $file (@files){
             #Else we can count it
             # If there is already a score:
             if($lastR_unfilt{$sp1}{$split[0]}){
-                $lastR_2_unfilt{$sp1}{$split[0]}++;
+                $lastR_unfilt{$sp1}{$split[0]}++;
             }
             else{
                 $lastR_unfilt{$sp1}{$split[0]}=1;
