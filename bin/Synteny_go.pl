@@ -1,33 +1,30 @@
 use warnings;
 use strict;
 
-
 print "Please be in folder with all the SpeciesScoreSummary and the Go folder\n";
-die "Please specify a percentage cutoff\n" unless(@ARGV==1);
+die "Please specify a percentage cutoff (e.g. 10)\n" unless(@ARGV==1);
 my $cutoff = $ARGV[0];
 
-#For each species in your Go hash folder work out species name
-my %go_key;
+#For each species in your Go folder work out species name, then store in a hash with species name -> path to file
 my @gos=`ls Go/*`;
+my %go_key;
 foreach my $sp (@gos){
     my @split=split(/\./, $sp);
     my @sp_folder=split("\/", $split[0]);
     $go_key{$sp_folder[1]}=$sp;
 }
 
-#Read in the species score summary and work out the species being tested.
+#Read in the species score summary file and work out the species being tested (should just be one per folder).
 my $file=`ls *SpeciesScoreSummary.txt`;
 chomp $file;
-print "FILE: $file\n";
 my @split=split(/\./, $file);
 my $species=$split[0];
 
-
-#import original bed used, to estimate # of zeros.
+#import original bed used, which we can use to estimate # of zeros, ones that do not show up on the synteny result, even though the gene exists.
+# Store in a hash to specify which genes are present.
 my $bed=`ls $species\.bed`;
 chomp $bed;
 my %all_genes;
-
 open(my $bedin, "<", $bed)   or die "Could not open $bed\n";
 while (my $lineB = <$bedin>){
     chomp $lineB;
@@ -35,9 +32,9 @@ while (my $lineB = <$bedin>){
     $all_genes{$splbed[3]}="YES";
 }
 
+#print "We run with species $species\n";
 
-print "We run with species $species\n";
-
+#Specify the output file names, and initialise these handles.
 my $outname1="$species\.$cutoff\.topSynteny.txt";
 open(my $out1, ">", $outname1)   or die "Could not open $outname1\n";
 my $outname2="$species\.$cutoff\.botSynteny.txt";
@@ -54,11 +51,13 @@ my $outname7="$species\.$cutoff\.zeros.txt";
 open(my $out7, ">", $outname7)   or die "Could not open $outname7\n";
 my $background="$species\.$cutoff\.bg.txt";
 open(my $out8, ">", $background)   or die "Could not open $background\n";
+my $outname9="$species\.$cutoff\.top_orthologous.txt";
+open(my $out9, ">", $outname9)   or die "Could not open $outname9\n";
+my $outname10="$species\.$cutoff\.bot_orthologous.txt";
+open(my $out10, ">", $outname10)   or die "Could not open $outname10\n";
 
-
-# Open the SpeciesScoreSummary and caluclate the total number of species total.
-# And calculate the average distance to break scores, so we can find top/bottom 10% (or user choice cutoff).
-
+# Open the SpeciesScoreSummary (first time) and calculate the total number of species total.
+# And calculate the total number of genes, so we can work out the number of genes that equate to the top/bottom 10% (or user choice cutoff).
 open(my $filein, "<", $file)   or die "Could not open $file\n";
 my $header=<$filein>;
 my $max_number_species=0;
@@ -69,8 +68,6 @@ while (my $line = <$filein>){
     my $gene=$splitl[1];
     my $score=$splitl[2];
     my $count=$splitl[3];
-    my $average=$splitl[4];
-
     #Check for max:
     if ($count >= $max_number_species){
         $max_number_species=$count;
@@ -78,19 +75,19 @@ while (my $line = <$filein>){
     $total_genes++;
 }
 close $filein;
-
+#Here is the top number of genes in the $cutoff percentage:
 my $top_percentage=$total_genes/$cutoff;
 
 print "Total number of genes: $total_genes\n";
 print "What percentage of genes are in the top $cutoff \%: $top_percentage\n";
 
-#Sort the file by specific columns:
+#Read in the SpeciesSummary again, remove the header, and sort the file by total_score (all scores for distance from break)):
 open (my $data , '<', $file)|| die "could not open $file:\n$!";
 my $head_del=<$data>;
 my @array=(<$data>);
 my @sorted=sort {(split(/\t/,$a))[2]<=>(split(/\t/,$b))[2]} @array;
 
-#TOP : Print off the x percentage of the distance value:
+#HIGH SCORE : Print off the x percentage of the distance value, genes most distant from breaks:
 for (my $i=0; $i<=$top_percentage; $i++){
     #print "$sorted[$i]";
     my @spl=split("\t", $sorted[$i]);
@@ -109,7 +106,7 @@ for (my $i=0; $i<=$top_percentage; $i++){
     print $out3 "$gene\n";
 };
 
-#BOT : Print off the last percentage of the distance value:
+#LOW SCORE : Print off the last percentage of the distance value, genes closest to breaks:
 my $top_minus_cut=$total_genes-$top_percentage;
 for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
     #print "$sorted[$i]";
@@ -129,10 +126,12 @@ for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
     print $out4 "$gene\n";
 };
 
-#Sort by total number of species syntenic to:
+
+# Sort by total number of species syntenic to target gene. 
+# E.g. if there are 5 total species, a score of 4 means it was in a syntenic block to all other species under study.:
 my @sorted2=sort {(split(/\t/,$a))[3]<=>(split(/\t/,$b))[3]} @array;
 
-#Print off the x percentage of the distance value:
+# TOP SYNTENY: Print off the x percentage of the genes with highest numbers of species syntenic:
 for (my $i=0; $i<=$top_percentage; $i++){
     #print "$sorted2[$i]";
     my @spl=split("\t", $sorted2[$i]);
@@ -150,7 +149,8 @@ for (my $i=0; $i<=$top_percentage; $i++){
     }
     print $out1 "$gene\n";    
 };
-#Print off the last percentage of the distance value:
+
+# BOT SYNTENY: Print off the x percentage of the genes with the lowest number of species syntenic:
 for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
     #print "$sorted2[$i]";
     my @spl=split("\t", $sorted2[$i]);
@@ -172,7 +172,7 @@ for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
 #Sort by average distance to break :
 my @sorted3=sort {(split(/\t/,$a))[4]<=>(split(/\t/,$b))[4]} @array;
 
-#Print off the x percentage of the distance value:
+#AVER_HIGH: Print off the x percentage of the distance value:
 for (my $i=0; $i<=$top_percentage; $i++){
     #print "$sorted3[$i]";
     my @spl=split("\t", $sorted3[$i]);
@@ -190,7 +190,8 @@ for (my $i=0; $i<=$top_percentage; $i++){
     }
     print $out5 "$gene\n";
 };
-#Print off the last percentage of the distance value:
+
+#AVER_LOW: Print off the last percentage of the distance value:
 for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
     #print "$sorted3[$i]";
     my @spl=split("\t", $sorted3[$i]);
@@ -209,6 +210,59 @@ for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
     print $out6 "$gene\n";
 };
 
+
+# Sort by number of species the gene is syntenic to.
+my @sorted4=sort {(split(/\t/,$a))[3]<=>(split(/\t/,$b))[3]} @array;
+
+# TOP ORTHOLOGOUS SYNTENY: Print off the x percentage of the genes with highest numbers of species syntenic:
+for (my $i=0; $i<=$top_percentage; $i++){
+    #print "$sorted2[$i]";
+    my @spl=split("\t", $sorted2[$i]);
+    my $gene=$spl[1];
+    my $ortholougous=$spl[5];  #This line says how many species it was orthologous to
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    if ($max_number_species == $ortholougous){
+        print $out9 "$gene\n";
+    }
+    else{
+        #Do not print it out, as the number of total comaprable species, was not the same as the ortholgous number of species. 
+    }    
+};
+
+# BOT ORTHOLOGOUS SYNTENY: Print off the x percentage of the genes with the lowest number of species syntenic:
+for (my $i=$total_genes-1; $i>=$top_minus_cut; $i--){
+    #print "$sorted2[$i]";
+    my @spl=split("\t", $sorted2[$i]);
+    my $gene=$spl[1];
+    my $ortholougous=$spl[5];  #This line says how many species it was orthologous to
+    
+    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+    if($gene =~ m/\:/){
+        my @sp1=split(/\:/, $gene);
+        $gene=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($gene =~ m/rna-/){
+        my @sp1=split(/\-/, $gene);
+        $gene=$sp1[1];
+    }
+    if ($max_number_species == $ortholougous){
+        print $out10 "$gene\n";
+    }
+    else{
+        #Do not print it out, as the number of total comaprable species, was not the same as the ortholgous number of species. 
+    }
+};
 
 # Go through the Hits from target species to all other species
 # Ending SpeciesScoreSummary.txt 
@@ -241,9 +295,6 @@ while (my $line = <$filein2>){
     my $score=$splitl[2];
     my $count=$splitl[3];
     my $average=$splitl[4];
-
-
-
 }
 
 close $out8;
@@ -285,6 +336,8 @@ print "Now run ChopGO : e.g. : ChopGO_VTS.pl -i $species\.top.txt --GO_file $go_
 `ChopGO_VTS2_v12.pl -i $species\.$cutoff\.averhigh.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
 `ChopGO_VTS2_v12.pl -i $species\.$cutoff\.averlow.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
 `ChopGO_VTS2_v12.pl -i $species\.$cutoff\.zeros.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.top_orthologous.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.bot_orthologous.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
 
 close $out1;
 close $out2;
