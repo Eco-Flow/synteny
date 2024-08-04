@@ -97,7 +97,7 @@ foreach my $species (keys %score) {
     print $outhandle "Species\tgene\ttotal_score\tcount\taverage_score\tspecies_homologous_to\n";
     foreach my $gene (keys %{$score{$species}}) {
         my $average=$score{$species}{$gene}/$count{$species}{$gene};
-        print $outhandle "$species\t$gene\t$score{$species}{$gene}\t$count{$species}{$gene}\t$average\t$lastR{$gene}\n";
+        print $outhandle "$species\t$gene\t$score{$species}{$gene}\t$count{$species}{$gene}\t$average\t$lastR{$species}{$gene}\n";
     }
     close $outhandle;
 }
