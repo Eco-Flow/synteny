@@ -71,7 +71,7 @@ Drosophila_simulans,data/Drosophila_simulans/genome.fna.gz,data/Drosophila_simul
 Drosophila_santomea,data/Drosophila_santomea/genome.fna.gz,data/Drosophila_santomea/genomic.gff.gz
 ```
 
-### Optional 
+### Optional
 
 * `--outdir /path/to/output/directory` - A path to the output directory where the results will be written to (**Default:** `Results`).
 * `--hex /path/to/hex/file` - A path to a file containing a singular, unique hex code on each line to be used when painting chromosomes (**Default:** `data/unique_hex`).
@@ -81,6 +81,13 @@ Drosophila_santomea,data/Drosophila_santomea/genome.fna.gz,data/Drosophila_santo
 * `--architecture` - An `amd` or `arm` value assigned to this parameter determines whether containers built for the amd or arm CPU architecture are used (**Default:** `amd`).
 * `--help` - A true value assigned to this parameter will cause the help message to be displayed instead of pipeline running (**Default:** `false`).
 * `--custom_config` - A path or URL to a custom configuration file.
+* `--jcvi_ortholog_arguments` - Add additional flags for the jcvi ortholog (last step). If you wish to change:
+1. the score cutoff [default: 0.7] --cscore=CSCORE
+2. Extent of flanking regions to search [default: 20]   --dist=DIST
+3. Minimum number of anchors in a cluster [default: 4] -n N, --min_size=N
+4. Quota align parameter [default: none]  --quota=QUOTA (e.g.: 1:1 to remove duplications)
+
+(**Default:** `--no_strip_names`).
 
 ## Profiles
 
