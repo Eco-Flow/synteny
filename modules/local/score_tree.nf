@@ -53,7 +53,7 @@ process SCORE_TREE {
     # Compare syntenic lengths versus protein similarity.
     perl ${projectDir}/bin/syntenicVSsimilarity.pl
 
-    #Calculates gene scores for distance to syntenic break:
+    #Calculates gene scores for presence in syntenic block and distance to syntenic break (Genus_species	gene_name_if syntenic	#Distance in genes to break#):
     perl ${projectDir}/bin/Synteny_gene_score.pl
     
     #Summarises gene counts of multiple species to calculate average distance to break:
