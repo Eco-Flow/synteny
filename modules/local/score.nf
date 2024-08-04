@@ -20,6 +20,7 @@ process SCORE {
     path(gffs)
     path(beds)
     path(last)
+    path(unfilteredlast)
 
     output:
     path("My_scores.tsv"), emit: score_combine

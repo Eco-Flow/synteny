@@ -20,6 +20,7 @@ process SCORE_TREE {
     path(gffs)
     path(beds)
     path(last)
+    path(unfilteredlast)
     path(tree)
 
 

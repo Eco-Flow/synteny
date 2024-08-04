@@ -23,6 +23,7 @@ process SYNTENY {
     path("${sample_id}.${sample_id2}.karyotype.flipped.pdf"), emit: pdf_flipped
     path("${sample_id}.${sample_id2}.percent.similarity"), emit: percsim
     path("${sample_id}.${sample_id2}.last.filtered"), emit: last
+    path("${sample_id}.${sample_id2}.last"), emit: unfilteredlast
     path "versions.yml", emit: versions
 
     script:
