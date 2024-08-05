@@ -16,7 +16,8 @@ nextflow_process {
                 // define inputs of the process here. Example:
                 Channel.fromPath("${projectDir}/data/go_input/hash_files").set{ hash_ch }
                 Channel.of(file("${projectDir}/data/go_input/Drosophila_yakuba.SpeciesScoreSummary.txt")).set{ score_summary_ch }
-                input[0] = hash_ch.combine(score_summary_ch)
+                Channel.of("10").set{ cutoff_ch }
+                input[0] = hash_ch.combine(score_summary_ch.combine(cutoff_ch))
                 Channel.fromPath( "${projectDir}/data/go_input/Drosophila_yakuba.bed").set{ bed_ch }
                 input[1] = Channel.fromPath("${projectDir}/data/synteny_input/*.bed").collect().combine(bed_ch)
                 """
@@ -31,14 +32,11 @@ nextflow_process {
             with(process.out) {
               //checks one tuple exists in go_table channel
               assert go_table.size() == 1
-              //checks ten files exist in go_table tuple
-              assert go_table[0].size() == 10
+              //checks six files exist in go_table tuple
+              assert go_table.size() == 6
               //check file corruption
-              assert path(go_table[0].get(0)).md5 == '2a9748a5ad0e176cdfaa734899e2caea'
-              assert path(go_table[0].get(2)).md5 == '9e3b664ee67ee4bd590655f5ac0132d1'
-              assert path(go_table[0].get(4)).md5 == '3046f4d63baed2cf5aa70322b7b909d9'
-              assert path(go_table[0].get(6)).md5 == 'd50e0ae221fcee9edefbaa09fa5cf9ff'
-              assert path(go_table[0].get(8)).md5 == '5d9209c5f39c3dbacd41eceb4c0387ed'
+              assert path(go_table[0].get(0)).md5 == '7b5c1257d7d277c55b4b682aa3695a0f'
+              assert path(go_table[0].get(1)).md5 == 'd7e2dad0fcff3fc0061d4c51d03bc2fb'
             }
         }
     }

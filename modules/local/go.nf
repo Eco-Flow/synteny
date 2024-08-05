@@ -22,10 +22,10 @@ process GO {
 
     perl ${projectDir}/bin/Synteny_go.pl ${cutoff}
 
-    #Hashed out until we can fix issue of md5 when we do not know for certain the cutoff value.
-    #for tab_file in Res10/*.tab; do
-    #  md5sum \$tab_file > \$tab_file.md5
-    #done
+    #Calculate md5 sums for output
+    for tab_file in *ALL.tab; do
+        md5sum \$tab_file > \$tab_file.md5
+    done
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
