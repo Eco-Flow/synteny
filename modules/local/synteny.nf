@@ -32,7 +32,7 @@ process SYNTENY {
     python -m jcvi.compara.catalog ortholog ${sample_id} ${sample_id2} ${params.jcvi_ortholog_arguments}
     python -m jcvi.compara.synteny depth --histogram ${sample_id}.${sample_id2}.anchors
     cut -f 3 ${sample_id}.${sample_id2}.last.filtered  | awk '{ sum += \$1; n++ } END { if (n > 0) print sum / n; }' > ${sample_id}.${sample_id2}.percent.similarity
-    python -m jcvi.compara.synteny screen --minspan=30 --simple ${sample_id}.${sample_id2}.anchors ${sample_id}.${sample_id2}.anchors.new
+    python -m jcvi.compara.synteny screen ${params.jcvi_screen_arguments} --simple ${sample_id}.${sample_id2}.anchors ${sample_id}.${sample_id2}.anchors.new
     
 
     #Echo a layout format based on the input file name
