@@ -57,7 +57,7 @@ foreach my $sp (keys %species_list) {
 }
 
 #Create job type array:
-my @job_type_array=("topSynteny","botSynteny","averhigh","averlow","highScore","lowScore");
+my @job_type_array=("topSynteny","botSynteny","averhigh","averlow","highScore","lowScore","top_orthologous","bot_orthologous");
 
 #Create output files
 my $outname="Go_summary_$comparison_percentage\_all_merged.tsv";
@@ -74,6 +74,10 @@ my $outname6="Go_summary_$comparison_percentage\_highScore.tsv";
 open(my $outhandle6, ">", $outname6)   or die "Could not open $outname6\n";
 my $outname7="Go_summary_$comparison_percentage\_lowScore.tsv";
 open(my $outhandle7, ">", $outname7)   or die "Could not open $outname7\n";
+my $outname8="Go_summary_$comparison_percentage\_top_orthologous.tsv";
+open(my $outhandle8, ">", $outname8)   or die "Could not open $outname8\n";
+my $outname9="Go_summary_$comparison_percentage\_bot_orthologous.tsv";
+open(my $outhandle9, ">", $outname9)   or die "Could not open $outname9\n";
 
 print $outhandle "GO_ID\tGO_term";
 print $outhandle2 "GO_ID\tGO_term";
@@ -82,13 +86,12 @@ print $outhandle4 "GO_ID\tGO_term";
 print $outhandle5 "GO_ID\tGO_term";
 print $outhandle6 "GO_ID\tGO_term";
 print $outhandle7 "GO_ID\tGO_term";
-
+print $outhandle8 "GO_ID\tGO_term";
+print $outhandle9 "GO_ID\tGO_term";
 
 foreach my $types ( @job_type_array ) {
     foreach my $species ( @species_array ) {
-
         print $outhandle "\t$species\_$types";
-
     }
 }
 
@@ -99,16 +102,19 @@ foreach my $species ( @species_array ) {
     print $outhandle5 "\t$species";
     print $outhandle6 "\t$species";
     print $outhandle7 "\t$species";
+    print $outhandle8 "\t$species";
+    print $outhandle9 "\t$species";
 }
 
-print $outhandle "\tCount_topSynteny\tCount_botSynteny\tCount_averhigh\tCount_averlow\tCount_highScore\tCount_lowScore\n";
+print $outhandle "\tCount_topSynteny\tCount_botSynteny\tCount_averhigh\tCount_averlow\tCount_highScore\tCount_lowScore\tCount_top_orthologous\tCount_bot_orthologous\n";
 print $outhandle2 "\tCount_significant\n";
 print $outhandle3 "\tCount_significant\n";
 print $outhandle4 "\tCount_significant\n";
 print $outhandle5 "\tCount_significant\n";
 print $outhandle6 "\tCount_significant\n";
 print $outhandle7 "\tCount_significant\n";
-
+print $outhandle8 "\tCount_significant\n";
+print $outhandle9 "\tCount_significant\n";
 
 foreach my $goterms (keys %go_key) {
     print $outhandle "$goterms\t$go_names{$goterms}";
@@ -118,7 +124,9 @@ foreach my $goterms (keys %go_key) {
     print $outhandle5 "$goterms\t$go_names{$goterms}";
     print $outhandle6 "$goterms\t$go_names{$goterms}";
     print $outhandle7 "$goterms\t$go_names{$goterms}";
-    
+    print $outhandle8 "$goterms\t$go_names{$goterms}";
+    print $outhandle9 "$goterms\t$go_names{$goterms}";
+
     #All job_type_array
     #My tests_signif count for all sampled:
     my %count_pval;
@@ -158,7 +166,13 @@ foreach my $goterms (keys %go_key) {
                 }
                 if($types eq "lowScore"){
                 	print $outhandle7 "\t$go_key{$goterms}{$types}{$species}";
-                }                     
+                }
+                if($types eq "top_orthologous"){
+                    print $outhandle8 "\t$go_key{$goterms}{$types}{$species}";
+                } 
+                if($types eq "bot_orthologous"){
+                    print $outhandle9 "\t$go_key{$goterms}{$types}{$species}";
+                }                 
             }
             else{
             	#ALL types:
@@ -181,7 +195,13 @@ foreach my $goterms (keys %go_key) {
                 }
                 if($types eq "lowScore"){
                 	print $outhandle7 "\tNA";
-                }  
+                } 
+                if($types eq "top_orthologous"){
+                    print $outhandle8 "\tNA";
+                }
+                if($types eq "bot_orthologous"){
+                    print $outhandle9 "\tNA";
+                } 
             }
         }
 
@@ -245,12 +265,24 @@ foreach my $goterms (keys %go_key) {
 	    		print $outhandle7 "\t0";
 	    	}
 	    }
-
+        if($types eq "top_orthologous"){
+            if ($count_pval{$goterms}{$types}){
+            print $outhandle8 "\t$count_pval{$goterms}{$types}";
+            }
+            else{
+                print $outhandle8 "\t0";
+            }
+        }       
+        if($types eq "bot_orthologous"){
+            if ($count_pval{$goterms}{$types}){
+            print $outhandle9 "\t$count_pval{$goterms}{$types}";
+            }
+            else{
+                print $outhandle9 "\t0";
+            }
+        }
 
     }
-
-    
-
 
     print $outhandle "\n";
     print $outhandle2 "\n";
@@ -259,9 +291,8 @@ foreach my $goterms (keys %go_key) {
     print $outhandle5 "\n";
     print $outhandle6 "\n";
     print $outhandle7 "\n";
+    print $outhandle8 "\n";
+    print $outhandle9 "\n";
 
 }
-
-
-
 

@@ -17,7 +17,9 @@ file_paths <- c(
   paste0("Go_summary_", file_name, "_averhigh.tsv"),
   paste0("Go_summary_", file_name, "_averlow.tsv"),
   paste0("Go_summary_", file_name, "_highScore.tsv"),
-  paste0("Go_summary_", file_name, "_lowScore.tsv")
+  paste0("Go_summary_", file_name, "_lowScore.tsv"),
+  paste0("Go_summary_", file_name, "_top_orthologous.tsv"),
+  paste0("Go_summary_", file_name, "_bot_orthologous.tsv")
 )
 
 # Iterate over each file path
