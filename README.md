@@ -156,6 +156,7 @@ Subdirectories:
 
 All of the pipeline run information can be found inside `pipeline_info`.
 
+
 ## Citation
 
 This pipeline is not yet published. If you use this pipeline for your research please cite the main tool set we use (JCVI):
@@ -168,6 +169,6 @@ Ensure you record the *release* of the pipeline that you ran, as versions will c
 
 If you need any support do not hesitate to contact us at any of:
 
-`c.wyatt [at] ucl.ac.uk` 
-
 `ecoflow.ucl [at] gmail.com`
+
+`c.wyatt [at] ucl.ac.uk`
