@@ -7,21 +7,46 @@ if (!requireNamespace("lattice", quietly = TRUE)) {
 if (!requireNamespace("gridExtra", quietly = TRUE)) {
   install.packages("gridExtra")
 }
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr")
+}
 library(lattice)
 library(gridExtra)
+library(dplyr)
+
+
+# Function to normalize comparison strings
+normalize_comparison <- function(comparison) {
+  species <- unlist(strsplit(comparison, "\\."))
+  return(paste(sort(species), collapse = "."))
+}
+
 
 # Function to process each file
 process_file <- function(file_path) {
   # Read the file, skipping the header
-  data <- read.table(file_path, header = FALSE, sep = "\t", skip = 1)
+  data <- as.data.frame(read.table(file_path, header = FALSE, sep = "\t", skip = 1))
   
   # Extract the 8th, 11th, and 17th columns
-  extracted_data <- data[, c(8, 11, 17)]
+  extracted_data <- data[, c(1, 8, 11, 17)]
+
+  # Add a combined name column
+  extracted_data$Normalized_V1 <- sapply(extracted_data$V1, normalize_comparison)
   
+  # Average pairs:
+  averaged_df <- extracted_data %>%
+  dplyr::group_by(Normalized_V1) %>%
+  dplyr::summarise(
+    Avg_V8 = mean(V8),
+    Avg_V11 = mean(V11),
+    Avg_V17 = mean(V17)
+  ) %>%
+  dplyr::select(Avg_V8, Avg_V11, Avg_V17)
+
   # Rename columns for clarity
-  colnames(extracted_data) <- c("Syntenic_Breaks", "Protein_Identity", "Translocation_Junctions")
+  colnames(averaged_df) <- c("Syntenic_Breaks", "Protein_Identity", "Translocation_Junctions")
   
-  return(extracted_data)
+  return(averaged_df)
 }
 
 # Function to create the plots
