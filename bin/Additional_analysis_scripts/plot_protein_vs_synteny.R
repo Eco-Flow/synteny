@@ -4,7 +4,11 @@
 if (!requireNamespace("lattice", quietly = TRUE)) {
   install.packages("lattice")
 }
+if (!requireNamespace("gridExtra", quietly = TRUE)) {
+  install.packages("gridExtra")
+}
 library(lattice)
+library(gridExtra)
 
 # Function to process each file
 process_file <- function(file_path) {
@@ -20,8 +24,8 @@ process_file <- function(file_path) {
   return(extracted_data)
 }
 
-# Main function
-plot_syntenic_vs_protein <- function(files, colors = NULL, shapes = NULL) {
+# Function to create the plots
+create_plots <- function(files, colors = NULL, shapes = NULL) {
   # Initialize a list to hold data from each file
   all_data <- list()
   labels <- character(length(files))  # To store labels for the key
@@ -46,49 +50,65 @@ plot_syntenic_vs_protein <- function(files, colors = NULL, shapes = NULL) {
   plot_colors <- if (!is.null(colors)) strsplit(colors, ",")[[1]] else NULL
   plot_shapes <- if (!is.null(shapes)) as.numeric(strsplit(shapes, ",")[[1]]) else NULL
   
-  # Construct the plot calls conditionally adding colors and shapes
-  plot1_call <- list(
-    Syntenic_Breaks ~ Protein_Identity,
-    data = combined_data,
-    groups = combined_data$Source,
-    auto.key = list(points = TRUE, text = labels, title = "Source File"),
-    xlab = "Protein Identity",
-    ylab = "Number of Syntenic Breaks",
-    main = "Protein Identity vs. Number of Syntenic Breaks"
-  )
+  # Define the settings for symbols
+  symbol_settings <- list(col = plot_colors, pch = plot_shapes, fill = plot_colors)
   
-  plot2_call <- list(
-    Translocation_Junctions ~ Protein_Identity,
-    data = combined_data,
-    groups = combined_data$Source,
-    auto.key = list(points = TRUE, text = labels, title = "Source File"),
-    xlab = "Protein Identity",
-    ylab = "Number of Translocation Junctions",
-    main = "Protein Identity vs. Number of Translocation Junctions"
-  )
+  # Create the first plot
+  plot1 <- xyplot(Syntenic_Breaks ~ Protein_Identity, data = combined_data,
+                  groups = combined_data$Source,
+                  auto.key = FALSE, # Disable auto key for custom key placement
+                  xlab = "Protein Identity",
+                  ylab = "Number of Syntenic Breaks",
+                  main = "Protein Identity vs. Number of Syntenic Breaks",
+                  par.settings = list(superpose.symbol = symbol_settings))
   
-  if (!is.null(plot_colors)) {
-    plot1_call$col <- plot_colors
-    plot2_call$col <- plot_colors
-  }
+  # Create the second plot
+  plot2 <- xyplot(Translocation_Junctions ~ Protein_Identity, data = combined_data,
+                  groups = combined_data$Source,
+                  auto.key = FALSE, # Disable auto key for custom key placement
+                  xlab = "Protein Identity",
+                  ylab = "Number of Translocation Junctions",
+                  main = "Protein Identity vs. Number of Translocation Junctions",
+                  par.settings = list(superpose.symbol = symbol_settings))
   
-  if (!is.null(plot_shapes)) {
-    plot1_call$pch <- plot_shapes
-    plot2_call$pch <- plot_shapes
-  }
-  
-  # Open a PDF device for output
-  pdf("protein_vs_synteny.pdf", width = 11.7, height = 8.3)  # A4 size in inches
-  
-  # Create the plots
-  plot1 <- do.call(xyplot, plot1_call)
-  plot2 <- do.call(xyplot, plot2_call)
+  # Open a PDF device for the plots
+  pdf("plots.pdf", width = 11.7, height = 8.3)  # A4 size in inches
   
   # Arrange the plots side by side
-  print(plot1, position = c(0, 0, 0.5, 1), more = TRUE)
-  print(plot2, position = c(0.5, 0, 1, 1))
+  grid.arrange(plot1, plot2, ncol = 2)
   
-  # Close the PDF device
+  # Close the PDF device for the plots
+  dev.off()
+  
+  # Create a separate plot for the legend
+  legend_data <- data.frame(
+    Source = labels,
+    Color = plot_colors,
+    Shape = plot_shapes
+  )
+  
+  legend_plot <- xyplot(1 ~ 1, type = "n", xlab = "", ylab = "",
+                        xlim = c(0, 2), ylim = c(0, length(labels) + 1),
+                        main = "Key",
+                        panel = function(...) {
+                          panel.grid()
+                          for (i in seq_along(labels)) {
+                            panel.points(0.5, length(labels) - i + 1, 
+                                         col = legend_data$Color[i],
+                                         pch = legend_data$Shape[i],
+                                         cex = 2)  # Increase size of symbols
+                            panel.text(1.5, length(labels) - i + 1,
+                                       labels[i], pos = 4, cex = 1, font = 2)  # Make text bold
+                          }
+                        })
+  
+  # Open a PDF device for the legend
+  pdf("legend.pdf", width = 6, height = 6)  # Increase size if needed
+  
+  # Print the legend plot
+  print(legend_plot)
+  
+  # Close the PDF device for the legend
   dev.off()
 }
 
@@ -104,5 +124,4 @@ colors <- if (length(args) > length(input_files)) args[length(input_files) + 1] 
 shapes <- if (length(args) > length(input_files) + 1) args[length(input_files) + 2] else NULL
 
 # Call the main function with the provided command line arguments
-plot_syntenic_vs_protein(input_files, colors, shapes)
-
+create_plots(input_files, colors, shapes)
