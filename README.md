@@ -116,7 +116,7 @@ If you want to run this pipeline on your institute's on-premise HPC or specific 
 **Please note:** The `-resume` flag uses previously cached successful runs of the pipeline.
 
 * Running the pipeline with local and Docker profiles:
-`nextflow run main.nf -profile docker,local -resume --input data/Example-accession.csv`
+`nextflow run main.nf -profile docker -resume --input data/Example-accession.csv`
 
 * Running the pipeline with Singularity and test profiles:
 `nextflow run main.nf -profile singularity,test`
