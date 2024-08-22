@@ -115,14 +115,14 @@ If you want to run this pipeline on your institute's on-premise HPC or specific 
 
 **Please note:** The `-resume` flag uses previously cached successful runs of the pipeline.
 
-* Running the pipeline with local and Docker profiles:
-`nextflow run main.nf -profile docker -resume --input data/Example-accession.csv`
+* Running the pipeline with Singularity profiles and a chosen input csv file:
+`nextflow run main.nf -profile singularity -resume --input data/Example-accession.csv`
 
-* Running the pipeline with Singularity and test profiles:
-`nextflow run main.nf -profile singularity,test`
+* Running the pipeline with Docker and test profiles:
+`nextflow run main.nf -resume -profile docker,test`
 
 * Running the pipeline with all parameters:
-`nextflow run main.nf -profile apptainer,local -resume --input data/Example-local.csv --clean false --architecture arm --go data/go_input/hash_files --tree data/score_tree_input/tree.txt`
+`nextflow run main.nf -profile docker,local -resume --input data/Example-local.csv --clean true --architecture arm --go data/go_input/hash_files --tree data/score_tree_input/tree.txt --ribbon Drosophila_yakuba,Drosophila_simulans,Drosophila_santomea`
 
 * Running the pipeline with a custom config file:
 `nextflow run main.nf -profile docker,aws_batch -resume --input data/Example-accession.csv --custom_config /path/to/custom/config`

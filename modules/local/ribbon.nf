@@ -1,9 +1,8 @@
 process RIBBON {
 
     label 'process_single'
-    tag "plot ribbon all"
+    tag "$target"
     container = 'ecoflowucl/jcvi:python-3.10_last-1522_StatisticsBasic' 
-    publishDir "$params.outdir/figures/ribbon" , mode: "${params.publish_dir_mode}", pattern:"Ribbon.pdf"
 
     input:
     path(anchors)
@@ -18,9 +17,11 @@ process RIBBON {
     """
     echo ${target} > species.csv
 
+    echo '${params.jcvi_screen_arguments}' > my_arguments
+
     #Perl script to make simple anchor files for each comparison.
-    jcvisimple.pl
-    
+    jcvisimple.pl my_arguments
+
     #Perl script to wrote input layout for the species chosen.
     ribbon.pl
 
