@@ -9,7 +9,7 @@ log.info """\
 
  Authors:
    - Chris Wyatt <c.wyatt@ucl.ac.uk>
-   - Simon Murray <simon.murray@ucl.ac.uk>
+   - Simon Murray
 
  -----------------------------------------
 
