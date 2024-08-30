@@ -224,12 +224,12 @@ workflow {
         //Get the inversion translocation scores in a new channel
 
         if ( params.tree ){
-            species_inver = SCORE_TREE.out.geneinverdistancescores
-            species_trans = SCORE_TREE.out.genetransdistancescores
+            species_inver = SCORE_TREE.out.geneinverdistancescores.collect()
+            species_trans = SCORE_TREE.out.genetransdistancescores.collect()
         }
         else{
-            species_inver = SCORE.out.geneinverdistancescores
-            species_trans = SCORE.out.genetransdistancescores
+            species_inver = SCORE.out.geneinverdistancescores.collect()
+            species_trans = SCORE.out.genetransdistancescores.collect()
         }
 
         GO ( mergedChannel , JCVI.out.beds.collect() , species_inver , species_trans )
