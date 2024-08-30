@@ -7,6 +7,8 @@ process GO {
 
     input:
     tuple path(go, stageAs: 'Go'), path(speciessummaries), val (cutoff)
+    path(inversion_distances)
+    path(translocation_distances)
     path(beds)
 
 

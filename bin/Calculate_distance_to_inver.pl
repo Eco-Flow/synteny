@@ -100,7 +100,7 @@ foreach my $bed_file (@bed_files) {
     my $gene_scores = process_bed_file($bed_file, $known_genes_combined);
 
     # Print the results
-    open my $output_fh, '>', "$species\_gene_scores.txt" or die "Could not open output file: $!";
+    open my $output_fh, '>', "$species\.inversion_gene_scores.txt" or die "Could not open output file: $!";
     foreach my $key (sort keys %$gene_scores) {
         print $output_fh "$key\t$gene_scores->{$key}\n";
     }

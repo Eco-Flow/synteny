@@ -34,6 +34,8 @@ process SCORE {
     path("Summary_of_pairwise_comparisons.tsv"), emit:trans_inver_summary
     path("Trans_Inversion_junction_merged.txt"), emit: filec
     path("*Classification_summary.tsv"), emit:classifications
+    path("*.translocation_gene_scores.txt"), emit:genetransdistancescores
+    path("*.inversion_gene_scores.txt"), emit:geneinverdistancescores
     path "versions.yml", emit: versions
 
     script:
@@ -64,6 +66,10 @@ process SCORE {
     #Refined junction scores:
     perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
     perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
+
+    #Calculate gene scores for inversion and translocation junction distance
+    perl ${projectDir}/bin/Calculate_distance_to_inver.pl
+    perl ${projectDir}/bin/Calculate_distance_to_trans.pl
 
     #Merge the two outputs
     paste -d'\t' Summary_of_pairwise_comparisons.tsv Trans_Inversion_junction_count.txt > Trans_Inversion_junction_merged.txt
