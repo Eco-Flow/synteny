@@ -9,7 +9,7 @@ log.info """\
 
  Authors:
    - Chris Wyatt <c.wyatt@ucl.ac.uk>
-   - Simon Murray <simon.murray@ucl.ac.uk>
+   - Simon Murray
 
  -----------------------------------------
 
@@ -221,7 +221,18 @@ workflow {
         // Combine channels using cross to pair each element of go_and_summary with each element of cutoffValues
         mergedChannel = go_and_summary.combine(cutoffValues)
 
-        GO ( mergedChannel , JCVI.out.beds.collect() )
+        //Get the inversion translocation scores in a new channel
+
+        if ( params.tree ){
+            species_inver = SCORE_TREE.out.geneinverdistancescores.collect()
+            species_trans = SCORE_TREE.out.genetransdistancescores.collect()
+        }
+        else{
+            species_inver = SCORE.out.geneinverdistancescores.collect()
+            species_trans = SCORE.out.genetransdistancescores.collect()
+        }
+
+        GO ( mergedChannel , JCVI.out.beds.collect() , species_inver , species_trans )
         ch_versions = ch_versions.mix(GO.out.versions.first())
 
         //GO.out.go_table.view()

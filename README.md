@@ -122,7 +122,7 @@ If you want to run this pipeline on your institute's on-premise HPC or specific 
 `nextflow run main.nf -resume -profile docker,test`
 
 * Running the pipeline with all parameters:
-`nextflow run main.nf -profile docker,local -resume --input data/Example-local.csv --clean true --architecture arm --go data/go_input/hash_files --tree data/score_tree_input/tree.txt --ribbon Drosophila_yakuba,Drosophila_simulans,Drosophila_santomea`
+`nextflow run main.nf -profile docker,local -resume --input data/Example-local.csv --go data/go_input/hash_files --tree data/score_tree_input/tree.txt --ribbon Drosophila_yakuba,Drosophila_simulans,Drosophila_santomea --score`
 
 * Running the pipeline with a custom config file:
 `nextflow run main.nf -profile docker,aws_batch -resume --input data/Example-accession.csv --custom_config /path/to/custom/config`

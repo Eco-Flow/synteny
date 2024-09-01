@@ -11,7 +11,6 @@ open(my $OUT, ">", $outname)   or die "Could not open $outname\n";
 #Print header of output file- see after 236 where we print this line
 print $OUT "Comparison\tTranslocation_junctions\tInversion_junctions\tSame_direction_duplication_junctions\tLoop_direction_duplication_junctions\n";
 
-
 foreach my $file (@breaks){
 	chomp $file;
 	#Sort out which name comparison we are making
@@ -19,6 +18,11 @@ foreach my $file (@breaks){
 	my $species1=$split_name[0];
 	my $species2=$split_name[1];
 	my $combName="$species1\.$species2";
+
+	my $outname2="$combName\.Translocation_gene_boundaries.txt";
+	open(my $OUT2, ">", $outname2)   or die "Could not open $outname2\n";
+	my $outname3="$combName\.Inversion_gene_boundaries.txt";
+	open(my $OUT3, ">", $outname3)   or die "Could not open $outname3\n";
 
 	#Initiate out file handle
 	my $outfile="$combName\.Classification_summary.tsv";
@@ -158,6 +162,7 @@ foreach my $file (@breaks){
 				#rest must be inversions:
 				$junction_type="Inversion";
 				$inversions++;
+				print $OUT3 "$sp[-1]\n$sp[-2]\n";
 			}
 			print $out "$chr\t$syn1\t$syn2\t$min_block1\t$max_block1\t$sta_1\t$end_1\t$sta_2\t$end_2\t$gap\t$junction_type\n";
 		}
@@ -165,6 +170,9 @@ foreach my $file (@breaks){
 			#Then its a translocation, we cannot caluclate a gap
 			print $out "$chr\t$syn1\t$syn2\t$min_block1\t$max_block1\t$sta_1\t$end_1\t$sta_2\t$end_2\tNA\tTranslocation\n";
 			$translocations++;
+
+			#Save genes that are on the boundary of translocations:
+			print $OUT2 "$sp[-1]\n$sp[-2]\n";
 		}
 	    
 	}
@@ -174,6 +182,7 @@ foreach my $file (@breaks){
 	close $out;
 	close $in_break;
 	close $in_order;
+	close $OUT2;
 }
 
 
