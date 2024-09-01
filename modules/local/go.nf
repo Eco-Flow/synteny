@@ -21,8 +21,10 @@ process GO {
     script:
     """
     #Run GO on a variety of cutoffs, plus a user parameter (default 10, call params.cutoff)
-
     perl ${projectDir}/bin/Synteny_go.pl ${cutoff}
+
+    #Run GO on junction lists:
+    perl ${projectDir}/bin/Junction_go.pl ${cutoff} ${inversion_distances}
 
     #Calculate md5 sums for output
     for tab_file in *ALL.tab; do
