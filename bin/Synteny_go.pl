@@ -329,15 +329,15 @@ print "$score matches and $zscore zeros\n";
 #Now run Chopgo
 print "Now run ChopGO : e.g. : ChopGO_VTS.pl -i $species\.top.txt --GO_file $go_key{$species}\n";
 
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.topSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.botSynteny.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.highScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.lowScore.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.averhigh.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.averlow.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.zeros.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.top_orthologous.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.bot_orthologous.txt --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.topSynteny.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.botSynteny.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.highScore.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.lowScore.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.averhigh.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.averlow.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.zeros.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.top_orthologous.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $species\.$cutoff\.bot_orthologous.txt --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
 
 close $out1;
 close $out2;

@@ -73,5 +73,5 @@ close $bottom_fh;
 print "Results written to $top_output_file and $bottom_output_file\n";
 
 #Run GO enrichment analysis on lists
-`ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg $species\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg $species\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
+`ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg $species\.$cutoff\.bg.txt`;
