@@ -40,7 +40,7 @@ while (my $line = <$fh>) {
     # Skip if the value is 'NA'
     next if $fields[2] eq 'NA';
     push @data, [$fields[1], $fields[2]];  # Store gene and value
-    print $backsave "$fields[0]\n";
+    print $backsave "$fields[1]\n";
 }
 close $fh;
 close $backsave;
@@ -63,8 +63,8 @@ else{
     my $top_cutoff = $data[-$num_elements][1];
 
     # Prepare output filenames
-    my $top_output_file = "top_${percentage}_percent.txt";
-    my $bottom_output_file = "bottom_${percentage}_percent.txt";
+    my $top_output_file = "$species\_top_${percentage}_percent.txt";
+    my $bottom_output_file = "$species\_bottom_${percentage}_percent.txt";
 
     # Open files for writing
     open my $top_fh, '>', $top_output_file or die "Could not open file '$top_output_file': $!";

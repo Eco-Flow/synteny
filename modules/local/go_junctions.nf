@@ -1,14 +1,13 @@
 process GO_JUNCTIONS {
 
     label 'process_single'
-    tag "Run Junction GO ($cutoff percent)"
+    tag "Run $junction_score : ($cutoff percent)"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
-    publishDir "$params.outdir/output_data/go_junction_results" , mode: "${params.publish_dir_mode}"
+    publishDir "$params.outdir/figures/go_junction_results" , mode: "${params.publish_dir_mode}"
 
     input:
-    tuple path(go, stageAs: 'Go'), path(inversion_distances), val (cutoff)
+    tuple path(go, stageAs: 'Go'), path(junction_score), val (cutoff)
     path(beds)
-    //path(translocation_distances)
 
     output:
     path( "*.pdf" ), emit: go_pdf, optional:true
@@ -18,6 +17,7 @@ process GO_JUNCTIONS {
 
     script:
     """
+    
     # Check if any files match the pattern
     for file in *gene_scores.txt; do
     if [ -e "\$file" ]; then
