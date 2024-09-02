@@ -1,7 +1,7 @@
 process GO_JUNCTIONS {
 
     label 'process_single'
-    tag "$speciessummaries ($cutoff percent)"
+    tag "Run Junction GO ($cutoff percent)"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_junction_results" , mode: "${params.publish_dir_mode}"
 
@@ -34,9 +34,9 @@ process GO_JUNCTIONS {
     #perl ${projectDir}/bin/Junction_go.pl ${cutoff} ${inversion_distances}
 
     #Calculate md5 sums for output
-    for tab_file in *ALL.tab; do
-        md5sum \$tab_file > \$tab_file.md5
-    done
+    #for tab_file in *ALL.tab; do
+    #   md5sum \$tab_file > \$tab_file.md5
+    #done
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

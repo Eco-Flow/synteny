@@ -6,6 +6,7 @@ use warnings;
 my @gos=`ls Go/*`;
 my %go_key;
 foreach my $sp (@gos){
+    chomp $sp;
     my @split=split(/\./, $sp);
     my @sp_folder=split("\/", $split[0]);
     $go_key{$sp_folder[1]}=$sp;
@@ -23,8 +24,9 @@ my $input_file = $ARGV[1];
 open my $fh, '<', $input_file or die "Could not open file '$input_file': $!";
 
 # Find out species we are using:
-my @name=split("\.", $input_file);
+my @name=split(/\./, $input_file);
 my $species=$name[0];
+chomp $species;
 
 
 my @data;
@@ -59,9 +61,29 @@ open my $bottom_fh, '>', $bottom_output_file or die "Could not open file '$botto
 foreach my $entry (@data) {
     my ($gene, $value) = @$entry;
     if ($value >= $top_cutoff) {
+        #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+        if($gene =~ m/\:/){
+            my @sp1=split(/\:/, $gene);
+            $gene=$sp1[1];
+        }
+        # Rename weird NCBI id rna- prefix
+        if($gene =~ m/rna-/){
+            my @sp1=split(/\-/, $gene);
+            $gene=$sp1[1];
+        }
         print $top_fh "$gene\n";
     }
     if ($value <= $bottom_cutoff) {
+        #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+        if($gene =~ m/\:/){
+            my @sp1=split(/\:/, $gene);
+            $gene=$sp1[1];
+        }
+        # Rename weird NCBI id rna- prefix
+        if($gene =~ m/rna-/){
+            my @sp1=split(/\-/, $gene);
+            $gene=$sp1[1];
+        }
         print $bottom_fh "$gene\n";
     }
 }
@@ -73,5 +95,11 @@ close $bottom_fh;
 print "Results written to $top_output_file and $bottom_output_file\n";
 
 #Run GO enrichment analysis on lists
-`ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg $species\.$percentage\.bg.txt`;
-`ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg $species\.$percentage\.bg.txt`;
+
+#print "< $species >\n";
+
+
+print "ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species}  \n"; # -bg $species\.$percentage\.bg.txt
+print "ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} \n"; # -bg $species\.$percentage\.bg.txt
+`ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species}`; # -bg $species\.$percentage\.bg.txt
+`ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} `; #-bg $species\.$percentage\.bg.txt
