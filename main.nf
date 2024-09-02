@@ -42,7 +42,8 @@ include { CHROMOPAINT } from './modules/local/chromo.nf'
 include { SCORE } from './modules/local/score.nf'
 include { SCORE_TREE } from './modules/local/score_tree.nf'
 include { GO } from './modules/local/go.nf'
-include { GO_JUNCTIONS } from './modules/local/go_junctions.nf'
+include { GO_JUNCTIONS as GO_JUNCTIONS_INVER } from './modules/local/go_junctions.nf'
+include { GO_JUNCTIONS as GO_JUNCTIONS_TRANS } from './modules/local/go_junctions.nf'
 include { GO_SUMMARISE } from './modules/local/go_summarise.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
@@ -235,17 +236,18 @@ workflow {
 
         //creating 3 instances of a channel with the GO hash files and species summary files 
         go_folder2 = Channel.fromPath(params.go)
-        go_folder2.combine(species_inver.flatten()).set{ go_and_summary2 }
+        go_folder2.combine(species_inver.flatten()).set{ go_and_summary_inver }
+        go_folder2.combine(species_trans.flatten()).set{ go_and_summary_trans }
 
         // Combine the channels of species files with the cutoff values
-        mergedChannel2 = go_and_summary2.combine(cutoffValues)
+        mergedChannel_inver = go_and_summary_inver.combine(cutoffValues)
+        mergedChannel_trans = go_and_summary_trans.combine(cutoffValues)
 
         GO ( mergedChannel , JCVI.out.beds.collect() )
-        GO_JUNCTIONS ( mergedChannel2 , JCVI.out.beds.collect() )
-        //GO_JUNCTIONS_TRANS ( species_trans , JCVI.out.beds.collect() )
+        GO_JUNCTIONS_INVER ( mergedChannel_inver , JCVI.out.beds.collect() )
+        GO_JUNCTIONS_TRANS ( mergedChannel_trans , JCVI.out.beds.collect() )
 
         ch_versions = ch_versions.mix(GO.out.versions.first())
-
 
         GO_SUMMARISE ( GO.out.go_table.groupTuple() )
         ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)

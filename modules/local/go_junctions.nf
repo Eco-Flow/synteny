@@ -11,15 +11,15 @@ process GO_JUNCTIONS {
     //path(translocation_distances)
 
     output:
-    path( "*.pdf" ), emit: go_pdf
-    path( "*ALL.tab" ), emit: go_pvals
-    tuple val(cutoff), path( "*results_ALL.tab" ), emit: go_table
+    path( "*.pdf" ), emit: go_pdf, optional:true
+    path( "*ALL.tab" ), emit: go_pvals, optional:true
+    tuple val(cutoff), path( "*results_ALL.tab" ), emit: go_table, optional:true
     path "versions.yml", emit: versions
 
     script:
     """
-    for file in *gene_scores.txt; do
     # Check if any files match the pattern
+    for file in *gene_scores.txt; do
     if [ -e "\$file" ]; then
         perl "${projectDir}/bin/Junction_go.pl" ${cutoff} "\$file"
     else
@@ -27,9 +27,6 @@ process GO_JUNCTIONS {
         break
     fi
     done
-
-    #Run GO on junction lists:
-    #perl ${projectDir}/bin/Junction_go.pl ${cutoff} ${inversion_distances}
 
     #Calculate md5 sums for output
     #for tab_file in *ALL.tab; do

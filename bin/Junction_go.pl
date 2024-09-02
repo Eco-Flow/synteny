@@ -28,6 +28,10 @@ my @name=split(/\./, $input_file);
 my $species=$name[0];
 chomp $species;
 
+#Save output of genes tested:
+my $back="Background.txt";
+open my $backsave, '>', $back or die "Could not open file '$back': $!";
+
 
 my @data;
 while (my $line = <$fh>) {
@@ -36,8 +40,10 @@ while (my $line = <$fh>) {
     # Skip if the value is 'NA'
     next if $fields[2] eq 'NA';
     push @data, [$fields[1], $fields[2]];  # Store gene and value
+    print $backsave "$fields[0]\n";
 }
 close $fh;
+close $backsave;
 
 # Sort the data by the third column (numeric comparison)
 @data = sort { $a->[1] <=> $b->[1] } @data;
@@ -45,61 +51,67 @@ close $fh;
 # Calculate the number of elements in the top/bottom X%
 my $num_elements = int(($percentage / 100) * scalar(@data));
 
-# Get the cutoff values for top and bottom X%
-my $bottom_cutoff = $data[$num_elements - 1][1];
-my $top_cutoff = $data[-$num_elements][1];
+print "$num_elements\n";
 
-# Prepare output filenames
-my $top_output_file = "top_${percentage}_percent.txt";
-my $bottom_output_file = "bottom_${percentage}_percent.txt";
+#Check whether to plot GO or not (we need some values in the score files)
+if ($num_elements == 0){
+    print "There were no elements to sort into top and bottom genes. Likely this is because there were no junctions to check the distance to them\n";
+}
+else{
+    # Get the cutoff values for top and bottom X%
+    my $bottom_cutoff = $data[$num_elements - 1][1];
+    my $top_cutoff = $data[-$num_elements][1];
 
-# Open files for writing
-open my $top_fh, '>', $top_output_file or die "Could not open file '$top_output_file': $!";
-open my $bottom_fh, '>', $bottom_output_file or die "Could not open file '$bottom_output_file': $!";
+    # Prepare output filenames
+    my $top_output_file = "top_${percentage}_percent.txt";
+    my $bottom_output_file = "bottom_${percentage}_percent.txt";
 
-# Filter and write genes to the output files
-foreach my $entry (@data) {
-    my ($gene, $value) = @$entry;
-    if ($value >= $top_cutoff) {
-        #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
-        if($gene =~ m/\:/){
-            my @sp1=split(/\:/, $gene);
-            $gene=$sp1[1];
+    # Open files for writing
+    open my $top_fh, '>', $top_output_file or die "Could not open file '$top_output_file': $!";
+    open my $bottom_fh, '>', $bottom_output_file or die "Could not open file '$bottom_output_file': $!";
+
+    # Filter and write genes to the output files
+    foreach my $entry (@data) {
+        my ($gene, $value) = @$entry;
+        if ($value >= $top_cutoff) {
+            #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+            if($gene =~ m/\:/){
+                my @sp1=split(/\:/, $gene);
+                $gene=$sp1[1];
+            }
+            # Rename weird NCBI id rna- prefix
+            if($gene =~ m/rna-/){
+                my @sp1=split(/\-/, $gene);
+                $gene=$sp1[1];
+            }
+            print $top_fh "$gene\n";
         }
-        # Rename weird NCBI id rna- prefix
-        if($gene =~ m/rna-/){
-            my @sp1=split(/\-/, $gene);
-            $gene=$sp1[1];
+        if ($value <= $bottom_cutoff) {
+            #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+            if($gene =~ m/\:/){
+                my @sp1=split(/\:/, $gene);
+                $gene=$sp1[1];
+            }
+            # Rename weird NCBI id rna- prefix
+            if($gene =~ m/rna-/){
+                my @sp1=split(/\-/, $gene);
+                $gene=$sp1[1];
+            }
+            print $bottom_fh "$gene\n";
         }
-        print $top_fh "$gene\n";
     }
-    if ($value <= $bottom_cutoff) {
-        #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
-        if($gene =~ m/\:/){
-            my @sp1=split(/\:/, $gene);
-            $gene=$sp1[1];
-        }
-        # Rename weird NCBI id rna- prefix
-        if($gene =~ m/rna-/){
-            my @sp1=split(/\-/, $gene);
-            $gene=$sp1[1];
-        }
-        print $bottom_fh "$gene\n";
-    }
+
+    # Close the file handles
+    close $top_fh;
+    close $bottom_fh;
+
+    print "Results written to $top_output_file and $bottom_output_file\n";
+
+    #Run GO enrichment analysis on lists
+
+    print "ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg Background.txt \n";
+    print "ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg Background.txt \n";
+    `ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg Background.txt`; 
+    `ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg Background.txt`;
 }
 
-# Close the file handles
-close $top_fh;
-close $bottom_fh;
-
-print "Results written to $top_output_file and $bottom_output_file\n";
-
-#Run GO enrichment analysis on lists
-
-#print "< $species >\n";
-
-
-print "ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species}  \n"; # -bg $species\.$percentage\.bg.txt
-print "ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} \n"; # -bg $species\.$percentage\.bg.txt
-`ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species}`; # -bg $species\.$percentage\.bg.txt
-`ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} `; #-bg $species\.$percentage\.bg.txt
