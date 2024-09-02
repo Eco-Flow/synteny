@@ -1,13 +1,16 @@
-process GO {
+process GO_JUNCTIONS {
 
     label 'process_single'
     tag "$speciessummaries ($cutoff percent)"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
-    publishDir "$params.outdir/output_data/go_results" , mode: "${params.publish_dir_mode}"
+    publishDir "$params.outdir/output_data/go_junction_results" , mode: "${params.publish_dir_mode}"
 
     input:
-    tuple path(go, stageAs: 'Go'), path(speciessummaries), val (cutoff)
+    path(go, stageAs: 'Go')
+    val (cutoff)
+    path(inversion_distances)
     path(beds)
+    //path(translocation_distances)
 
     output:
     path( "*.pdf" ), emit: go_pdf
@@ -17,8 +20,18 @@ process GO {
 
     script:
     """
-    #Run GO on a variety of cutoffs, plus a user parameter (default 10, call params.cutoff)
-    perl ${projectDir}/bin/Synteny_go.pl ${cutoff}
+    for file in *gene_scores.txt; do
+    # Check if any files match the pattern
+    if [ -e "\$file" ]; then
+        perl "${projectDir}/bin/Junction_go.pl" ${cutoff} "\$file"
+    else
+        echo "No files found matching the pattern *gene_scores.txt"
+        break
+    fi
+    done
+
+    #Run GO on junction lists:
+    #perl ${projectDir}/bin/Junction_go.pl ${cutoff} ${inversion_distances}
 
     #Calculate md5 sums for output
     for tab_file in *ALL.tab; do

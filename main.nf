@@ -42,6 +42,7 @@ include { CHROMOPAINT } from './modules/local/chromo.nf'
 include { SCORE } from './modules/local/score.nf'
 include { SCORE_TREE } from './modules/local/score_tree.nf'
 include { GO } from './modules/local/go.nf'
+include { GO_JUNCTIONS } from './modules/local/go_junctions.nf'
 include { GO_SUMMARISE } from './modules/local/go_summarise.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
@@ -232,16 +233,11 @@ workflow {
             species_trans = SCORE.out.genetransdistancescores.collect()
         }
 
-        GO ( mergedChannel , JCVI.out.beds.collect() , species_inver , species_trans )
+        GO ( mergedChannel , JCVI.out.beds.collect() )
+        GO_JUNCTIONS ( go_folder , cutoffValues , species_inver , JCVI.out.beds.collect() )
+        //GO_JUNCTIONS_TRANS ( species_trans , JCVI.out.beds.collect() )
+
         ch_versions = ch_versions.mix(GO.out.versions.first())
-
-        //GO.out.go_table.view()
-
-        // Group the data by the cutoff value
-        //GO.out.go_table.groupTuple().view()
-        //groupedData = mych.groupTuple { item -> item[0] }
-
-
 
 
         GO_SUMMARISE ( GO.out.go_table.groupTuple() )
