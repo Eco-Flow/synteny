@@ -225,16 +225,23 @@ workflow {
         //Get the inversion translocation scores in a new channel
 
         if ( params.tree ){
-            species_inver = SCORE_TREE.out.geneinverdistancescores.collect()
-            species_trans = SCORE_TREE.out.genetransdistancescores.collect()
+            species_inver = SCORE_TREE.out.geneinverdistancescores.flatten()
+            species_trans = SCORE_TREE.out.genetransdistancescores.flatten()
         }
         else{
-            species_inver = SCORE.out.geneinverdistancescores.collect()
-            species_trans = SCORE.out.genetransdistancescores.collect()
+            species_inver = SCORE.out.geneinverdistancescores.flatten()
+            species_trans = SCORE.out.genetransdistancescores.flatten()
         }
 
+        //creating 3 instances of a channel with the GO hash files and species summary files 
+        go_folder2 = Channel.fromPath(params.go)
+        go_folder2.combine(species_inver.flatten()).set{ go_and_summary2 }
+
+        // Combine the channels of species files with the cutoff values
+        mergedChannel2 = go_and_summary2.combine(cutoffValues)
+
         GO ( mergedChannel , JCVI.out.beds.collect() )
-        GO_JUNCTIONS ( go_folder , cutoffValues , species_inver , JCVI.out.beds.collect() )
+        GO_JUNCTIONS ( mergedChannel2 , JCVI.out.beds.collect() )
         //GO_JUNCTIONS_TRANS ( species_trans , JCVI.out.beds.collect() )
 
         ch_versions = ch_versions.mix(GO.out.versions.first())

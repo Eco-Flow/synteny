@@ -6,9 +6,7 @@ process GO_JUNCTIONS {
     publishDir "$params.outdir/output_data/go_junction_results" , mode: "${params.publish_dir_mode}"
 
     input:
-    path(go, stageAs: 'Go')
-    val (cutoff)
-    path(inversion_distances)
+    tuple path(go, stageAs: 'Go'), path(inversion_distances), val (cutoff)
     path(beds)
     //path(translocation_distances)
 
