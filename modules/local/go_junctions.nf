@@ -17,7 +17,6 @@ process GO_JUNCTIONS {
 
     script:
     """
-    
     # Check if any files match the pattern
     for file in *gene_scores.txt; do
     if [ -e "\$file" ]; then
@@ -40,4 +39,5 @@ process GO_JUNCTIONS {
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
     END_VERSIONS
     """
+    
 }

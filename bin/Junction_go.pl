@@ -63,8 +63,8 @@ else{
     my $top_cutoff = $data[-$num_elements][1];
 
     # Prepare output filenames
-    my $top_output_file = "$species\_top_${percentage}_percent.txt";
-    my $bottom_output_file = "$species\_bottom_${percentage}_percent.txt";
+    my $top_output_file = "$species.${percentage}\.top.txt";
+    my $bottom_output_file = "$species.${percentage}\.bottom.txt";
 
     # Open files for writing
     open my $top_fh, '>', $top_output_file or die "Could not open file '$top_output_file': $!";
