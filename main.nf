@@ -48,8 +48,8 @@ include { GO_SUMMARISE } from './modules/local/go_summarise.nf'
 include { GO_SUMMARISE as GO_SUMMARISE_INVER } from './modules/local/go_summarise.nf'
 include { GO_SUMMARISE as GO_SUMMARISE_TRANS } from './modules/local/go_summarise.nf'
 include { SUMMARISE_PLOTS } from './modules/local/summarise_plots.nf'
-include { SUMMARISE_PLOTS as GO_SUMMARISE_PLOTS_INVER } from './modules/local/summarise_plots.nf'
-include { SUMMARISE_PLOTS as GO_SUMMARISE_PLOTS_TRANS } from './modules/local/summarise_plots.nf'
+include { SUMMARISE_PLOTS as SUMMARISE_PLOTS_INVER } from './modules/local/summarise_plots.nf'
+include { SUMMARISE_PLOTS as SUMMARISE_PLOTS_TRANS } from './modules/local/summarise_plots.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftwareversions'
@@ -260,8 +260,8 @@ workflow {
         ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
 
         SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
-        SUMMARISE_PLOTS(GO_SUMMARISE_PLOTS_INVER.out.go_summary_table)
-        SUMMARISE_PLOTS(GO_SUMMARISE_PLOTS_TRANS.out.go_summary_table)
+        SUMMARISE_PLOTS_INVER(GO_SUMMARISE_INVER.out.go_summary_table)
+        SUMMARISE_PLOTS_TRANS(GO_SUMMARISE_TRANS.out.go_summary_table)
 
         ch_versions = ch_versions.mix(SUMMARISE_PLOTS.out.versions)
     }
