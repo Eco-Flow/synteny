@@ -84,7 +84,7 @@ foreach my $species ( @species_array ) {
     print $outhandle3 "\t$species";
 }
 
-print $outhandle "\tCount_top\tCount_bottom\n";
+print $outhandle "\tCount_top\tCount_bottom\tCount_significant\n";
 print $outhandle2 "\tCount_significant\n";
 print $outhandle3 "\tCount_significant\n";
 
@@ -135,18 +135,9 @@ foreach my $goterms (keys %go_key) {
             }
         }
 
-	    #Now print off the significant counts per row:
-	    foreach my $types ( @job_type_array ) {
-	        if ($count_pval{$goterms}{$types}){
-	            print $outhandle "\t$count_pval{$goterms}{$types}";
-	        }
-	        else{
-	            print $outhandle "\t0";
-	        }
 
-	    }
 
-	    #Now do for each output table:
+	    #Now print off the significant counts per row,, for each output table:
 	    if($types eq "top"){
 	    	if ($count_pval{$goterms}{$types}){
 	    	print $outhandle2 "\t$count_pval{$goterms}{$types}";
@@ -166,7 +157,20 @@ foreach my $goterms (keys %go_key) {
 
     }
 
-    print $outhandle "\n";
+    #Now print off the significant counts per row:
+    my $comb=0;
+    foreach my $types ( @job_type_array ) {
+        if ($count_pval{$goterms}{$types}){
+            print $outhandle "\t$count_pval{$goterms}{$types}";
+            $comb+=$count_pval{$goterms}{$types};
+        }
+        else{
+            print $outhandle "\t0";
+        }
+
+    }
+
+    print $outhandle "\t$comb\n";
     print $outhandle2 "\n";
     print $outhandle3 "\n";
 

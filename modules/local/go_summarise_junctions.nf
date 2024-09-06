@@ -14,10 +14,12 @@ process GO_SUMMARISE_JUNCTION {
 
     script:
     """
-    # Read in names of files
+
+    # Read in names of files:
     unixfilePaths=\$(echo "$filePaths" )
     echo \$unixfilePaths > files_in
 
+    # Run main summary script:
     perl ${projectDir}/bin/Summarise_go_junctions.pl
 
     cat <<-END_VERSIONS > versions.yml
@@ -26,6 +28,7 @@ process GO_SUMMARISE_JUNCTION {
         GO version: \$(Rscript -e "as.data.frame(installed.packages())[ ,c(1,3)]" | grep topGO | sed 's/[^0-9]*//')
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
     END_VERSIONS
+
     """
     
 }
