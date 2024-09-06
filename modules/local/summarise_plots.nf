@@ -10,13 +10,16 @@ process SUMMARISE_PLOTS {
 
    output:
    path( "*.pdf" ), emit: go_summary_pdf
-
+   path "versions.yml", emit: versions
+   
    """
-
    # Run R code:
-
    Summarise_go_plots.R $cutoff
    
+   cat <<-END_VERSIONS > versions.yml
+   "${task.process}":
+      R version: \$(R --version | grep "R version" | sed 's/[(].*//' | sed 's/ //g' | sed 's/[^0-9]*//')
+   END_VERSIONS
    """
 
 }
