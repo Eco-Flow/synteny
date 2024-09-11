@@ -3,8 +3,9 @@ process GO_JUNCTIONS_TRANS {
     label 'process_single'
     tag "Run $junction_score : ($cutoff percent)"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
-    publishDir "$params.outdir/figures/trans/go_junction_results" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
-    publishDir "$params.outdir/output_data/trans/go_junction_results" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
+    publishDir "$params.outdir/output_data/go_results/individual/trans" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
+    publishDir "$params.outdir/figures/go_results/individual/trans" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
+
 
     input:
     tuple path(go, stageAs: 'Go'), path(junction_score), val (cutoff)

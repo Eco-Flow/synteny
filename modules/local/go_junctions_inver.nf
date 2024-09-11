@@ -3,8 +3,8 @@ process GO_JUNCTIONS_INVER {
     label 'process_single'
     tag "Run $junction_score : ($cutoff percent)"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
-    publishDir "$params.outdir/figures/inver/go_junction_results" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
-    publishDir "$params.outdir/output_data/inver/go_junction_results" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
+    publishDir "$params.outdir/output_data/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
+    publishDir "$params.outdir/figures/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
 
     input:
     tuple path(go, stageAs: 'Go'), path(junction_score), val (cutoff)
