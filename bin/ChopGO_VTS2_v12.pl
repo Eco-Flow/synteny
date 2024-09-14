@@ -162,36 +162,33 @@ print "GO file = $GO_file\n\n" if defined $GO_file;
 my $outfile="BACKGROUND\.forR";
 my %Background_hash;
 if($background){
-    #print "test1\n";
     ## FIND BACKGROUND GENES
     open(my $IN_b, "<", $background)   or die "Could not open $background \n";
     while (my $line=<$IN_b>){
-	$line=~s/\r//g;
-	chomp $line;
+        $line=~s/\r//g;
+        chomp $line;
+        #print "here $line\n";
 
+        # Rename weird NCBI id rna- prefix
+        if($line =~ m/rna-/){
+            my @sp1=split(/\-/, $line);
+            $line=$sp1[1];
+        }
+        #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
+        if($line =~ m/\:/){
+            my @sp1=split(/\:/, $line);
+            $line=$sp1[1];
+        }
 
-    # Rename weird NCBI id rna- prefix
-    if($line =~ m/rna-/){
-        my @sp1=split(/\-/, $line);
-        $line=$sp1[1];
-    }    
-
-
-    #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
-    if($line =~ m/\:/){
-        my @sp1=split(/\:/, $line);
-        $line=$sp1[1];
-    }
-
-
-
-	my @input_here=split("\t", $line);
-	if (scalar @input_here > 1.5){
-	    $Background_hash{$input_here[0]}="HIT";
-	}
-	else{
-	    $Background_hash{$line}="HIT";
-	}
+        my @input_here=split("\t", $line);
+        if (scalar @input_here > 1.5){
+            $Background_hash{$input_here[0]}="HIT";
+            #print "yes";
+        }
+        else{
+            $Background_hash{$line}="HIT";
+            #print "no";
+        }
 	
     }
     my $n_back = keys %Background_hash;
@@ -199,38 +196,40 @@ if($background){
     ###MAKE BACKGROUND FOR R;
     my $Table_b1;
     if ($GO_file){
-	$Table_b1 = $GO_file;
+	    $Table_b1 = $GO_file;
     }
     else {
-	$Table_b1 = "$path_to_DB\/$species\/FILES/GO_FILE_$species";
+	    $Table_b1 = "$path_to_DB\/$species\/FILES/GO_FILE_$species";
     }
     open(my $IN, "<", $Table_b1)   or die "Could not open $Table_b1 \n";
     open(my $outhandle, ">", $outfile)   or die "Could not open $outfile \n";
     my %Gene_Go_Hash;
     my %tot_genes;
-    #print "test2\n";
+
     while (my $line=<$IN>){
-	$line=~s/\r//g;
-	chomp $line;
-	my @linesplit= split("\t", $line);
-	my $gene=$linesplit[0];
-	$tot_genes{$gene}="HIT";
-	if ($Background_hash{$gene}){
-	    my $GO=$linesplit[1];
-	    if ($GO){
-		if ($Gene_Go_Hash{$gene}){
-		    my $old=$Gene_Go_Hash{$gene};
-		    #print  "2+ $gene  $old\t$GO\n";
-		    $Gene_Go_Hash{$gene}="$old\",\"$GO";
-                    #print "test3";
-		}
-		else{
-		    $Gene_Go_Hash{$gene}=$GO;
-		    #print "1st $gene $GO\n";
-                    #print "test4";
-		}
-	    }
-	}
+        $line=~s/\r//g;
+        chomp $line;
+        my @linesplit= split("\t", $line);
+        my $gene=$linesplit[0];
+        $tot_genes{$gene}="HIT";
+        if($gene =~ m/-/){
+            $gene=~ s/\-/\_/g;
+        } 
+        print "h $gene\n";
+        if ($Background_hash{$gene}){
+            my $GO=$linesplit[1];
+            if ($GO){
+                if ($Gene_Go_Hash{$gene}){
+                    my $old=$Gene_Go_Hash{$gene};
+                    #print  "2+ $gene  $old\t$GO\n";
+                    $Gene_Go_Hash{$gene}="$old\",\"$GO";
+                            #print "test3";
+                }
+                else{
+                    $Gene_Go_Hash{$gene}=$GO;
+                }
+            }
+        }
     }
     my $n_all=keys %tot_genes;
     print "BACKGROUND\n$n_all genes had a GO annotation\n$n_back genes were chosen as a background (based on user -b list)\n\n";
@@ -239,7 +238,7 @@ if($background){
 
     print $outhandle "Chop.gene2GO<- list()\n";
     foreach my $key ( keys %Gene_Go_Hash ){
-	print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
+	    print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
     }
 }
 else {

@@ -39,6 +39,9 @@ while (my $line = <$fh>) {
     my @fields = split /\t/, $line;
     # Skip if the value is 'NA'
     next if $fields[2] eq 'NA';
+    if($fields[1] =~ m/-/){
+        $fields[1]=~ s/\-/\_/g;
+    }
     push @data, [$fields[1], $fields[2]];  # Store gene and value
     print $backsave "$fields[1]\n";
 }
@@ -84,6 +87,9 @@ else{
                 my @sp1=split(/\-/, $gene);
                 $gene=$sp1[1];
             }
+            if($gene =~ m/-/){
+                $gene=~ s/\-/\_/g;
+            } 
             print $top_fh "$gene\n";
         }
         if ($value <= $bottom_cutoff) {
@@ -96,6 +102,9 @@ else{
             if($gene =~ m/rna-/){
                 my @sp1=split(/\-/, $gene);
                 $gene=$sp1[1];
+            }
+            if($gene =~ m/-/){
+                $gene=~ s/\-/\_/g;
             }
             print $bottom_fh "$gene\n";
         }
