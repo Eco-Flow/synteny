@@ -1,0 +1,3 @@
+Halictus_rubicundus,s3://synteny-test-data/data/halicids/HRUB_genome_v2.1.1.fasta.gz,s3://synteny-test-data/data/halicids/HRUB_OGS_v2.1.1.gff3
+Lasioglossum_calceatum,s3://synteny-test-data/data/halicids/LCAL_genome_v2.1.1.fasta.gz,s3://synteny-test-data/data/halicids/LCAL_OGS_v2.1.1.gff3
+Lasioglossum_malachurum,s3://synteny-test-data/data/halicids/LMAL_genome_v2.1.1.fasta.gz,s3://synteny-test-data/data/halicids/LMAL_OGS_v2.1.1.gff3
