@@ -9,7 +9,7 @@ use strict;
 # 2. Synteny_matrix.tsv, which contains a matrix of the pariwise 
 # total of number of syntenic genes between species.
 
-print "Please be in folder with all the anchor files\n";
+##Add warning if no anchor files are present: print "Please be in folder with all the anchor files\n";
 
 my @files=`ls *.anchors`;
 

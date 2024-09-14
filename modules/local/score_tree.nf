@@ -68,6 +68,8 @@ process SCORE_TREE {
     #This is the file called tree from Goatee, used to sort the species order
     nw_labels $tree | grep -v 'N[0-9]' > species_order
 
+    nw_distance -n -m m $tree > tree_distance_matrix
+
     #Attempts to summarise all the steps run so far to produce a table (Summary_of_pairwise_comparisons.tsv)
     perl ${projectDir}/bin/Trans_location_Inversion_score_treeSort.pl
 

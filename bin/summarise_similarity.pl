@@ -7,7 +7,7 @@ use strict;
 # percentage identity across all pairwise orthologous genes.
 # This is used as a basic measure of phylogenetic distance
 
-print "Please be in folder with all the similarity files\n";
+##Add warning if no anchor files are present:print "Please be in folder with all the similarity files\n";
 
 my $outfile="My_sim_cores.tsv";
 open(my $outhandle, ">", $outfile)   or die "Could not open $outfile \n";
