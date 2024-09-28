@@ -39,6 +39,16 @@ while (my $line = <$fh>) {
     my @fields = split /\t/, $line;
     # Skip if the value is 'NA'
     next if $fields[2] eq 'NA';
+    
+    if($fields[1] =~ m/\:/){
+                my @sp1=split(/\:/, $fields[1]);
+                $fields[1]=$sp1[1];
+    }
+    # Rename weird NCBI id rna- prefix
+    if($fields[1] =~ m/rna-/){
+                my @sp1=split(/\-/, $fields[1]);
+                $fields[1]=$sp1[1];
+            }
     if($fields[1] =~ m/-/){
         $fields[1]=~ s/\-/\_/g;
     }
