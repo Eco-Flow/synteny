@@ -171,8 +171,12 @@ if($background){
 
         # Rename weird NCBI id rna- prefix
         if($line =~ m/rna-/){
-            my @sp1=split(/\-/, $line);
+            my @sp1=split(/rna-/, $line);
             $line=$sp1[1];
+        }
+        if($line =~ m/rna_/){
+            my @sp2=split("rna_", $line);
+            $line=$sp2[1];
         }
         #Rename weird transcrip ids with :, usually transcipt:ENSGMT0000012, we want just ENSGMT0000012
         if($line =~ m/\:/){
@@ -183,11 +187,11 @@ if($background){
         my @input_here=split("\t", $line);
         if (scalar @input_here > 1.5){
             $Background_hash{$input_here[0]}="HIT";
-            #print "yes";
+            #print "yes $line\n";
         }
         else{
             $Background_hash{$line}="HIT";
-            #print "no";
+            #print "no $line\n";
         }
 	
     }
@@ -212,10 +216,14 @@ if($background){
         my @linesplit= split("\t", $line);
         my $gene=$linesplit[0];
         $tot_genes{$gene}="HIT";
+        if($gene =~ m/rna-/){
+            my @sp1=split(/\-/, $line);
+            $gene=$sp1[1];
+        }
         if($gene =~ m/-/){
             $gene=~ s/\-/\_/g;
         } 
-        print "h $gene\n";
+        #print "h $gene\n";
         if ($Background_hash{$gene}){
             my $GO=$linesplit[1];
             if ($GO){
@@ -229,6 +237,7 @@ if($background){
                     $Gene_Go_Hash{$gene}=$GO;
                 }
             }
+            #print"YESSS!\n";
         }
     }
     my $n_all=keys %tot_genes;
@@ -255,26 +264,24 @@ else {
     open(my $outhandle, ">", $outfile)   or die "Could not open $outfile \n";
     my %Gene_Go_Hash;
     while (my $line=<$IN>){
-	$line=~s/\r//g;
-	chomp $line;
-	#$line=~s/-/_/g;
-	#$line=~s/:/_/g;
-	my @linesplit= split("\t", $line);
-	my $gene=$linesplit[0];
-	$gene=~s/-/_/g;
-	$gene=~s/:/_/g;
-	my $GO=$linesplit[1];
-	if ($GO){
-	    if ($Gene_Go_Hash{$gene}){
-		my $old=$Gene_Go_Hash{$gene};
-		#print  "2+ $gene  $old\t$GO\n";
-		$Gene_Go_Hash{$gene}="$old\",\"$GO";
-	    }
-	    else{
-		$Gene_Go_Hash{$gene}=$GO;
-		#print "1st $gene $GO\n";
-	    }
-	}
+    	$line=~s/\r//g;
+    	chomp $line;
+    	my @linesplit= split("\t", $line);
+    	my $gene=$linesplit[0];
+    	$gene=~s/-/_/g;
+    	$gene=~s/:/_/g;
+    	my $GO=$linesplit[1];
+    	if ($GO){
+    	    if ($Gene_Go_Hash{$gene}){
+    		my $old=$Gene_Go_Hash{$gene};
+    		#print  "2+ $gene  $old\t$GO\n";
+    		$Gene_Go_Hash{$gene}="$old\",\"$GO";
+    	    }
+    	    else{
+    		$Gene_Go_Hash{$gene}=$GO;
+    		#print "1st $gene $GO\n";
+    	    }
+    	}
     }
     
     print $outhandle "Chop.gene2GO<- list()\n";
@@ -313,6 +320,14 @@ print "\nStep 2\n\n";
 
 my %Gene_Go_Hash;
 while (my $line=<$IN>){
+    if($line =~ m/rna-/){
+        my @sp1=split(/rna-/, $line);
+        $line=$sp1[1];
+    }
+    if($line =~ m/rna_/){
+        my @sp2=split("rna_", $line);
+        $line=$sp2[1];
+    }
     $line =~ s/\r//g;
     $line =~ s/\"//g;
     chomp $line;

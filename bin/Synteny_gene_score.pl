@@ -27,7 +27,7 @@ foreach my $file (@files){
     
     while (my $line=<$filein>){
         chomp $line;
-        print "$sp1 $sp2 $line\n";
+        #print "$sp1 $sp2 $line\n";
         if ($line =~ m/^#/){
             #new orthoblock starts
             $syn_block++;
