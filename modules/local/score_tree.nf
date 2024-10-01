@@ -1,6 +1,7 @@
 process SCORE_TREE {
 
     label 'process_medium'
+    label 'process_long'
     tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"My_scores.tsv"
