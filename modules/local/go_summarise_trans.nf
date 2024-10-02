@@ -14,7 +14,8 @@ process GO_SUMMARISE_TRANS {
 
     script:
     """
-
+    # ${task.process}
+    
     # Read in names of files:
     unixfilePaths=\$(echo "$filePaths" )
     echo \$unixfilePaths > files_in

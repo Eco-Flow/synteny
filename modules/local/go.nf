@@ -5,6 +5,7 @@ process GO {
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results/individual/all" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
     publishDir "$params.outdir/figures/go_results/individual/all" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
+    publishDir "$params.outdir/output_data/go_results/individual/all/input_txt" , mode: "${params.publish_dir_mode}", pattern:"*.txt"
 
     input:
     tuple path(go, stageAs: 'Go'), path(speciessummaries), val (cutoff)
@@ -14,10 +15,13 @@ process GO {
     path( "*.pdf" ), emit: go_pdf
     path( "*ALL.tab" ), emit: go_pvals
     tuple val(cutoff), path( "*results_ALL.tab" ), emit: go_table
+    path( "*txt" ), emit: go_data, optional:true
     path "versions.yml", emit: versions
 
     script:
     """
+    # ${task.process}
+
     #Run GO on a variety of cutoffs, plus a user parameter (default 10, call params.cutoff)
     perl ${projectDir}/bin/Synteny_go.pl ${cutoff}
 

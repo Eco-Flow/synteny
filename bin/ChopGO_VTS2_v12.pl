@@ -161,6 +161,7 @@ print "GO file = $GO_file\n\n" if defined $GO_file;
 ###BACKGROUND###
 my $outfile="BACKGROUND\.forR";
 my %Background_hash;
+my $n_back;
 if($background){
     ## FIND BACKGROUND GENES
     open(my $IN_b, "<", $background)   or die "Could not open $background \n";
@@ -195,7 +196,7 @@ if($background){
         }
 	
     }
-    my $n_back = keys %Background_hash;
+    $n_back = keys %Background_hash;
     
     ###MAKE BACKGROUND FOR R;
     my $Table_b1;
@@ -243,8 +244,6 @@ if($background){
     my $n_all=keys %tot_genes;
     print "BACKGROUND\n$n_all genes had a GO annotation\n$n_back genes were chosen as a background (based on user -b list)\n\n";
     
-    print $out_info "GO enrichment of $query_length genes\\nBackground of $n_back genes";
-
     print $outhandle "Chop.gene2GO<- list()\n";
     foreach my $key ( keys %Gene_Go_Hash ){
 	    print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
@@ -287,11 +286,16 @@ else {
     print $outhandle "Chop.gene2GO<- list()\n";
     foreach my $key ( keys %Gene_Go_Hash ){
 	print $outhandle "Chop.gene2GO\$$key <- c(\"$Gene_Go_Hash{$key}\")\n";
-
-	print $out_info "GO enrichment of $query_length genes\\nBackground of all genes (with GO annotation)";
     }
 }
 
+# 
+if ($background){
+    print $out_info "GO enrichment of $query_length genes\\nBackground of $n_back genes";
+}
+else{
+    print $out_info "GO enrichment of $query_length genes\\nBackground of all genes (with GO annotation)";
+}
 
 ###QUERY INPUT###
 

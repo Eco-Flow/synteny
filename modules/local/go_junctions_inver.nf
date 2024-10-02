@@ -5,6 +5,7 @@ process GO_JUNCTIONS_INVER {
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
     publishDir "$params.outdir/figures/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
+    publishDir "$params.outdir/output_data/go_results/individual/inver/input_txt" , mode: "${params.publish_dir_mode}", pattern:"*.txt"
 
     input:
     tuple path(go, stageAs: 'Go'), path(junction_score), val (cutoff)
@@ -14,10 +15,13 @@ process GO_JUNCTIONS_INVER {
     path( "*.pdf" ), emit: go_pdf, optional:true
     path( "*ALL.tab" ), emit: go_pvals, optional:true
     tuple val(cutoff), path( "*results_ALL.tab" ), emit: go_table, optional:true
+    path( "*txt" ), emit: go_data, optional:true
     path "versions.yml", emit: versions
 
     script:
     """
+    # ${task.process}
+
     # Check if any files match the pattern
     for file in *gene_scores.txt; do
     if [ -e "\$file" ]; then
