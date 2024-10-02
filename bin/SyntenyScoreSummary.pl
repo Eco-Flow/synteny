@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-# Script to calculate the present of a gene in synteny across all other species, and summarise the distance to break averaged across all species. 
+# Script to calculate the presence of a gene in synteny across all other species, and summarise the distance to break averaged across all species. 
 
 print "Please be in folder with all the geneScore.tsv files\n";
 

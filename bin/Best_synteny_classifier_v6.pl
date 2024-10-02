@@ -28,6 +28,7 @@ foreach my $file2 (@anchors){
      my $species1=$split_name[0];
      my $species2=$split_name[1];
      my $combName="$species1\.$species2";
+     print "$species1 and $species2\n";
 
      #Provide a bed file of each species, as well as the unfiltered last (pair wise "blast" hits), plus the anchor files, both with lifted hits and without.
 
@@ -577,7 +578,20 @@ foreach my $file2 (@anchors){
                               #Sp2 position is present.
                               if ($previous_sp2_chr eq $sp2_chromosome){  
 
-                                   print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tINVER\t$previous_gene\t$current_gene\n";
+                                   if (defined $current_stop){
+                                        if (defined $previous_stop){
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tINVER\t$previous_gene\t$current_gene\n";
+                                        }
+                                        else{
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\tNA\t$current_start\t$current_stop\tINVER\t$previous_gene\t$current_gene\n";
+                                        }
+                                   }
+                                   else{
+                                        if (defined $previous_stop){
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\tNA\tINVER\t$previous_gene\t$current_gene\n";
+                                        }
+                                   }
+
                                    my $max_pos=max($sp2_position, $previous_sp2_pos);
                                    my $min_pos=min($sp2_position, $previous_sp2_pos);
                                    my @positions_missing;
@@ -613,7 +627,20 @@ foreach my $file2 (@anchors){
                                    #Then we have a translocation (seemingly), as within the same chromosome it maps to two chromosomes in species 2.
                                    #e.g. ($previous_sp2_chr ne $sp2_chromosome)
                                    $translocation_count++;
-                                   print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tTRANS\t$previous_gene\t$current_gene\n";
+                                   
+                                   if (defined $current_stop){
+                                        if (defined $previous_stop){
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tTRANS\t$previous_gene\t$current_gene\n";
+                                        }
+                                        else{
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\tNA\t$current_start\t$current_stop\tTRANS\t$previous_gene\t$current_gene\n";
+                                        }
+                                   }
+                                   else{
+                                        if (defined $previous_stop){
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\tNA\tTRANS\t$previous_gene\t$current_gene\n";
+                                        }
+                                   }
                               };
 
                               #Finally set the current values to the previous, for next round.
