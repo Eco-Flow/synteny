@@ -32,11 +32,6 @@ process GO_JUNCTIONS_TRANS {
     fi
     done
 
-    #Calculate md5 sums for output
-    #for tab_file in *ALL.tab; do
-    #   md5sum \$tab_file > \$tab_file.md5
-    #done
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         R version: \$(R --version | grep "R version" | sed 's/[(].*//' | sed 's/ //g' | sed 's/[^0-9]*//')

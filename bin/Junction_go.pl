@@ -29,7 +29,7 @@ my $species=$name[0];
 chomp $species;
 
 #Save output of genes tested:
-my $back="Background.txt";
+my $back="$species\.$percentage\.bg.txt";
 open my $backsave, '>', $back or die "Could not open file '$back': $!";
 
 
@@ -128,9 +128,9 @@ else{
 
     #Run GO enrichment analysis on lists
 
-    print "ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg Background.txt \n";
-    print "ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg Background.txt \n";
-    `ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg Background.txt`; 
-    `ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg Background.txt`;
+    print "ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg $species\.$percentage\.bg.txt \n";
+    print "ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg $species\.$percentage\.bg.txt \n";
+    `ChopGO_VTS2_v12.pl -i $top_output_file --GO_file $go_key{$species} -bg $species\.$percentage\.bg.txt`; 
+    `ChopGO_VTS2_v12.pl -i $bottom_output_file --GO_file $go_key{$species} -bg $species\.$percentage\.bg.txt`;
 }
 
