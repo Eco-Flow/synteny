@@ -184,7 +184,9 @@ if($background){
             my @sp1=split(/\:/, $line);
             $line=$sp1[1];
         }
-
+        if($line =~ m/-/){
+            $line=~ s/\-/\_/g;
+        }
         my @input_here=split("\t", $line);
         if (scalar @input_here > 1.5){
             $Background_hash{$input_here[0]}="HIT";
