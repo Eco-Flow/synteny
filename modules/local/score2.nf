@@ -1,6 +1,6 @@
 process SCORE2 {
 
-    label 'process_low'
+    label 'process_single'
     tag "${anchors}"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38' 
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
