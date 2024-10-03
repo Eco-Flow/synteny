@@ -1,7 +1,6 @@
 process SCORE {
 
-    label 'process_medium'
-    label 'process_long'
+    label 'process_low'
     tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38' 
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"My_scores.tsv"
@@ -13,9 +12,6 @@ process SCORE {
     publishDir "$params.outdir/tables/synt_species_scores_summaries" , mode: "${params.publish_dir_mode}", pattern:"*SpeciesScoreSummary.txt"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Summary_of_pairwise_comparisons.tsv"
     publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"*-all.pdf"
-    publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
-    publishDir "$params.outdir/tables/paired_anchor_change_junction_prediction" , mode: "${params.publish_dir_mode}", pattern:"*Classification_summary.tsv"
-    publishDir "$params.outdir/tables/junctionscores/" , mode: "${params.publish_dir_mode}", pattern:"*_gene_scores.txt"
 
     input:
     path(anchors)
@@ -34,15 +30,11 @@ process SCORE {
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary
     path("Summary_of_pairwise_comparisons.tsv"), emit:trans_inver_summary
-    path("Trans_Inversion_junction_merged.txt"), emit: filec
-    path("*Classification_summary.tsv"), emit:classifications
-    path("*.translocation_gene_scores.txt"), emit:genetransdistancescores
-    path("*.inversion_gene_scores.txt"), emit:geneinverdistancescores
     path "versions.yml", emit: versions
 
     script:
     """
-    #If gff files are compressed, decompress them (useful in testing)
+    # If gff files are compressed, decompress them (useful in testing)
     if [ "\$(ls -A | grep -i \\.*.gff3.gz\$)" ]; then
        for gff in *.gff3.gz; do zcat \$gff > "\${gff%.gz}"; done
     fi
@@ -56,26 +48,16 @@ process SCORE {
     # Compare syntenic lengths versus protein similarity.
     perl ${projectDir}/bin/syntenicVSsimilarity.pl
 
-    #Calculates gene scores for distance to syntenic break:
+    # Calculates gene scores for distance to syntenic break:
     perl ${projectDir}/bin/Synteny_gene_score.pl
     
-    #Summarises gene counts of multiple species to calculate average distance to break:
+    # Summarises gene counts of multiple species to calculate average distance to break:
     perl ${projectDir}/bin/SyntenyScoreSummary.pl
 
-    #Attempts to summarise all the steps run so far to produce a table (Summary_of_pairwise_comparisons.tsv)
+    # Attempts to summarise all the steps run so far to produce a table (Summary_of_pairwise_comparisons.tsv)
     perl ${projectDir}/bin/Trans_location_Inversion_score.pl
 
-    #Refined junction scores:
-    perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
-    perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
-
-    #Calculate gene scores for inversion and translocation junction distance
-    perl ${projectDir}/bin/Calculate_distance_to_inver.pl
-    perl ${projectDir}/bin/Calculate_distance_to_trans.pl
-
-    #Merge the two outputs
-    paste -d'\t' Summary_of_pairwise_comparisons.tsv Trans_Inversion_junction_count.txt > Trans_Inversion_junction_merged.txt
-
+    # md5sums for nf test
     md5sum My_scores.tsv > My_scores.tsv.md5
     md5sum My_sim_cores.tsv > My_sim_cores.tsv.md5
     md5sum My_comp_synteny_similarity.tsv > My_comp_synteny_similarity.tsv.md5

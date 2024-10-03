@@ -6,7 +6,7 @@ use List::Util qw(min);
 
 ######################################################################################
 
-###A classifyier of syntenic breaks###
+###A classifier of syntenic breaks###
 
 #This script has been written to provide basic counts of junctions in the genome that 
 #appear to be related to inversions or translocations. 

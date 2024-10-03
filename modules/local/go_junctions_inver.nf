@@ -1,14 +1,14 @@
 process GO_JUNCTIONS_INVER {
 
     label 'process_single'
-    tag "Run $junction_score : ($cutoff percent)"
+    tag "Run $species with $cutoff percent cutoff"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
     publishDir "$params.outdir/figures/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
     publishDir "$params.outdir/output_data/go_results/individual/inver/input_txt" , mode: "${params.publish_dir_mode}", pattern:"*.txt"
 
     input:
-    tuple path(go, stageAs: 'Go'), path(junction_score), val (cutoff)
+    tuple path(go, stageAs: 'Go'), val(species), path(junction_score), val (cutoff)
     path(beds)
 
     output:
@@ -22,16 +22,8 @@ process GO_JUNCTIONS_INVER {
     """
     # ${task.process}
 
-    # Check if any files match the pattern
-    for file in *gene_scores.txt; do
-    if [ -e "\$file" ]; then
-        perl "${projectDir}/bin/Junction_go.pl" ${cutoff} "\$file"
-    else
-        echo "No files found matching the pattern *gene_scores.txt"
-        break
-    fi
-    done
-
+    perl "${projectDir}/bin/Junction_go.pl" ${cutoff} ${species}
+ 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         R version: \$(R --version | grep "R version" | sed 's/[(].*//' | sed 's/ //g' | sed 's/[^0-9]*//')

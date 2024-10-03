@@ -6,13 +6,17 @@ process SCORE_PLOTS {
     publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
 
     input:
-    path(filec), stageAs: "filec"
+    path(trans_inver_summary)
+    path(filec)
 
     output:
     path("*-all.pdf")
 
     '''
-    #First merge all the pair of results (averages- from filec).
+    #First combine all the results into a single table (filec)
+    combine_consensus_scores.pl 
+
+    #Then merge all the pair of results (averages- from filec- save to filed).
     #As we do not want to plot pairs twice.
     merge_consensus_scores.pl 
 

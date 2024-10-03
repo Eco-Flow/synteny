@@ -10,7 +10,7 @@ use strict;
 # Finally, this script then runs the R script to plot this data, resulting in a basic plot
 # "My_pair_synteny_identity.pdf", plotting total number of syntenic genes vs protein similarity.
 
-print "Please be in folder with all the similarity and synteny files\n";
+print "Please be in folder with Synteny_matrix.tsv My_sim_cores.tsv\n";
 
 # Initialise output files.
 my $outfile="My_comp_synteny_similarity.tsv";

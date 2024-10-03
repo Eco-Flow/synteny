@@ -72,9 +72,14 @@ my @translocation_files = bsd_glob("*.*.Translocation_gene_boundaries.txt");
 
 # Process each species
 my %species_known_genes;
+my $sp1;
+my $sp2;
 foreach my $file (@translocation_files) {
     my ($species) = split(/\./, $file);
     push @{$species_known_genes{$species}}, read_known_genes($file);
+    my @split=split(/\./, $file);
+    $sp1=$split[0];
+    $sp2=$split[1];   
 }
 
 # Find all bed files
@@ -99,7 +104,7 @@ foreach my $bed_file (@bed_files) {
     my $gene_scores = process_bed_file($bed_file, $known_genes_combined);
 
     # Print the results
-    open my $output_fh, '>', "$species\.translocation_gene_scores.txt" or die "Could not open output file: $!";
+    open my $output_fh, '>', "$species\.$sp2\.translocation_gene_scores.txt" or die "Could not open output file: $!";
     foreach my $key (sort keys %$gene_scores) {
         print $output_fh "$key\t$gene_scores->{$key}\n";
     }
@@ -107,3 +112,5 @@ foreach my $bed_file (@bed_files) {
 
     print "Processed $bed_file and output to ${species}_gene_scores.txt\n";
 }
+
+`echo $sp1 > species_tested_$sp1`

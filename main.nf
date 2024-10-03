@@ -40,6 +40,7 @@ include { JCVI } from './modules/local/jcvi.nf'
 include { SYNTENY } from './modules/local/synteny.nf'
 include { CHROMOPAINT } from './modules/local/chromo.nf'
 include { SCORE } from './modules/local/score.nf'
+include { SCORE2 } from './modules/local/score2.nf'
 include { SCORE_TREE } from './modules/local/score_tree.nf'
 include { GO } from './modules/local/go.nf'
 include { GO_JUNCTIONS_INVER } from './modules/local/go_junctions_inver.nf'
@@ -183,22 +184,26 @@ workflow {
                 treeIn = Channel.fromPath(params.tree)
                 SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
-                SCORE_TREE_PLOTS(SCORE_TREE.out.filec, SCORE_TREE.out.species_order)
+                SCORE2 ( SYNTENY.out.anchors, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE_TREE_PLOTS(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
             } else {
                 SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
-                SCORE_PLOTS(SCORE.out.filec)
+                SCORE2 ( SYNTENY.out.anchors, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE_PLOTS(SCORE.out.trans_inver_summary, SCORE2.out.filec.collect())
             }
         } else {
             if (params.tree) {
                 treeIn = Channel.fromPath(params.tree)
                 SCORE_TREE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
-                SCORE_TREE_PLOTS(SCORE_TREE.out.filec, SCORE_TREE.out.species_order)
+                SCORE2 ( SYNTENY.out.anchors_notlifted, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE_TREE_PLOTS(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
             } else {
                 SCORE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
-                SCORE_PLOTS(SCORE.out.filec)
+                SCORE2 ( SYNTENY.out.anchors_notlifted, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE_PLOTS( SCORE.out.trans_inver_summary, SCORE2.out.filec.collect() )
             }
         }
     }
@@ -228,24 +233,22 @@ workflow {
         mergedChannel = go_and_summary.combine(cutoffValues)
 
         //Get the inversion translocation scores in a new channel
-
-        if ( params.tree ){
-            species_inver = SCORE_TREE.out.geneinverdistancescores.flatten()
-            species_trans = SCORE_TREE.out.genetransdistancescores.flatten()
-        }
-        else{
-            species_inver = SCORE.out.geneinverdistancescores.flatten()
-            species_trans = SCORE.out.genetransdistancescores.flatten()
-        }
-
+        species_inver = SCORE2.out.geneinverdistancescores.groupTuple()
+        species_trans = SCORE2.out.genetransdistancescores.groupTuple()
+        //species_inver.groupTuple().view()
+        
         //creating 3 instances of a channel with the GO hash files and species summary files 
         go_folder2 = Channel.fromPath(params.go)
-        go_folder2.combine(species_inver.flatten()).set{ go_and_summary_inver }
-        go_folder2.combine(species_trans.flatten()).set{ go_and_summary_trans }
+        go_folder2.combine(species_inver).set{ go_and_summary_inver }
+        go_folder2.combine(species_trans).set{ go_and_summary_trans }
+
+        //go_and_summary_inver.view()
 
         // Combine the channels of species files with the cutoff values
         mergedChannel_inver = go_and_summary_inver.combine(cutoffValues)
         mergedChannel_trans = go_and_summary_trans.combine(cutoffValues)
+
+        //mergedChannel_inver.view()
 
         GO ( mergedChannel , JCVI.out.beds.collect() )
         GO_JUNCTIONS_INVER ( mergedChannel_inver , JCVI.out.beds.collect() )
@@ -265,11 +268,7 @@ workflow {
 
         ch_versions = ch_versions.mix(SUMMARISE_PLOTS.out.versions)
     }
-
-
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.collectFile(name: 'collated_versions.yml')
-    )
+ 
 }
 
 workflow.onComplete {

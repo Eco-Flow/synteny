@@ -18,14 +18,49 @@ if (@ARGV != 2) {
 }
 
 my $percentage = $ARGV[0];
-my $input_file = $ARGV[1];
+my $species = $ARGV[1];
 
-# Read the input file and store the values
-open my $fh, '<', $input_file or die "Could not open file '$input_file': $!";
+# Store the total scores and counts for each key
+my %scores;
+my %counts;
+
+# Read all input files ending with '_gene_scores.txt'
+my @files = glob("*_gene_scores.txt");
+
+foreach my $file (@files) {
+    open my $fh, '<', $file or die "Could not open file '$file' $!";
+
+    while (<$fh>) {
+        chomp;
+        my ($col1, $col2, $score) = split /\t/;
+
+        # Create a unique key for each row based on the first two columns
+        my $key = "$col1\t$col2";
+
+        # Accumulate scores and increment count for each key
+        $scores{$key}+= $score;
+        $counts{$key}++;
+    }
+
+    close $fh;
+}
+
+# Write the averaged scores to "Summary.tsv"
+open my $out_fh, '>', "Summary.tsv" or die "Could not open file 'Summary.tsv' $!";
+
+foreach my $key (keys %scores) {
+    # Calculate average score
+    my $average = $scores{$key} / $counts{$key};
+
+    # Write to output file
+    print $out_fh "$key\t$average\n";
+}
+
+close $out_fh;
+
+print "Averaged scores written to 'Summary.tsv'.\n";
 
 # Find out species we are using:
-my @name=split(/\./, $input_file);
-my $species=$name[0];
 chomp $species;
 
 #Save output of genes tested:
@@ -33,8 +68,12 @@ my $back="$species\.$percentage\.bg.txt";
 open my $backsave, '>', $back or die "Could not open file '$back': $!";
 
 
+#Read in the new merged table;
+my $sumtab="Summary.tsv";
+open my $fh2, '<', $sumtab or die "Could not open file '$sumtab' $!";
+
 my @data;
-while (my $line = <$fh>) {
+while (my $line = <$fh2>) {
     chomp $line;
     my @fields = split /\t/, $line;
     # Skip if the value is 'NA'
@@ -55,7 +94,7 @@ while (my $line = <$fh>) {
     push @data, [$fields[1], $fields[2]];  # Store gene and value
     print $backsave "$fields[1]\n";
 }
-close $fh;
+close $fh2;
 close $backsave;
 
 # Sort the data by the third column (numeric comparison)
