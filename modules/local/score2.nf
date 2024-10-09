@@ -2,11 +2,10 @@ process SCORE2 {
 
     label 'process_single'
     tag "${anchors}"
-    container = 'ecoflowucl/chopgo:r-4.3.2_python-3_perl-5.38' 
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38' 
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
     publishDir "$params.outdir/tables/paired_anchor_change_junction_prediction" , mode: "${params.publish_dir_mode}", pattern:"*Classification_summary.tsv"
     publishDir "$params.outdir/tables/junctionscores/" , mode: "${params.publish_dir_mode}", pattern:"*_gene_scores.txt"
-    publishDir "$params.outdir/figures/synteny_comparisons/" , mode: "${params.publish_dir_mode}", pattern:"Chart_of_break_types.pdf"
 
     input:
     path(anchors)
@@ -21,7 +20,6 @@ process SCORE2 {
     path("*Classification_summary.tsv"), emit:classifications
     tuple env(myValue), path("*.translocation_gene_scores.txt"), emit: genetransdistancescores
     tuple env(myValue), path("*.inversion_gene_scores.txt"), emit: geneinverdistancescores
-    path("Chart_of_break_types.pdf"), emit: pie
     path "versions.yml", emit: versions
 
     script:
@@ -34,9 +32,6 @@ process SCORE2 {
     #Calculate gene scores for inversion and translocation junction distance
     perl ${projectDir}/bin/Calculate_distance_to_inver.pl
     perl ${projectDir}/bin/Calculate_distance_to_trans.pl
-
-    #Make a pie chart of predicted values 
-    Rscript ${projectDir}/bin/break_types_to_pie.R
 
     #Merge the two outputs
     cat Trans_Inversion_junction_count.txt > ${anchors}.classified
