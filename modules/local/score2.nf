@@ -20,6 +20,7 @@ process SCORE2 {
     path("*Classification_summary.tsv"), emit:classifications
     tuple env(myValue), path("*.translocation_gene_scores.txt"), emit: genetransdistancescores
     tuple env(myValue), path("*.inversion_gene_scores.txt"), emit: geneinverdistancescores
+    tuple env(myValue), path("*.other_gene_scores.txt"), emit: geneotherdistancescores
     path "versions.yml", emit: versions
 
     script:
@@ -32,6 +33,7 @@ process SCORE2 {
     #Calculate gene scores for inversion and translocation junction distance
     perl ${projectDir}/bin/Calculate_distance_to_inver.pl
     perl ${projectDir}/bin/Calculate_distance_to_trans.pl
+    perl ${projectDir}/bin/Calculate_distance_to_other.pl
 
     #Merge the two outputs
     cat Trans_Inversion_junction_count.txt > ${anchors}.classified

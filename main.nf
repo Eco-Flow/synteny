@@ -13,7 +13,7 @@ log.info """\
 
  -----------------------------------------
 
- Copyright (c) 2022
+ Copyright (c) 2024
 
  =========================================""".stripIndent()
 
@@ -45,12 +45,15 @@ include { SCORE_TREE } from './modules/local/score_tree.nf'
 include { GO } from './modules/local/go.nf'
 include { GO_JUNCTIONS_INVER } from './modules/local/go_junctions_inver.nf'
 include { GO_JUNCTIONS_TRANS } from './modules/local/go_junctions_trans.nf'
+include { GO_JUNCTIONS_OTHER } from './modules/local/go_junctions_other.nf'
 include { GO_SUMMARISE } from './modules/local/go_summarise.nf'
 include { GO_SUMMARISE_INVER } from './modules/local/go_summarise_inver.nf'
 include { GO_SUMMARISE_TRANS } from './modules/local/go_summarise_trans.nf'
+include { GO_SUMMARISE_OTHER } from './modules/local/go_summarise_other.nf'
 include { SUMMARISE_PLOTS } from './modules/local/summarise_plots.nf'
 include { SUMMARISE_PLOTS_INVER } from './modules/local/summarise_plots_inver.nf'
 include { SUMMARISE_PLOTS_TRANS } from './modules/local/summarise_plots_trans.nf'
+include { SUMMARISE_PLOTS_OTHER } from './modules/local/summarise_plots_other.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftwareversions'
@@ -235,36 +238,38 @@ workflow {
         //Get the inversion translocation scores in a new channel
         species_inver = SCORE2.out.geneinverdistancescores.groupTuple()
         species_trans = SCORE2.out.genetransdistancescores.groupTuple()
+        species_other = SCORE2.out.geneotherdistancescores.groupTuple()
         //species_inver.groupTuple().view()
         
         //creating 3 instances of a channel with the GO hash files and species summary files 
         go_folder2 = Channel.fromPath(params.go)
         go_folder2.combine(species_inver).set{ go_and_summary_inver }
         go_folder2.combine(species_trans).set{ go_and_summary_trans }
-
-        //go_and_summary_inver.view()
+        go_folder2.combine(species_other).set{ go_and_summary_other }
 
         // Combine the channels of species files with the cutoff values
         mergedChannel_inver = go_and_summary_inver.combine(cutoffValues)
         mergedChannel_trans = go_and_summary_trans.combine(cutoffValues)
-
-        //mergedChannel_inver.view()
+        mergedChannel_other = go_and_summary_other.combine(cutoffValues)
 
         GO ( mergedChannel , JCVI.out.beds.collect() )
         GO_JUNCTIONS_INVER ( mergedChannel_inver , JCVI.out.beds.collect() )
         GO_JUNCTIONS_TRANS ( mergedChannel_trans , JCVI.out.beds.collect() )
+        GO_JUNCTIONS_OTHER ( mergedChannel_other , JCVI.out.beds.collect() )
 
         ch_versions = ch_versions.mix(GO.out.versions.first())
 
         GO_SUMMARISE ( GO.out.go_table.groupTuple() )
         GO_SUMMARISE_INVER ( GO_JUNCTIONS_INVER.out.go_table.groupTuple() )
         GO_SUMMARISE_TRANS ( GO_JUNCTIONS_TRANS.out.go_table.groupTuple() )
+        GO_SUMMARISE_OTHER ( GO_JUNCTIONS_OTHER.out.go_table.groupTuple() )
 
         ch_versions = ch_versions.mix(GO_SUMMARISE.out.versions)
 
         SUMMARISE_PLOTS(GO_SUMMARISE.out.go_summary_table)
         SUMMARISE_PLOTS_INVER(GO_SUMMARISE_INVER.out.go_summary_table)
         SUMMARISE_PLOTS_TRANS(GO_SUMMARISE_TRANS.out.go_summary_table)
+        SUMMARISE_PLOTS_OTHER(GO_SUMMARISE_OTHER.out.go_summary_table)
 
         ch_versions = ch_versions.mix(SUMMARISE_PLOTS.out.versions)
     }

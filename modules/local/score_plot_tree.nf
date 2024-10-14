@@ -3,7 +3,7 @@ process SCORE_PLOT_TREE {
     label 'process_single'
     tag "All genes"
     container = 'ecoflowucl/chopgo:r-4.3.2_python-3_perl-5.38'
-    publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"*-all.pdf"
+    publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"*-all_treesort.pdf"
     publishDir "$params.outdir/figures/synteny_comparisons/" , mode: "${params.publish_dir_mode}", pattern:"Chart_of_break_types.pdf"
 
     input:
@@ -12,7 +12,7 @@ process SCORE_PLOT_TREE {
     path(species_order), stageAs: "species_order"
 
     output:
-    path("*-all.pdf")
+    path("*-all_treesort.pdf")
     path("Chart_of_break_types.pdf"), emit: pie
 
     """

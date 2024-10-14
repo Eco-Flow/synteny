@@ -23,6 +23,8 @@ foreach my $file (@breaks){
 	open(my $OUT2, ">", $outname2)   or die "Could not open $outname2\n";
 	my $outname3="$combName\.Inversion_gene_boundaries.txt";
 	open(my $OUT3, ">", $outname3)   or die "Could not open $outname3\n";
+	my $outname4="$combName\.Other_gene_boundaries.txt";
+	open(my $OUT4, ">", $outname4)   or die "Could not open $outname4\n";
 
 	#Initiate out file handle
 	my $outfile="$combName\.Classification_summary.tsv";
@@ -73,7 +75,7 @@ foreach my $file (@breaks){
 	my $inversions=0;
 	my $translocations=0;
 
-	#For each my apparetn syntenic block.
+	#For each my apparent syntenic block.
 	#Check first if the gene in syntenic block 1, from range min to max, are found within any other sytenic block on the same chromosome.
 	while ( my $line2 = <$in_break> ){
 		chomp $line2;
@@ -119,17 +121,6 @@ foreach my $file (@breaks){
 		my $min_block2=$gene_order_min{$chr}{$syn2};
 		my $max_block2=$gene_order_max{$chr}{$syn2};
 
-		#calculate the gene order numbers from within the two blocks:
-		#Didn't work, as many of the syntenic blocks have genes have genes from random chromosomes or from the same chromosome in them. Could be TEs, or indels?
-		#print "$min_block1 $max_block1\n";
-		#for (my $i=$min_block1; $i<=$max_block1; $i++){
-		#	if ($position_to_syntenic_block{$chr}{$i}){
-		#		if ($position_to_syntenic_block{$chr}{$i} ne $syn1){
-		#			print "Can happen : $position_to_syntenic_block{$chr}{$i}\n";
-		#		}	
-		#	}
-		#}
-
 		#try to calculate the smallest gap between the two blocks.
 		my $gap;
 		my $minmax=min($sta_1,$end_1)-max($sta_2,$end_2);
@@ -153,10 +144,12 @@ foreach my $file (@breaks){
 			elsif($direction_1==1 && $direction_2==1){
 				$same_direction++;
 				$junction_type="Same_direction";
+				print $OUT4 "$sp[-1]\n$sp[-2]\n";
 			}
 			elsif($direction_1==0 && $direction_2==0){
 				$same_direction++;
 				$junction_type="Same_direction";
+				print $OUT4 "$sp[-1]\n$sp[-2]\n";
 			}
 			else{
 				#rest must be inversions:
@@ -167,14 +160,13 @@ foreach my $file (@breaks){
 			print $out "$chr\t$syn1\t$syn2\t$min_block1\t$max_block1\t$sta_1\t$end_1\t$sta_2\t$end_2\t$gap\t$junction_type\n";
 		}
 		else{
-			#Then its a translocation, we cannot caluclate a gap
+			#Then its a translocation, we cannot calculate a gap
 			print $out "$chr\t$syn1\t$syn2\t$min_block1\t$max_block1\t$sta_1\t$end_1\t$sta_2\t$end_2\tNA\tTranslocation\n";
 			$translocations++;
 
 			#Save genes that are on the boundary of translocations:
 			print $OUT2 "$sp[-1]\n$sp[-2]\n";
 		}
-	    
 	}
 
 	print $OUT "$combName\t$translocations\t$inversions\t$same_direction\t$odd_junction\n";
@@ -183,6 +175,8 @@ foreach my $file (@breaks){
 	close $in_break;
 	close $in_order;
 	close $OUT2;
+	close $OUT3;
+	close $OUT4;
 }
 
 
