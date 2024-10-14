@@ -1,4 +1,4 @@
-process SCORE_TREE_PLOTS {
+process SCORE_PLOT_TREE {
 
     label 'process_single'
     tag "All genes"
@@ -7,7 +7,7 @@ process SCORE_TREE_PLOTS {
     publishDir "$params.outdir/figures/synteny_comparisons/" , mode: "${params.publish_dir_mode}", pattern:"Chart_of_break_types.pdf"
 
     input:
-    path(trans_inver_summary)
+    path(trans_inver_summary), stageAs: "Summary_of_pairwise_comparisons.tsv"
     path(filec)
     path(species_order), stageAs: "species_order"
 

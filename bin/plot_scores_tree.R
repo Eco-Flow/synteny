@@ -66,7 +66,7 @@
     theme(legend.text = 
           element_text(size = 8),
         legend.title = element_text(size = 8)) 
-    ggsave(filename = "percentidentityVSinversion_junction-all.pdf", width= 8, height=8 , device = "pdf")
+    ggsave(filename = "percentidentityVSinversion_junction-all_treesort.pdf", width= 8, height=8 , device = "pdf")
 
     # plot 5: Trans_mimimum_count versus Inversion_estimate
     ggplot(Bee_inver_trans_prot, aes(perc_identity, Translocation_junctions)) +    
@@ -78,4 +78,4 @@
     theme(legend.text = 
           element_text(size = 8),
         legend.title = element_text(size = 8)) 
-    ggsave(filename = "percentidentityVStranslocation_junction-all.pdf", width= 8, height=8 , device = "pdf")
+    ggsave(filename = "percentidentityVStranslocation_junction-all_treesort.pdf", width= 8, height=8 , device = "pdf")

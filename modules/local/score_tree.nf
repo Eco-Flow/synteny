@@ -10,7 +10,8 @@ process SCORE_TREE {
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Synteny_matrix.tsv"
     publishDir "$params.outdir/tables/synt_gene_scores" , mode: "${params.publish_dir_mode}", pattern:"*geneScore.tsv"
     publishDir "$params.outdir/tables/synt_species_scores_summaries" , mode: "${params.publish_dir_mode}", pattern:"*SpeciesScoreSummary.txt"
-    publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Summary_of_pairwise_comparisons.tsv"
+    publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Summary_of_pairwise_comparisons.withDistance.tsv"
+    publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"tree_distance_matrix.tsv"
     publishDir "$params.outdir/figures/synteny_comparisons" , mode: "${params.publish_dir_mode}", pattern:"*-all_treesort.pdf"
 
     input:
@@ -31,8 +32,9 @@ process SCORE_TREE {
     path("Synteny_matrix.tsv"), emit:synmat
     path("*geneScore.tsv"), emit: pairedgenescores
     path("*SpeciesScoreSummary.txt"), emit:speciesSummary
-    path("Summary_of_pairwise_comparisons.tsv"), emit:trans_inver_summary
+    path("Summary_of_pairwise_comparisons.withDistance.tsv"), emit:trans_inver_summary
     path("species_order"), emit: species_order
+    path("tree_distance_matrix.tsv"), emit: tree_distance_matrix
     path "versions.yml", emit: versions
 
     script:
@@ -62,17 +64,21 @@ process SCORE_TREE {
     # This is the file called tree from Goatee, used to sort the species order
     nw_labels $tree | grep -v 'N[0-9]' > species_order
 
-    nw_distance -n -m m $tree > tree_distance_matrix
+    # Calculate tree distances from matrix
+    nw_distance -n -m m $tree > tree_distance_matrix.tsv
 
     # Attempts to summarise all the steps run so far to produce a table (Summary_of_pairwise_comparisons.tsv)
     perl ${projectDir}/bin/Trans_location_Inversion_score_treeSort.pl
+
+    # Adds on the tree distance score:
+    perl ${projectDir}/bin/add_tree_distance_measure_to_table.pl Summary_of_pairwise_comparisons.tsv tree_distance_matrix.tsv  > Summary_of_pairwise_comparisons.withDistance.tsv
 
     # md5sums for nf test
     md5sum My_scores.tsv > My_scores.tsv.md5
     md5sum My_sim_cores.tsv > My_sim_cores.tsv.md5
     md5sum My_comp_synteny_similarity.tsv > My_comp_synteny_similarity.tsv.md5
     md5sum Synteny_matrix.tsv > Synteny_matrix.tsv.md5
-    md5sum Summary_of_pairwise_comparisons.tsv > Summary_of_pairwise_comparisons.tsv.md5
+    md5sum Summary_of_pairwise_comparisons.withDistance.tsv > Summary_of_pairwise_comparisons.withDistance.tsv.md5
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

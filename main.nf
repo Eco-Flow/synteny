@@ -55,8 +55,8 @@ include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftwareversions'
 include { validateParameters; paramsHelp; paramsSummaryLog; samplesheetToList } from 'plugin/nf-schema'
-include { SCORE_PLOTS } from './modules/local/plot_score.nf'
-include { SCORE_TREE_PLOTS } from './modules/local/plot_tree.nf'
+include { SCORE_PLOTS } from './modules/local/score_plot.nf'
+include { SCORE_PLOT_TREE } from './modules/local/score_plot_tree.nf'
 include { RIBBON } from './modules/local/ribbon.nf'
 
 // Set colours for figures.
@@ -185,7 +185,7 @@ workflow {
                 SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
                 SCORE2 ( SYNTENY.out.anchors, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
-                SCORE_TREE_PLOTS(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
+                SCORE_PLOT_TREE(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
             } else {
                 SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
@@ -198,7 +198,7 @@ workflow {
                 SCORE_TREE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
                 SCORE2 ( SYNTENY.out.anchors_notlifted, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
-                SCORE_TREE_PLOTS(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
+                SCORE_PLOT_TREE(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
             } else {
                 SCORE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
