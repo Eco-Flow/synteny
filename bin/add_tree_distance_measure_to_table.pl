@@ -13,7 +13,7 @@ my ($pairs_file, $matrix_file) = @ARGV;
 # Open the matrix file
 open(my $matrix_fh, '<', $matrix_file) or die "Could not open '$matrix_file' $!";
 
-# Read the header of the matrix file
+# Read the header of the matrix file (contains species names)
 my $header = <$matrix_fh>;
 chomp $header;
 my @matrix_species = split(/\t/, $header);
@@ -23,10 +23,13 @@ my %matrix;
 while (my $line = <$matrix_fh>) {
     chomp $line;
     my @fields = split(/\t/, $line);
-    my $species1 = shift @fields;  # Take out the first species
+    my $species1 = shift @fields;  # Take out the first species in each row
+    
+    # Check alignment of species names and values from the matrix
     for (my $i = 0; $i < @fields; $i++) {
-        $matrix{"$species1.$matrix_species[$i]"} = $fields[$i];
-        $matrix{"$matrix_species[$i].$species1"} = $fields[$i];  # Account for reverse order
+        my $species2 = $matrix_species[$i + 1];  # Use i+1 to correctly align species in the header (skip first empty column)
+        $matrix{"$species1.$species2"} = $fields[$i];
+        $matrix{"$species2.$species1"} = $fields[$i];  # Account for reverse order
     }
 }
 close $matrix_fh;
