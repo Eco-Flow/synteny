@@ -46,7 +46,7 @@ process SCORE2 {
         species_name1=\$(echo "\$break_file" | cut -d '.' -f1)
         species_name2=\$(echo "\$break_file" | cut -d '.' -f2)
         bed_file="\${species_name1}.bed"
-        output_file="\${species_name2}.junction_locations.tsv"
+        output_file="\${species_name1}\${species_name2}.junction_locations.tsv"
 
         # Run the Python script with the chosen files
         python3 ${projectDir}/bin/junction_locations.py "\$bed_file" "\$break_file" "\$output_file"
