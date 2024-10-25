@@ -6,7 +6,7 @@ process SCORE2 {
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
     publishDir "$params.outdir/tables/paired_anchor_change_junction_prediction" , mode: "${params.publish_dir_mode}", pattern:"*Classification_summary.tsv"
     publishDir "$params.outdir/tables/junctionscores/" , mode: "${params.publish_dir_mode}", pattern:"*_gene_scores.txt"
-    publishDir "$params.outdir/tables/junctionlocations/" , mode: "${params.publish_dir_mode}", pattern:"junction_locations.tsv"
+    publishDir "$params.outdir/tables/junctionlocations/" , mode: "${params.publish_dir_mode}", pattern:"*junction_locations.tsv"
 
     input:
     path(anchors)
