@@ -2,10 +2,11 @@ process SCORE2 {
 
     label 'process_single'
     tag "${anchors}"
-    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38' 
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38_pandas' 
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
     publishDir "$params.outdir/tables/paired_anchor_change_junction_prediction" , mode: "${params.publish_dir_mode}", pattern:"*Classification_summary.tsv"
     publishDir "$params.outdir/tables/junctionscores/" , mode: "${params.publish_dir_mode}", pattern:"*_gene_scores.txt"
+    publishDir "$params.outdir/tables/junctionlocations/" , mode: "${params.publish_dir_mode}", pattern:"junction_locations.tsv"
 
     input:
     path(anchors)
@@ -21,6 +22,7 @@ process SCORE2 {
     tuple env(myValue), path("*.translocation_gene_scores.txt"), emit: genetransdistancescores
     tuple env(myValue), path("*.inversion_gene_scores.txt"), emit: geneinverdistancescores
     tuple env(myValue), path("*.other_gene_scores.txt"), emit: geneotherdistancescores
+    path("*junction_locations.tsv"), emit:junctionlocations
     path "versions.yml", emit: versions
 
     script:
@@ -37,6 +39,21 @@ process SCORE2 {
 
     #Merge the two outputs
     cat Trans_Inversion_junction_count.txt > ${anchors}.classified
+
+    # Calculate the locations of breaks
+    break_file=\$(ls *Break_junction_information.txt 2>/dev/null)
+    if [[ -n "\$break_file" ]]; then
+        species_name1=\$(echo "\$break_file" | cut -d '.' -f1)
+        species_name2=\$(echo "\$break_file" | cut -d '.' -f2)
+        bed_file="\${species_name1}.bed"
+        output_file="\${species_name2}.junction_locations.tsv"
+
+        # Run the Python script with the chosen files
+        python3 ${projectDir}/bin/junction_locations.py "\$bed_file" "\$break_file" "\$output_file"
+    else
+        echo "Error: No break junction information file found."
+        exit 1
+    fi
 
     # Extract the species name
     myValue=\$(cat species_tested*)
