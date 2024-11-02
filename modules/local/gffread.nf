@@ -2,7 +2,7 @@ process GFFREAD {
 
     label 'process_single'
     tag "$sample_id"
-    container = 'ecoflowucl/gffread_python:python-3.10_Linux_x86_64'
+    container = 'community.wave.seqera.io/library/gffread:0.12.7--33b95f1cfcc0e572'
     publishDir "$params.outdir/output_data/gffread" , mode: "${params.publish_dir_mode}"
 
     input:
