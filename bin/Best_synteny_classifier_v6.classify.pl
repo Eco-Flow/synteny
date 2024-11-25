@@ -34,6 +34,10 @@ foreach my $file (@breaks){
 	my $in_break_file="$combName\.Break_junction_information.txt";
 	open(my $in_break, "<", $in_break_file)   or die "Could not open $in_break_file\n";
 
+	#Write a new break information file including all the other type breaks:
+	my $out_break_file="$combName\.Break_junction_information_expanded.txt";
+	open(my $out_break_exp, ">", $out_break_file)   or die "Could not open $out_break_file\n";
+
 	#Store for each syntenic blocks gene order in sp2. Needed for next script.
 	my $in_sp2_order="$combName\.Sp2_synteny_order.txt";
 	open(my $in_order, "<", $in_sp2_order)   or die "Could not open $in_sp2_order\n";
@@ -140,24 +144,33 @@ foreach my $file (@breaks){
 			if ($direction_1==0 || $direction_2==0){
 				$odd_junction++;
 				$junction_type="Odd-duplicate";
+				# Add a new break junction file with the new classification types (inc. Same direction, likely duplicates).
+				print $out_break_exp "$line2\tODD\t$species1\t$species2\n";
 			}
 			elsif($direction_1==1 && $direction_2==1){
 				$same_direction++;
 				$junction_type="Same_direction";
 				print $OUT4 "$sp[-1]\n$sp[-2]\n";
+				# Add a new break junction file with the new classification types (inc. Same direction, likely duplicates).
+				print $out_break_exp "$line2\tOTHER\t$species1\t$species2\n";
 			}
 			elsif($direction_1==0 && $direction_2==0){
 				$same_direction++;
 				$junction_type="Same_direction";
 				print $OUT4 "$sp[-1]\n$sp[-2]\n";
+				# Add a new break junction file with the new classification types (inc. Same direction, likely duplicates).
+				print $out_break_exp "$line2\tOTHER\t$species1\t$species2\n";
 			}
 			else{
 				#rest must be inversions:
 				$junction_type="Inversion";
 				$inversions++;
 				print $OUT3 "$sp[-1]\n$sp[-2]\n";
+				# Add a new break junction file with the new classification types (inc. Same direction, likely duplicates).
+				print $out_break_exp "$line2\tINVER\t$species1\t$species2\n";
 			}
 			print $out "$chr\t$syn1\t$syn2\t$min_block1\t$max_block1\t$sta_1\t$end_1\t$sta_2\t$end_2\t$gap\t$junction_type\n";
+			
 		}
 		else{
 			#Then its a translocation, we cannot calculate a gap
@@ -166,6 +179,9 @@ foreach my $file (@breaks){
 
 			#Save genes that are on the boundary of translocations:
 			print $OUT2 "$sp[-1]\n$sp[-2]\n";
+
+			# Add a new break junction file with the new classification types (inc. Same direction, likely duplicates).
+			print $out_break_exp "$line2\tTRANS\t$species1\t$species2\n";
 		}
 	}
 

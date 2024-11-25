@@ -27,7 +27,6 @@ process SCORE2 {
 
     script:
     """
-
     #Refined junction scores:
     perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
     perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
@@ -37,18 +36,18 @@ process SCORE2 {
     perl ${projectDir}/bin/Calculate_distance_to_trans.pl
     perl ${projectDir}/bin/Calculate_distance_to_other.pl
 
-    #Merge the two outputs
+    #Rename the summary of break types file for publish
     cat Trans_Inversion_junction_count.txt > ${anchors}.classified
 
     # Calculate the locations of breaks
-    break_file=\$(ls *Break_junction_information.txt 2>/dev/null)
+    break_file=\$(ls *Break_junction_information_expanded.txt 2>/dev/null)
     if [[ -n "\$break_file" ]]; then
         species_name1=\$(echo "\$break_file" | cut -d '.' -f1)
         species_name2=\$(echo "\$break_file" | cut -d '.' -f2)
         bed_file="\${species_name1}.bed"
-        output_file="\${species_name1}\${species_name2}.junction_locations.tsv"
+        output_file="\${species_name1}.\${species_name2}.junction_locations.tsv"
 
-        # Run the Python script with the chosen files
+        # Run the Python script to define location of junction genes based on the ...Break_junction_information_expanded.txt files.
         python3 ${projectDir}/bin/junction_locations.py "\$bed_file" "\$break_file" "\$output_file"
     else
         echo "Error: No break junction information file found."
@@ -66,5 +65,6 @@ process SCORE2 {
         pheatmap version: \$(Rscript -e "as.data.frame(installed.packages())[ ,c(1,3)]" | grep pheatmap | sed 's/[^0-9]*//')
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
     END_VERSIONS
+
     """
 }
