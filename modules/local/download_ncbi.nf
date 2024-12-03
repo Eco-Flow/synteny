@@ -3,7 +3,7 @@ process DOWNLOAD_NCBI {
     label 'process_single'
     label 'error_retry'
     tag "$sample_id via $accension_id"
-    container "${ params.architecture == 'arm' ? 'ecoflowucl/ncbi_download:v16.1.2-arm64' : 'ecoflowucl/ncbi_download:v16.1.2-amd64' }"
+    container "${ params.architecture == 'arm' ? 'quay.io/ecoflowucl/ncbi_download:v16.1.2-arm64' : 'quay.io/ecoflowucl/ncbi_download:v16.1.2-amd64' }"
 
     input:
     tuple val(sample_id), val(accension_id)

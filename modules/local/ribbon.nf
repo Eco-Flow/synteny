@@ -2,7 +2,7 @@ process RIBBON {
 
     label 'process_single'
     tag "$target"
-    container = 'ecoflowucl/jcvi:python-3.10_last-1522_StatisticsBasic' 
+    container = 'quay.io/ecoflowucl/jcvi:python-3.10_last-1522_StatisticsBasic' 
 
     input:
     path(anchors)

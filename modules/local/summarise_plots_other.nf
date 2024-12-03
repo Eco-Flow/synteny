@@ -2,7 +2,7 @@ process SUMMARISE_PLOTS_OTHER {
    
    label 'process_single'
    tag "$sample_id"
-   container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+   container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
    publishDir "$params.outdir/figures/go_results/summarise/other" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
 
    input:
