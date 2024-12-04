@@ -3,7 +3,7 @@ process LONGEST {
     label 'process_single'
     label 'process_med_memory'
     tag "$sample_id"
-    container = 'biocontainers/agat:1.3.0--pl5321hdfd78af_0'
+    container = 'quay.io/biocontainers/agat:1.4.1--pl5321hdfd78af_0'
     publishDir "$params.outdir/output_data/longest" , mode: "${params.publish_dir_mode}", pattern:"*.txt"
 
     input:
