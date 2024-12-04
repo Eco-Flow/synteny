@@ -2,7 +2,7 @@ process GO {
 
     label 'process_single'
     tag "$speciessummaries ($cutoff percent)"
-    container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results/individual/all" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
     publishDir "$params.outdir/figures/go_results/individual/all" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
     publishDir "$params.outdir/output_data/go_results/individual/all/input_txt" , mode: "${params.publish_dir_mode}", pattern:"*.txt"

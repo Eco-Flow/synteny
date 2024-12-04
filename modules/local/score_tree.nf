@@ -2,7 +2,7 @@ process SCORE_TREE {
 
     label 'process_low'
     tag "All genes"
-    container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"My_scores.tsv"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"My_sim_cores.tsv"
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"My_comp_synteny_similarity.tsv"

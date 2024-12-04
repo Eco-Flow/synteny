@@ -2,7 +2,7 @@ process SUMMARISE_PLOTS_INVER {
    
    label 'process_single'
    tag "$sample_id"
-   container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+   container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
    publishDir "$params.outdir/figures/go_results/summarise/inver" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
 
    input:

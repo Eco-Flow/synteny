@@ -2,7 +2,7 @@ process GO_JUNCTIONS_OTHER {
 
     label 'process_single'
     tag "Run $species with $cutoff percent cutoff"
-    container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results/individual/other" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
     publishDir "$params.outdir/figures/go_results/individual/other" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
     publishDir "$params.outdir/output_data/go_results/individual/other/input_txt" , mode: "${params.publish_dir_mode}", pattern:"*.txt"

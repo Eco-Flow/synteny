@@ -2,7 +2,7 @@ process SCORE2 {
 
     label 'process_single'
     tag "${anchors}"
-    container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38_pandas' 
+    container = 'ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38_pandas' 
     publishDir "$params.outdir/tables" , mode: "${params.publish_dir_mode}", pattern:"Trans_Inversion_junction_merged.txt"
     publishDir "$params.outdir/tables/paired_anchor_change_junction_prediction" , mode: "${params.publish_dir_mode}", pattern:"*Classification_summary.tsv"
     publishDir "$params.outdir/tables/junctionscores/" , mode: "${params.publish_dir_mode}", pattern:"*_gene_scores.txt"
