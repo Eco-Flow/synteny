@@ -38,6 +38,9 @@ foreach my $file (@breaks){
 	my $out_break_file="$combName\.Break_junction_information_expanded.txt";
 	open(my $out_break_exp, ">", $out_break_file)   or die "Could not open $out_break_file\n";
 
+	#add header to junction type output:
+	print $out_break_exp "Chromosome_sp1\tsynteny_block_num1\tsynteny_block_num2\tsyn1_gene_num_start\tsyn1_gene_num_end\tsyn2_gene_num_start\tsyn2_gene_num_end\ttype_within_without_chromosome\tgene_name_sp1_start\tgene_name_sp1_end\tgene_name_sp2_start\tgene_name_sp2_end\tBreak_type\tsp1_name\tsp2_name\n";
+
 	#Store for each syntenic blocks gene order in sp2. Needed for next script.
 	my $in_sp2_order="$combName\.Sp2_synteny_order.txt";
 	open(my $in_order, "<", $in_sp2_order)   or die "Could not open $in_sp2_order\n";

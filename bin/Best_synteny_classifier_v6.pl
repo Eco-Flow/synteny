@@ -59,7 +59,7 @@ foreach my $file2 (@anchors){
      my $out_doubles="$combName\.Double_gene_entries.txt";
      open(my $out_d, ">", $out_doubles)   or die "Could not open $out_doubles \n";
 
-     #Read in syntenic anchor files (produced by MScanX using the program jcvi)
+     #Read out, break junction info
      my $out_break="$combName\.Break_junction_information.txt";
      open(my $outb, ">", $out_break)   or die "Could not open $out_break\n";
 
@@ -530,7 +530,7 @@ foreach my $file2 (@anchors){
      #set up a hash to store the order list for each syntenic block
      my %sp2_syntenic_order;
 
-     print $outb "Chromosome_sp1\tSytenic_block_first\tSytenic_block_second\tFirst_start\tFirst_end\tSecond_start\tSecond_end\tTYPE\tFirst_junction_gene\tSecond_juntion_gene\n";
+     print $outb "Chromosome_sp1\tSytenic_block_first\tSytenic_block_second\tFirst_start\tFirst_end\tSecond_start\tSecond_end\tTYPE\tFirst_junction_gene\tSecond_juntion_gene\tFirst_junction_gene(sp2)\tSecond_juntion_gene(sp2)\n";
 
      while ( my $line3 = <$in3> ){
           chomp $line3;
@@ -578,17 +578,21 @@ foreach my $file2 (@anchors){
                               #Sp2 position is present.
                               if ($previous_sp2_chr eq $sp2_chromosome){  
 
+                                   #Add genes in sp2 for output table:
+                                   my $previous_gene_equivaent_sp2=$equival_genes_to_sp2_lift{$previous_gene};
+                                   my $current_gene_equivaent_sp2=$equival_genes_to_sp2_lift{$current_gene};
+
                                    if (defined $current_stop){
                                         if (defined $previous_stop){
-                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tINVER\t$previous_gene\t$current_gene\n";
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tINVER\t$previous_gene\t$current_gene\t$previous_gene_equivaent_sp2\t$current_gene_equivaent_sp2\n";
                                         }
                                         else{
-                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\tNA\t$current_start\t$current_stop\tINVER\t$previous_gene\t$current_gene\n";
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\tNA\t$current_start\t$current_stop\tINVER\t$previous_gene\t$current_gene\t$previous_gene_equivaent_sp2\t$current_gene_equivaent_sp2\n";
                                         }
                                    }
                                    else{
                                         if (defined $previous_stop){
-                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\tNA\tINVER\t$previous_gene\t$current_gene\n";
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\tNA\tINVER\t$previous_gene\t$current_gene\t$previous_gene_equivaent_sp2\t$current_gene_equivaent_sp2\n";
                                         }
                                    }
 
@@ -627,18 +631,22 @@ foreach my $file2 (@anchors){
                                    #Then we have a translocation (seemingly), as within the same chromosome it maps to two chromosomes in species 2.
                                    #e.g. ($previous_sp2_chr ne $sp2_chromosome)
                                    $translocation_count++;
+
+                                   #Add genes in sp2 for output table:
+                                   my $previous_gene_equivaent_sp2=$equival_genes_to_sp2_lift{$previous_gene};
+                                   my $current_gene_equivaent_sp2=$equival_genes_to_sp2_lift{$current_gene};
                                    
                                    if (defined $current_stop){
                                         if (defined $previous_stop){
-                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tTRANS\t$previous_gene\t$current_gene\n";
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\t$current_stop\tTRANS\t$previous_gene\t$current_gene\t$previous_gene_equivaent_sp2\t$current_gene_equivaent_sp2\n";
                                         }
                                         else{
-                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\tNA\t$current_start\t$current_stop\tTRANS\t$previous_gene\t$current_gene\n";
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\tNA\t$current_start\t$current_stop\tTRANS\t$previous_gene\t$current_gene\t$previous_gene_equivaent_sp2\t$current_gene_equivaent_sp2\n";
                                         }
                                    }
                                    else{
                                         if (defined $previous_stop){
-                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\tNA\tTRANS\t$previous_gene\t$current_gene\n";
+                                             print $outb "$chromosome\t$previous_block\t$synteny_block\t$previous_start\t$previous_stop\t$current_start\tNA\tTRANS\t$previous_gene\t$current_gene\t$previous_gene_equivaent_sp2\t$current_gene_equivaent_sp2\n";
                                         }
                                    }
                               };
