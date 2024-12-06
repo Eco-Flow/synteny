@@ -21,7 +21,7 @@ use List::Util qw(min);
 
 
 # Ensure the correct number of arguments are provided
-if (@ARGV != 4) {
+if (@ARGV != 1) {
     die "Usage: $0 <anchors_file>\n";
 }
 
