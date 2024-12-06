@@ -225,19 +225,23 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                     }
                }
                print "here\n";
+               my $stop_if_reached_hash=1;   # For next loop, we need to stop printing, if we reach a triple hash, the next break
                for (my $i=1; $i<=10; $i++ ){
                     my $line_after_break_10=$line_store[$break_loc_number+$i];
                     print "$line_after_break_10";
                     if ($line_after_break_10 eq '###'){ #if we go forward and fall into another break, we have to remove all the entries in the result, and continue again.
-                         @post_sp2_positions = ();
+                         #Do nothing , dont print to list, and stop any more lines being added.
+                         $stop_if_reached_hash=0;
                     }
                     else{
-                         my @spl_line=split("\t", $line_after_break_10);
-                         #get the positions in sp2:
-                         my $pos_in_sp2=$sp2_positions{$spl_line[2]};
-                         #add this to the array:
-                         push (@post_sp2_positions, $pos_in_sp2);
-                         print "\t$pos_in_sp2\n";
+                         if ($stop_if_reached_hash){    # if we haven't reached the next break yet, then print
+                              my @spl_line=split("\t", $line_after_break_10);
+                              #get the positions in sp2:
+                              my $pos_in_sp2=$sp2_positions{$spl_line[2]};
+                              #add this to the array:
+                              push (@post_sp2_positions, $pos_in_sp2);
+                              print "\t$pos_in_sp2\n";
+                         }
                     }
                }
                print "and over here\n";
