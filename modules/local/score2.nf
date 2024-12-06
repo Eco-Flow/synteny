@@ -31,8 +31,8 @@ process SCORE2 {
     #Refined junction scores:
     perl ${projectDir}/bin/Best_synteny_classifier_v6.pl
     perl ${projectDir}/bin/Best_synteny_classifier_v6.classify.pl
-    grep -Ev 'L$' ${anchors} > ${anchors}\_lifted_removed
-    perl ${projectDir}/bin/Junction_focal_classifier.pl ${anchors}\_lifted_removed
+    grep -Ev 'L\$' ${anchors} > ${anchors}_lifted_removed
+    perl ${projectDir}/bin/Junction_focal_classifier.pl ${anchors}_lifted_removed
 
     #Calculate gene scores for inversion and translocation junction distance
     perl ${projectDir}/bin/Calculate_distance_to_inver.pl
