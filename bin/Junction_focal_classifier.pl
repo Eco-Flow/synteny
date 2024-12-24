@@ -15,6 +15,8 @@ use List::Util qw(min);
 #inversion (a reverse oriented region without a chromosome) or translocation (movement 
 #between chromosomes)
 
+# Input is the anchors file between two species, along with their bed files.
+
 # Script written by Chris Wyatt (UCL, with MIT license), 5 December 2024.
 
 ######################################################################################
@@ -200,11 +202,11 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
           if ($chromosome_befor_sp2 ne $chromosome_after_sp2){   # This means that the chromosomes in sp2 are different, despite being the same in species 1. Looks like a translocation break type (not a translocation for sure, as it could be that two chromosomes fused, and then lots of inversions happened).
                # TRANSLOCATIONS:
                print "Break $breaks : represents a translocation type break, sp2 regions before and after are different chromosomes\n";
-               print $out "$breaks\tIntra\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA";
+               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA";
           }
           else{
                print "Break $breaks : represents a potential inversion of disruption within the same chromosome\n";
-               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff";
+               print $out "$breaks\tIntra\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff";
 
                #Now check if the genes increase/decrease before and after (not likely an inversion), or that genes increase before and decrease after (or vice versa), indicating a likely inversion.
                my @pre_sp2_positions;
@@ -212,7 +214,7 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                for (my $i=10; $i>=1; $i-- ){
                     my $line_befor_break_10=$line_store[$break_loc_number-$i];
                     print "$line_befor_break_10";
-                    if ($line_befor_break_10 eq '###'){ #if we go back and fall into another break, we have to remove all the entries in the result, and continue again.
+                    if ($line_befor_break_10 eq '###' || $line_befor_break_10 eq ''){ #if we go back and fall into another break, we have to remove all the entries in the result, and continue again.
                          @pre_sp2_positions = ();
                     }
                     else{
@@ -228,21 +230,28 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                my $stop_if_reached_hash=1;   # For next loop, we need to stop printing, if we reach a triple hash, the next break
                for (my $i=1; $i<=10; $i++ ){
                     my $line_after_break_10=$line_store[$break_loc_number+$i];
-                    print "$line_after_break_10";
-                    if ($line_after_break_10 eq '###'){ #if we go forward and fall into another break, we have to remove all the entries in the result, and continue again.
-                         #Do nothing , dont print to list, and stop any more lines being added.
-                         $stop_if_reached_hash=0;
-                    }
-                    else{
-                         if ($stop_if_reached_hash){    # if we haven't reached the next break yet, then print
-                              my @spl_line=split("\t", $line_after_break_10);
-                              #get the positions in sp2:
-                              my $pos_in_sp2=$sp2_positions{$spl_line[2]};
-                              #add this to the array:
-                              push (@post_sp2_positions, $pos_in_sp2);
-                              print "\t$pos_in_sp2\n";
+                    if ($line_after_break_10){
+                         print "H $line_after_break_10";
+                         if ($line_after_break_10 eq '###' || $line_after_break_10 eq ''){ #if we go forward and fall into another break, we have to remove all the entries in the result, and continue again.
+                              #Do nothing , dont print to list, and stop any more lines being added.
+                              $stop_if_reached_hash=0;
+                              print "Yes, we found  [ $line_after_break_10 ] \n";
+                         }
+                         else{
+                              if ($stop_if_reached_hash){    # if we haven't reached the next break yet, then print
+                                   my @spl_line=split("\t", $line_after_break_10);
+                                   #get the positions in sp2:
+                                   my $pos_in_sp2=$sp2_positions{$spl_line[2]};
+                                   #add this to the array:
+                                   push (@post_sp2_positions, $pos_in_sp2);
+                                   print "\t$pos_in_sp2\n";
+                              }
                          }
                     }
+                    else{
+                         $stop_if_reached_hash=0;
+                    }
+                    
                }
                print "and over here\n";
 
@@ -258,14 +267,20 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
 
                #Check the gap in SP2, as it may be that the sequence continues after the break (often this is due to duplications, messing up the syntenic block).
                # Calculate the sum of elements in each array
-               my $sum_befor = 0;
-               $sum_befor += $_ for @pre_sp2_positions;
+               # Calculate the average for @pre_sp2_positions
+               my $sum_before = 0;
+               $sum_before += $_ for @pre_sp2_positions;
+               my $avg_before = @pre_sp2_positions ? $sum_before / @pre_sp2_positions : 0;
+
+               # Calculate the average for @post_sp2_positions
                my $sum_after = 0;
                $sum_after += $_ for @post_sp2_positions;
+               my $avg_after = @post_sp2_positions ? $sum_after / @post_sp2_positions : 0;
+
+               # Compare the averages
                my $max;
                my $min;
-               # check which is bigger, then we can see what genes are inbetween the two syntenic blocks
-               if ($sum_befor >= $sum_after){                        
+               if ($avg_before >= $avg_after) {                       
                     $max=min(@pre_sp2_positions);
                     $min=max(@post_sp2_positions);
                     print $out "\t$max\t$min";

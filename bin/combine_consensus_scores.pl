@@ -2,8 +2,15 @@
 use warnings;
 use strict;
 
-my $sp = "Summary_of_pairwise_comparisons.tsv";
-open(my $INPUT, "<", $sp) or die "Could not open $sp\n";
+my $sp = "Summary_of_pairwise_comparisons*";
+my @files = glob($sp);
+
+if (!@files) {
+    die "No files matching the pattern $sp found\n";
+}
+
+# Open the first file that matches
+open(my $INPUT, "<", $files[0]) or die "Could not open $files[0]: $!\n";
 
 my $outfile = "filec";
 open(my $out, ">", $outfile) or die "Could not open $outfile\n";

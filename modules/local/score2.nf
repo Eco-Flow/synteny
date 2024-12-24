@@ -69,5 +69,6 @@ process SCORE2 {
         Perl version: \$(perl --version | grep "version" | sed 's/.*(//g' | sed 's/[)].*//')
     END_VERSIONS
 
+
     """
 }

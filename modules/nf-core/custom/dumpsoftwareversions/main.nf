@@ -5,7 +5,7 @@ process CUSTOM_DUMPSOFTWAREVERSIONS {
     conda "bioconda::multiqc=1.19"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/multiqc:1.17--pyhdfd78af_1' :
-        'biocontainers/multiqc:1.17--pyhdfd78af_1' }"
+        'quay.io/biocontainers/multiqc:1.17--pyhdfd78af_1' }"
     //PLEASE NOTE: Had to downgrade container version in order to work inside GitPod
     //'biocontainers/multiqc:1.19--pyhdfd78af_0' produces error: failed to register layer: "lsetxattr /etc: operation not supported"
 

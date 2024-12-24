@@ -41,6 +41,7 @@ include { SYNTENY } from './modules/local/synteny.nf'
 include { CHROMOPAINT } from './modules/local/chromo.nf'
 include { SCORE } from './modules/local/score.nf'
 include { SCORE2 } from './modules/local/score2.nf'
+include { SCORE3 } from './modules/local/score3.nf'
 include { SCORE_TREE } from './modules/local/score_tree.nf'
 include { GO } from './modules/local/go.nf'
 include { GO_JUNCTIONS_INVER } from './modules/local/go_junctions_inver.nf'
@@ -59,6 +60,7 @@ include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftwareversions'
 include { validateParameters; paramsHelp; paramsSummaryLog; samplesheetToList } from 'plugin/nf-schema'
 include { SCORE_PLOTS } from './modules/local/score_plot.nf'
+include { SCORE_PLOTS_2 } from './modules/local/score_plot2.nf'
 include { SCORE_PLOT_TREE } from './modules/local/score_plot_tree.nf'
 include { RIBBON } from './modules/local/ribbon.nf'
 
@@ -188,12 +190,16 @@ workflow {
                 SCORE_TREE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
                 SCORE2 ( SYNTENY.out.anchors, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE3 ( SYNTENY.out.anchors, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 SCORE_PLOT_TREE(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
+                SCORE_PLOTS_2 ( SCORE_TREE.out.trans_inver_summary,  SCORE2.out.filec.collect() )
             } else {
                 SCORE ( SYNTENY.out.anchors.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
                 SCORE2 ( SYNTENY.out.anchors, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE3 ( SYNTENY.out.anchors, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 SCORE_PLOTS(SCORE.out.trans_inver_summary, SCORE2.out.filec.collect())
+                SCORE_PLOTS_2 ( SCORE.out.trans_inver_summary,  SCORE2.out.filec.collect() )
             }
         } else {
             if (params.tree) {
@@ -201,12 +207,16 @@ workflow {
                 SCORE_TREE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect(), treeIn )
                 ch_versions = ch_versions.mix(SCORE_TREE.out.versions)
                 SCORE2 ( SYNTENY.out.anchors_notlifted, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE3 ( SYNTENY.out.anchors_notlifted, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 SCORE_PLOT_TREE(SCORE_TREE.out.trans_inver_summary, SCORE2.out.filec.collect(), SCORE_TREE.out.species_order)
+                SCORE_PLOTS_2 ( SCORE_TREE.out.trans_inver_summary,  SCORE2.out.filec.collect() )
             } else {
                 SCORE ( SYNTENY.out.anchors_notlifted.collect(), SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 ch_versions = ch_versions.mix(SCORE.out.versions)
                 SCORE2 ( SYNTENY.out.anchors_notlifted, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
+                SCORE3 ( SYNTENY.out.anchors_notlifted, SYNTENY.out.percsim.collect(), GFFREAD.out.gff.collect(), JCVI.out.beds.collect(), SYNTENY.out.last.collect(), SYNTENY.out.unfilteredlast.collect() )
                 SCORE_PLOTS( SCORE.out.trans_inver_summary, SCORE2.out.filec.collect() )
+                SCORE_PLOTS_2 ( SCORE.out.trans_inver_summary, SCORE2.out.filec.collect() )
             }
         }
     }
