@@ -45,6 +45,8 @@ my %sp1_positions;
 my %sp2_coordinate;
 my %sp2_positions;
 my %sp2_coord_hits; # a store of positions in sp2 that are in anchors.
+my %sp2_coord_to_gene; # check coordiante to gene name
+my %sp1_coord_to_gene;
 
 #Read in bed file of species 1 (bed file is expected to be sorted):
 open(my $bed1, "<", $bed_sp1)   or die "Could not open $bed_sp1 \n";
@@ -99,6 +101,9 @@ while ( my $line1 = <$bed1> ){
      #Add the coordinate, start and stop of each gene:
      $sp1_coordinate{$gen}="$chr\t$sta\t$end";
 
+     #Used to know what genes are associated with each coord
+     $sp1_coord_to_gene{$line_number_sp1}=$gen;
+
      #print "$species1\t$gen\t$chr\t$line_number_sp1\n";
 
      $last_chromo_sp1=$chr;
@@ -134,8 +139,10 @@ while ( my $line2 = <$bed2> ){
      #Add the coordinate, start and stop of each gene:
      $sp2_coordinate{$gen}="$chr\t$sta\t$end";
 
-     #Used later, check how many genes are in a anchored line:
+     #Used later, check how many genes are in an anchored line:
      $sp2_coord_hits{$line_number_sp2}="y";
+     #Used to know what genes are associated with each coord
+     $sp2_coord_to_gene{$line_number_sp2}=$gen;
      #print "$line_number_sp2 = y\n";
 
      #print "$species2\t$gen\t$chr\t$line_number_sp2\n";
@@ -175,7 +182,7 @@ while ( my $line3 = <$anch> ){
      $line_number_anch++;
 }
 
-#Go through each break and start building up the information about befoee and after genes.
+#Go through each break and start building up the information about before and after genes.
 foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break we found.
      #print to screen which chromosomes are being processed:
      print "$breaks\t$break_locations{$breaks}\n";
@@ -208,12 +215,24 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
           my $gene_befor_pos=$sp1_positions{$gene_befor_break_sp1};
           my $gene_after_pos=$sp1_positions{$gene_after_break_sp1};
           my $diff=($gene_after_pos-$gene_befor_pos)-1;
+          #Check what the genes in gap are:
+
+          print "Here are the beginning and end in sp1 gene names: $gene_befor_break_sp1 and $gene_after_break_sp1\n";
+          print "with $gene_befor_pos and $gene_after_pos\n";
+          my @sp1_gene_names_in_gap;
+          for ( my $i=$gene_befor_pos+1; $i<=$gene_after_pos-1; $i++ ){
+               print "T $i\n";
+               if ($sp1_coord_to_gene{$i}){
+                    push (@sp1_gene_names_in_gap, "$sp1_coord_to_gene{$i}");
+               }
+          }
+          my $joint_sp1_gap_genes=join("\,", @sp1_gene_names_in_gap);
 
           #This means that the break separates species 1's chromosome in species 2.
           if ($chromosome_befor_sp2 ne $chromosome_after_sp2){   # This means that the chromosomes in sp2 are different, despite being the same in species 1. Looks like a translocation break type (not a translocation for sure, as it could be that two chromosomes fused, and then lots of inversions happened).
                # TRANSLOCATIONS:
                print "Break $breaks : represents a translocation type break, sp2 regions before and after are different chromosomes\n";
-               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA\tInter\n";
+               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA\tInter\t$joint_sp1_gap_genes\n";
                $inter_c++;
           }
           else{
@@ -302,14 +321,16 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                     $min=max(@pre_sp2_positions);
                     print $out "\t$min\t$max";
                }
-               my $diff_in_sp2=$max-$min;    # Caluclate the difference between the closest two numbers
+               my $diff_in_sp2=$max-$min;    # Calculate the difference between the closest two numbers
                print "Diff in species 2 : $diff_in_sp2  (of $max and $min)\n";
                # Now check if any of the genes in sp2 are in other syntenic regions (in the anchor file).
                my $in_another_anchor=0;
+               my @sp2_gene_names_in_gap;
                for ( my $i=$min+1; $i<=$max-1; $i++ ){
                     #print "H   $i\n";
                     if ($sp2_coord_hits{$i}){
                          $in_another_anchor++;
+                         push (@sp2_gene_names_in_gap, "$sp2_coord_to_gene{$i}");
                     }
                }
                print "And $in_another_anchor genes between the two segments in species 2 are in other syntenic blocks\n";
@@ -318,21 +339,21 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                if ($trend_befor eq $trend_after){
                     $indel_c++;
                     if ($in_another_anchor <= 5){
-                         print $out "\tindel_tiny\n";
+                         print $out "\tindel_tiny\t$joint_sp1_gap_genes\n";
                          $indel_c0_5++;
                     }
                     elsif ($in_another_anchor <= 20){
-                         print $out "\tindel_small\n";
+                         print $out "\tindel_small\t$joint_sp1_gap_genes\n";
                          $indel_c5_20++;
                     }
                     else{
-                         print $out "\tindel_large\n";
+                         print $out "\tindel_large\t$joint_sp1_gap_genes\n";
                          $indel_c20_more++;
                     }
                     
                }
                else{
-                    print $out "\tinver\n";
+                    print $out "\tinver\t$joint_sp1_gap_genes\n";
                     $inver_c++;
                }
           }
