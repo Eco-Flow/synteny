@@ -53,9 +53,20 @@ open(my $bed1, "<", $bed_sp1)   or die "Could not open $bed_sp1 \n";
 open(my $bed2, "<", $bed_sp2)   or die "Could not open $bed_sp2 \n";
 
 #Save the output to a file:
-my $outfile="$species1\_$species2\_junction_details.tsv";
+my $outfile="$species1\.$species2\_junction_details.tsv";
 open(my $out, ">", $outfile)   or die "Could not open $outfile \n";
-print $out "Break_number\tInter_Intra_chromosome\tSpecies1\tSpecies2\tsp1_gene_b4\tchr\tsta\tend\tsp1_gene_after\tchr\tsta\tend\tsp2_gene_b4\tchr\tsta\tend\tsp2_gene_after\tchr\tsta\tend\tsp1_genepos_before\tsp1_genepos_after\tgenes_in_gap_sp1\ttrend_before_sp2\ttrend_after_sp2\tsp2_genepos_before\tsp2_genepos_after\tgenes_in_gap_sp2\n";
+print $out "Break_number\tInter_Intra_chromosome\tSpecies1\tSpecies2\tsp1_gene_b4\tchr\tsta\tend\tsp1_gene_after\tchr\tsta\tend\tsp2_gene_b4\tchr\tsta\tend\tsp2_gene_after\tchr\tsta\tend\tsp1_genepos_before\tsp1_genepos_after\tgenes_in_gap_sp1\ttrend_before_sp2\ttrend_after_sp2\tsp2_genepos_before\tsp2_genepos_after\tgenes_in_gap_sp2 (+ in other block)\n";
+
+#Save summary to file too:
+my $outfile_sum="$species1\.$species2\_junction_summary.tsv";
+open(my $out_sum, ">", $outfile_sum)   or die "Could not open $outfile_sum \n";
+print $out_sum "Type\tCount\n";
+my $inter_c=0;
+my $inver_c=0;
+my $indel_c=0;
+my $indel_c0_5=0;
+my $indel_c5_20=0;
+my $indel_c20_more=0;
 
 #Starting Script Proper
 
@@ -202,7 +213,8 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
           if ($chromosome_befor_sp2 ne $chromosome_after_sp2){   # This means that the chromosomes in sp2 are different, despite being the same in species 1. Looks like a translocation break type (not a translocation for sure, as it could be that two chromosomes fused, and then lots of inversions happened).
                # TRANSLOCATIONS:
                print "Break $breaks : represents a translocation type break, sp2 regions before and after are different chromosomes\n";
-               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA";
+               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA\tInter\n";
+               $inter_c++;
           }
           else{
                print "Break $breaks : represents a potential inversion of disruption within the same chromosome\n";
@@ -301,12 +313,43 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                     }
                }
                print "And $in_another_anchor genes between the two segments in species 2 are in other syntenic blocks\n";
-               print $out "\t$in_another_anchor\n";
+               print $out "\t$in_another_anchor";
+
+               if ($trend_befor eq $trend_after){
+                    $indel_c++;
+                    if ($in_another_anchor <= 5){
+                         print $out "\tindel_tiny\n";
+                         $indel_c0_5++;
+                    }
+                    elsif ($in_another_anchor <= 20){
+                         print $out "\tindel_small\n";
+                         $indel_c5_20++;
+                    }
+                    else{
+                         print $out "\tindel_large\n";
+                         $indel_c20_more++;
+                    }
+                    
+               }
+               else{
+                    print $out "\tinver\n";
+                    $inver_c++;
+               }
           }
      }
 }
 
 
+#Print out the 
+
+print $out_sum "Inter\t$inter_c\n";
+print $out_sum "Inver\t$inver_c\n";
+print $out_sum "Indel\t$indel_c\n";
+print $out_sum "Indel_0_5\t$indel_c0_5\n";
+print $out_sum "Indel_5_20\t$indel_c5_20\n";
+print $out_sum "Indel_20+\t$indel_c20_more\n";
+
+#Subroutines:
 
 sub check_trend {
     my @numbers = @_;
