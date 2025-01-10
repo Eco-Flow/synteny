@@ -57,7 +57,7 @@ open(my $bed2, "<", $bed_sp2)   or die "Could not open $bed_sp2 \n";
 #Save the output to a file:
 my $outfile="$species1\.$species2\_junction_details.tsv";
 open(my $out, ">", $outfile)   or die "Could not open $outfile \n";
-print $out "Break_number\tInter_Intra_chromosome\tSpecies1\tSpecies2\tsp1_gene_b4\tchr\tsta\tend\tsp1_gene_after\tchr\tsta\tend\tsp2_gene_b4\tchr\tsta\tend\tsp2_gene_after\tchr\tsta\tend\tsp1_genepos_before\tsp1_genepos_after\tgenes_in_gap_sp1\ttrend_before_sp2\ttrend_after_sp2\tsp2_genepos_before\tsp2_genepos_after\tgenes_in_gap_sp2 (+ in other block)\n";
+print $out "Break_number\tInter_Intra_chromosome\tSpecies1\tSpecies2\tsp1_gene_b4\tchr\tsta\tend\tsp1_gene_after\tchr\tsta\tend\tsp2_gene_b4\tchr\tsta\tend\tsp2_gene_after\tchr\tsta\tend\tsp1_genepos_before\tsp1_genepos_after\tgenes_in_gap_sp1\ttrend_before_sp2\ttrend_after_sp2\tsp2_genepos_before\tsp2_genepos_after\tgenes_in_gap_sp2\tfinal_classification\tgene_names_in_sp1_gap\n";
 
 #Save summary to file too:
 my $outfile_sum="$species1\.$species2\_junction_summary.tsv";
