@@ -24,7 +24,8 @@ process SCORE3 {
     
     #Refined junction scores:
     grep -Ev 'L\$' ${anchors} > ${anchors}_lifted_removed
-    perl ${projectDir}/bin/Junction_focal_classifier.pl ${anchors}_lifted_removed
+    perl ${projectDir}/bin/sort_anchors.pl ${anchors}_lifted_removed
+    perl ${projectDir}/bin/Junction_focal_classifier.pl ${anchors}_lifted_removed_anchors_sorted.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

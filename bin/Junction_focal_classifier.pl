@@ -102,7 +102,8 @@ while ( my $line1 = <$bed1> ){
      $sp1_coordinate{$gen}="$chr\t$sta\t$end";
 
      #Used to know what genes are associated with each coord
-     $sp1_coord_to_gene{$line_number_sp1}=$gen;
+     $sp1_coord_to_gene{$chr}{$line_number_sp1}=$gen;
+     #print "$line_number_sp1 equals $gen\n";
 
      #print "$species1\t$gen\t$chr\t$line_number_sp1\n";
 
@@ -221,9 +222,9 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
           print "with $gene_befor_pos and $gene_after_pos\n";
           my @sp1_gene_names_in_gap;
           for ( my $i=$gene_befor_pos+1; $i<=$gene_after_pos-1; $i++ ){
-               print "T $i\n";
-               if ($sp1_coord_to_gene{$i}){
-                    push (@sp1_gene_names_in_gap, "$sp1_coord_to_gene{$i}");
+               print "GAP $i\:$sp1_coord_to_gene{$chromosome_befor_sp1}{$i}\n";
+               if ($sp1_coord_to_gene{$chromosome_befor_sp1}{$i}){
+                    push (@sp1_gene_names_in_gap, "$sp1_coord_to_gene{$chromosome_befor_sp1}{$i}");
                }
           }
           my $joint_sp1_gap_genes=join("\,", @sp1_gene_names_in_gap);
@@ -244,8 +245,10 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                my @post_sp2_positions;
                for (my $i=10; $i>=1; $i-- ){
                     my $line_befor_break_10=$line_store[$break_loc_number-$i];
-                    print "$line_befor_break_10";
-                    if ($line_befor_break_10 eq '###' || $line_befor_break_10 eq ''){ #if we go back and fall into another break, we have to remove all the entries in the result, and continue again.
+                    print "B $line_befor_break_10";
+                    my @array=split("\t", $line_befor_break_10);
+                    my $length = scalar @array; 
+                    if ($length == 2){ #if we go back and fall into another break, we have to remove all the entries in the result, and continue again.
                          @pre_sp2_positions = ();
                     }
                     else{
@@ -260,29 +263,32 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
                print "here\n";
                my $stop_if_reached_hash=1;   # For next loop, we need to stop printing, if we reach a triple hash, the next break
                for (my $i=1; $i<=10; $i++ ){
-                    my $line_after_break_10=$line_store[$break_loc_number+$i];
-                    if ($line_after_break_10){
-                         print "H $line_after_break_10";
-                         if ($line_after_break_10 eq '###' || $line_after_break_10 eq ''){ #if we go forward and fall into another break, we have to remove all the entries in the result, and continue again.
-                              #Do nothing , dont print to list, and stop any more lines being added.
-                              $stop_if_reached_hash=0;
-                              print "Yes, we found  [ $line_after_break_10 ] \n";
-                         }
-                         else{
-                              if ($stop_if_reached_hash){    # if we haven't reached the next break yet, then print
-                                   my @spl_line=split("\t", $line_after_break_10);
-                                   #get the positions in sp2:
-                                   my $pos_in_sp2=$sp2_positions{$spl_line[2]};
-                                   #add this to the array:
-                                   push (@post_sp2_positions, $pos_in_sp2);
-                                   print "\t$pos_in_sp2\n";
+                    if ($stop_if_reached_hash){
+                         my $line_after_break_10=$line_store[$break_loc_number+$i];
+                         my @array=split("\t", $line_after_break_10);
+                         my $length = scalar @array; 
+                         if ($line_after_break_10){
+                              print "A $line_after_break_10";
+                              if ($length == 2){ #if we go forward and fall into another break, we have to remove all the entries in the result, and continue again.
+                                   #Do nothing , dont print to list, and stop any more lines being added.
+                                   $stop_if_reached_hash=0;
+                                   print "Yes, we found  [ $line_after_break_10 ] \n";
+                              }
+                              else{
+                                   if ($stop_if_reached_hash){    # if we haven't reached the next break yet, then print
+                                        my @spl_line=split("\t", $line_after_break_10);
+                                        #get the positions in sp2:
+                                        my $pos_in_sp2=$sp2_positions{$spl_line[2]};
+                                        #add this to the array:
+                                        push (@post_sp2_positions, $pos_in_sp2);
+                                        print "\t$pos_in_sp2\n";
+                                   }
                               }
                          }
+                         else{
+                              $stop_if_reached_hash=0;
+                         }
                     }
-                    else{
-                         $stop_if_reached_hash=0;
-                    }
-                    
                }
                print "and over here\n";
 
