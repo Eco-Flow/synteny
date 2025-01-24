@@ -168,7 +168,6 @@ my %break_locations;
 
 while ( my $line3 = <$anch> ){
      chomp $line3;
-
      if ($line3 eq '###'){     #Means we have found a break. Number the break and save to array.
           push (@line_store, "$line_number_anch\t$break_number");
           $break_locations{"$break_number"}=$line_number_anch;
