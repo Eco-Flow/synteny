@@ -9,8 +9,13 @@ if (@ARGV != 1) {
 # Get the input file name from command-line arguments
 my $input_file = $ARGV[0];
 
-# Extract the genus_species from the input file name
-my ($genus_species) = $input_file =~ /^([^\.]+)/;
+# Extract genus_species1, genus_species2, and details from the input file name
+my ($genus_species1, $genus_species2, $details) = $input_file =~ /^([^\.]+)\.([^\.]+)_(junction_details)\.tsv$/;
+
+# Ensure all parts are captured correctly
+if (!$genus_species1 || !$genus_species2 || !$details) {
+    die "Error: Input file name must follow the format: genus_species1.genus_species2_junction_details.tsv\n";
+}
 
 # Open the input file
 open(my $in, '<', $input_file) or die "Cannot open $input_file: $!";
@@ -31,7 +36,7 @@ while (<$in>) {
 
     # Open the output file for the classification if not already opened
     if (!exists $output_files{$final_classification}) {
-        my $output_file_name = "${genus_species}.$final_classification.txt";
+        my $output_file_name = "${genus_species1}.${genus_species2}.${details}.${final_classification}.txt";
         open($output_files{$final_classification}, '>', $output_file_name)
           or die "Cannot open $output_file_name: $!";
     }

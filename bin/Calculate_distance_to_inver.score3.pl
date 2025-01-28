@@ -75,6 +75,7 @@ my %species_known_genes;
 my $sp1;
 my $sp2;
 my $done=0;
+my $type;
 foreach my $file (@translocation_files) {
     $done=1;
     my ($species) = split(/\./, $file);
@@ -82,6 +83,7 @@ foreach my $file (@translocation_files) {
     my @split=split(/\./, $file);
     $sp1=$split[0];
     $sp2=$split[1];
+    $type=$split[3];
 }
 
 # Find all bed files
@@ -91,6 +93,7 @@ my @bed_files = bsd_glob("*.bed");
 foreach my $bed_file (@bed_files) {
     my ($species) = fileparse($bed_file, qr/\.[^.]*/);
     my $known_genes_combined = {};
+    print "sp $species\n";
 
     # Combine known genes for the species
     if (exists $species_known_genes{$species}) {
@@ -106,7 +109,9 @@ foreach my $bed_file (@bed_files) {
     my $gene_scores = process_bed_file($bed_file, $known_genes_combined);
 
     # Print the results
-    open my $output_fh, '>', "$species\.$sp2\.gene_scores.txt" or die "Could not open output file: $!";
+
+    print "HEre $sp1 $sp2 $type\n";
+    open my $output_fh, '>', "$sp1\.$sp2\.$type\.gene_scores.txt" or die "Could not open output file: $!";
     foreach my $key (sort keys %$gene_scores) {
         print $output_fh "$key\t$gene_scores->{$key}\n";
     }

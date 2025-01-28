@@ -16,7 +16,7 @@ process SCORE3 {
 
     output:
     path("*junction_details.tsv"), emit: junction_types
-    path("*_junction_summary.tsv"), emit: junction_summary
+    path("*junction_summary.tsv"), emit: junction_summary
     path("versions.yml"), emit: versions
     path("*inver.gene_scores.txt"), optional: true, emit: inver_distancescores
     path("*inter.gene_scores.txt"), optional: true, emit: inter_distancescores
@@ -26,6 +26,7 @@ process SCORE3 {
 
     script:
     """
+    # A script to calculate numbers of different types of break, and the distance from each gene to such breaks.
 
     #Refined junction scores:
     grep -Ev 'L\$' ${anchors} > ${anchors}_lifted_removed

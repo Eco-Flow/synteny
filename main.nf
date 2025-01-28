@@ -236,6 +236,8 @@ workflow {
         }
     }
 
+    SCORE3.out.inver_distancescores.view()
+
     // If you choose to run go
     if ( params.go && params.score ) {
         go_folder = Channel.fromPath(params.go)
@@ -276,6 +278,8 @@ workflow {
         mergedChannel_inver = go_and_summary_inver.combine(cutoffValues)
         mergedChannel_trans = go_and_summary_trans.combine(cutoffValues)
         mergedChannel_other = go_and_summary_other.combine(cutoffValues)
+
+        mergedChannel_inver.view()
 
         GO ( mergedChannel , JCVI.out.beds.collect() )
         GO_JUNCTIONS_INVER ( mergedChannel_inver , JCVI.out.beds.collect() )
