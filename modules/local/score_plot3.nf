@@ -5,6 +5,7 @@ process SCORE_PLOTS_3 {
     container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3_perl-5.38'
     publishDir "$params.outdir/figures/synteny_comparisons_3/" , mode: "${params.publish_dir_mode}", pattern:"*-all.pdf"
     publishDir "$params.outdir/figures/synteny_comparisons_3/" , mode: "${params.publish_dir_mode}", pattern:"Chart_of_break_types.pdf"
+    publishDir "$params.outdir/figures/synteny_comparisons_3/total" , mode: "${params.publish_dir_mode}", pattern:"file*"
 
     input:
     path(trans_inver_summary)
@@ -12,6 +13,8 @@ process SCORE_PLOTS_3 {
 
     output:
     path("Chart_of_break_types.pdf"), emit: pie
+    path("filec"), emit: tablec
+    path("filed"), emit: tabled
 
     script:
     """
