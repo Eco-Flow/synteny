@@ -18,15 +18,16 @@ process SCORE3 {
     path("*junction_details.tsv"), emit: junction_types
     path("*junction_summary.tsv"), emit: junction_summary
     path("versions.yml"), emit: versions
-    path("*inver.gene_scores.txt"), optional: true, emit: inver_distancescores
-    path("*inter.gene_scores.txt"), optional: true, emit: inter_distancescores
-    path("*indel_large.gene_scores.txt"), optional: true, emit: large_indel_distancescores
-    path("*indel_tiny.gene_scores.txt"), optional: true, emit: tiny_indel_distancescores
-    path("*indel_small.gene_scores.txt"), optional: true, emit: small_indel_distancescores
+    tuple env(species_name1), path("*inver.gene_scores.txt"), optional: true, emit: inver_distancescores
+    tuple env(species_name1), path("*inter.gene_scores.txt"), optional: true, emit: inter_distancescores
+    tuple env(species_name1), path("*indel_large.gene_scores.txt"), optional: true, emit: large_indel_distancescores
+    tuple env(species_name1), path("*indel_tiny.gene_scores.txt"), optional: true, emit: tiny_indel_distancescores
+    tuple env(species_name1), path("*indel_small.gene_scores.txt"), optional: true, emit: small_indel_distancescores
 
     script:
     """
     # A script to calculate numbers of different types of break, and the distance from each gene to such breaks.
+
 
     #Refined junction scores:
     grep -Ev 'L\$' ${anchors} > ${anchors}_lifted_removed
@@ -42,6 +43,10 @@ process SCORE3 {
     perl ${projectDir}/bin/Calculate_distance_to_indel_large.score3.pl
     perl ${projectDir}/bin/Calculate_distance_to_indel_small.score3.pl
     perl ${projectDir}/bin/Calculate_distance_to_indel_tiny.score3.pl
+
+    #Strip off species names tested in module:
+    break_file=\$(ls *_lifted_removed 2>/dev/null)
+    species_name1=\$(echo "\$break_file" | cut -d '.' -f1)
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
