@@ -1,11 +1,11 @@
-process GO_JUNCTIONS_INVER {
+process GO_JUNCTIONS_INTER_DIST {
 
     label 'process_single'
     tag "Run $species with $cutoff percent cutoff"
     container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
-    publishDir "$params.outdir/output_data/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
-    publishDir "$params.outdir/figures/go_results/individual/inver" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
-    publishDir "$params.outdir/output_data/go_results/individual/inver/input_txt" , mode: "${params.publish_dir_mode}", pattern:"*.txt"
+    publishDir "$params.outdir/output_data/go_results/individual/interdist" , mode: "${params.publish_dir_mode}", pattern:"*.tab"
+    publishDir "$params.outdir/figures/go_results/individual/interdist" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
+    publishDir "$params.outdir/output_data/go_results/individual/interdist/input_txt" , mode: "${params.publish_dir_mode}", pattern:"*.txt"
 
     input:
     tuple path(go, stageAs: 'Go'), val(species), path(junction_score), val (cutoff)
@@ -22,8 +22,6 @@ process GO_JUNCTIONS_INVER {
     """
 
     # ${task.process}
-
-    perl "${projectDir}/bin/Junction_go_score3.pl" ${cutoff} ${species}
 
     perl "${projectDir}/bin/Junction_go_score4_unifieddistance.pl" ${cutoff} ${species}
  

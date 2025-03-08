@@ -65,6 +65,23 @@ include { SUMMARISE_PLOTS_INDEL_LARGE } from './modules/local/summarise_plots_in
 include { SUMMARISE_PLOTS_INDEL_TINY } from './modules/local/summarise_plots_indel_tiny.nf'
 include { SUMMARISE_PLOTS_INDEL_SMALL } from './modules/local/summarise_plots_indel_small.nf'
 
+include { GO_JUNCTIONS_INVER_DIST } from './modules/local/go_junctions_inver_score4_dist.nf'
+include { GO_JUNCTIONS_INTER_DIST } from './modules/local/go_junctions_inter_score4_dist.nf'
+include { GO_JUNCTIONS_INDEL_LARGE_DIST } from './modules/local/go_junctions_indel_large_score4_dist.nf'
+include { GO_JUNCTIONS_INDEL_TINY_DIST } from './modules/local/go_junctions_indel_tiny_score4_dist.nf'
+include { GO_JUNCTIONS_INDEL_SMALL_DIST } from './modules/local/go_junctions_indel_small_score4_dist.nf'
+include { GO_SUMMARISE_INVER_DIST } from './modules/local/go_summarise_inver_dist.nf'
+include { SUMMARISE_PLOTS_INVER_DIST } from './modules/local/summarise_plots_inver_score4.nf'
+include { GO_SUMMARISE_INTER_DIST } from './modules/local/go_summarise_inter_dist.nf'
+include { SUMMARISE_PLOTS_INTER_DIST } from './modules/local/summarise_plots_inter_score4.nf'
+include { GO_SUMMARISE_INDEL_LARGE_DIST } from './modules/local/go_summarise_indel_large_dist.nf'
+include { SUMMARISE_PLOTS_INDEL_LARGE_DIST } from './modules/local/summarise_plots_indel_large_score4.nf'
+include { GO_SUMMARISE_INDEL_SMALL_DIST } from './modules/local/go_summarise_indel_small_dist.nf'
+include { SUMMARISE_PLOTS_INDEL_SMALL_DIST } from './modules/local/summarise_plots_indel_small_score4.nf'
+include { GO_SUMMARISE_INDEL_TINY_DIST } from './modules/local/go_summarise_indel_tiny_dist.nf'
+include { SUMMARISE_PLOTS_INDEL_TINY_DIST } from './modules/local/summarise_plots_indel_tiny_score4.nf'
+
+
 include { SUMMARISE_PLOTS_TRANS } from './modules/local/summarise_plots_trans.nf'
 include { SUMMARISE_PLOTS_OTHER } from './modules/local/summarise_plots_other.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
@@ -278,6 +295,45 @@ workflow {
     SUMMARISE_PLOTS_INDEL_TINY(GO_SUMMARISE_INDEL_TINY.out.go_summary_table)
     SUMMARISE_PLOTS_INDEL_SMALL(GO_SUMMARISE_INDEL_SMALL.out.go_summary_table)
     ch_versions = ch_versions.mix(SUMMARISE_PLOTS_INVER.out.versions)
+
+
+    // GO TYPE 2, absolute distance to break
+
+    //For each junction type, combine the junctions with the go hashes and cutoff values (default 1,3), and run GO analysis with absolute distances, not averages.
+
+    // Split the params.cutoff string into a list of separate entries
+    cutoffValuesDist = Channel.from(params.cutoffdistance.split(','))
+
+    go_and_summary_inver = go_folder.combine(species_inver)
+    mergedChannel_inver_dist = go_and_summary_inver.combine(cutoffValuesDist)
+    GO_JUNCTIONS_INVER_DIST ( mergedChannel_inver_dist , JCVI.out.beds.collect() )
+
+    go_and_summary_inter = go_folder.combine(species_inter)
+    mergedChannel_inter_dist = go_and_summary_inter.combine(cutoffValuesDist)
+    GO_JUNCTIONS_INTER_DIST ( mergedChannel_inter_dist , JCVI.out.beds.collect() )
+
+    go_and_summary_indel_large = go_folder.combine(species_indel_large)
+    mergedChannel_indel_large_dist = go_and_summary_indel_large.combine(cutoffValuesDist)
+    GO_JUNCTIONS_INDEL_LARGE_DIST ( mergedChannel_indel_large_dist , JCVI.out.beds.collect() )
+
+    go_and_summary_indel_small = go_folder.combine(species_indel_small)
+    mergedChannel_indel_small_dist = go_and_summary_indel_small.combine(cutoffValuesDist)
+    GO_JUNCTIONS_INDEL_SMALL_DIST ( mergedChannel_indel_small_dist , JCVI.out.beds.collect() )
+
+    go_and_summary_indel_tiny = go_folder.combine(species_indel_tiny)
+    mergedChannel_indel_tiny_dist = go_and_summary_indel_tiny.combine(cutoffValuesDist)
+    GO_JUNCTIONS_INDEL_TINY_DIST ( mergedChannel_indel_tiny_dist , JCVI.out.beds.collect() )
+
+    GO_SUMMARISE_INVER_DIST ( GO_JUNCTIONS_INVER_DIST.out.go_table.groupTuple() )
+    SUMMARISE_PLOTS_INVER_DIST (GO_SUMMARISE_INVER_DIST.out.go_summary_table)
+    GO_SUMMARISE_INTER_DIST ( GO_JUNCTIONS_INTER_DIST.out.go_table.groupTuple() )
+    SUMMARISE_PLOTS_INTER_DIST (GO_SUMMARISE_INTER_DIST.out.go_summary_table)
+    GO_SUMMARISE_INDEL_LARGE_DIST ( GO_JUNCTIONS_INDEL_LARGE_DIST.out.go_table.groupTuple() )
+    SUMMARISE_PLOTS_INDEL_LARGE_DIST (GO_SUMMARISE_INDEL_LARGE_DIST.out.go_summary_table)
+    GO_SUMMARISE_INDEL_SMALL_DIST ( GO_JUNCTIONS_INDEL_SMALL_DIST.out.go_table.groupTuple() )
+    SUMMARISE_PLOTS_INDEL_SMALL_DIST (GO_SUMMARISE_INDEL_SMALL_DIST.out.go_summary_table)
+    GO_SUMMARISE_INDEL_TINY_DIST ( GO_JUNCTIONS_INDEL_TINY_DIST.out.go_table.groupTuple() )
+    SUMMARISE_PLOTS_INDEL_TINY_DIST (GO_SUMMARISE_INDEL_TINY_DIST.out.go_summary_table)
 
 }
 
