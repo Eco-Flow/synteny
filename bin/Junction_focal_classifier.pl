@@ -232,7 +232,7 @@ foreach my $breaks (sort { $a <=> $b } keys %break_locations ){ #For each break 
           if ($chromosome_befor_sp2 ne $chromosome_after_sp2){   # This means that the chromosomes in sp2 are different, despite being the same in species 1. Looks like a translocation break type (not a translocation for sure, as it could be that two chromosomes fused, and then lots of inversions happened).
                # TRANSLOCATIONS:
                print "Break $breaks : represents a translocation type break, sp2 regions before and after are different chromosomes\n";
-               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA\tInter\t$joint_sp1_gap_genes\n";
+               print $out "$breaks\tInter\t$species1\t$species2\t$gene_befor_break_sp1\t$sp1_coordinate{$gene_befor_break_sp1}\t$gene_after_break_sp1\t$sp1_coordinate{$gene_after_break_sp1}\t$gene_befor_break_sp2\t$sp2_coordinate{$gene_befor_break_sp2}\t$gene_after_break_sp2\t$sp2_coordinate{$gene_after_break_sp2}\t$gene_befor_pos\t$gene_after_pos\t$diff\tNA\tNA\tNA\tNA\tNA\tinter\t$joint_sp1_gap_genes\n";
                $inter_c++;
           }
           else{
