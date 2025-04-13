@@ -1,6 +1,6 @@
 process LONGEST {
 
-    label 'process_single'
+    label 'process_medium'
     label 'process_med_memory'
     tag "$sample_id"
     container = 'quay.io/biocontainers/agat:1.4.1--pl5321hdfd78af_0'
