@@ -3,8 +3,8 @@ process SCORE_PLOTS_3 {
     label 'process_single'
     tag "All genes"
     container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3_perl-5.38'
-    publishDir "$params.outdir/figures/synteny_comparisons_3/" , mode: "${params.publish_dir_mode}", pattern:"*-all.pdf"
     publishDir "$params.outdir/figures/synteny_comparisons_3/" , mode: "${params.publish_dir_mode}", pattern:"Chart_of_break_types.pdf"
+    publishDir "$params.outdir/tables/summary_of_junctions/", mode: "copy", pattern:"Summary_of_junctions_version3.tsv"
 
     input:
     path(trans_inver_summary)
@@ -12,7 +12,8 @@ process SCORE_PLOTS_3 {
 
     output:
     path("Chart_of_break_types.pdf"), emit: pie
-
+    path("Summary_of_junctions_version3.tsv"), emit: summary
+ 
     script:
     """
     #First combine all the results into a single table (filec)
@@ -25,5 +26,6 @@ process SCORE_PLOTS_3 {
     #Make a pie chart of predicted values 
     Rscript ${projectDir}/bin/break_types_to_pie.score3.R
 
+    mv filed Summary_of_junctions_version3.tsv
     """
 }
