@@ -161,10 +161,20 @@
           "type": "boolean",
           "description": "Calculate synteny scores for each species."
         },
+        "chromo_lengths": {
+          "type": "boolean",
+          "default": false,
+          "description": "Calculate length in bp of each chromosome."
+        },
         "cutoff": {
           "type": "string",
           "default": "10",
           "description": "Cut off for GO analysis. Integer for percentage of top and bottom genes to test (default = 10)"
+        },
+        "cutoffdistance": {
+          "type": "string",
+          "default": "1,3",
+          "description": "Cut off distances for GO analysis. Integer/s for number genes close to breaks (default = 1,2)"
         },
         "gffread_coding": {
           "type": "boolean",
