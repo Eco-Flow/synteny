@@ -86,6 +86,7 @@ include { SUMMARISE_PLOTS_TRANS } from './modules/local/summarise_plots_trans.nf
 include { SUMMARISE_PLOTS_OTHER } from './modules/local/summarise_plots_other.nf'
 include { FASTAVALIDATOR } from './modules/nf-core/fastavalidator/main'
 include { SEQKIT_STATS } from './modules/nf-core/seqkit/stats/main'
+include { SAMTOOLS_FAIDX } from './modules/nf-core/samtools/faidx/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from './modules/nf-core/custom/dumpsoftwareversions'
 include { validateParameters; paramsHelp; paramsSummaryLog; samplesheetToList } from 'plugin/nf-schema'
 include { SCORE_PLOTS } from './modules/local/score_plot.nf'
@@ -178,6 +179,13 @@ workflow {
     // Manipulate seqkit_stats tsv to be saved into output directory
     SEQKIT_STATS.out.stats.map { speciesname, tsv -> [speciesname.id, tsv] }
         .collectFile(name: { it[0] }, storeDir: "${params.outdir}/input_validation/seqkit_stats")
+
+    SAMTOOLS_FAIDX( fasta_inputs.tuple, [[],[]], true )
+    ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions.first())
+
+    // Save chromosome lengths to output directory
+    SAMTOOLS_FAIDX.out.sizes.map { speciesname, sizes -> [speciesname.id, sizes] }
+        .collectFile(name: { it[0] }, storeDir: "${params.outdir}/output_data/chromosome_lengths")
  
     LONGEST ( fasta_inputs.gffread )
     ch_versions = ch_versions.mix(LONGEST.out.versions.first())
