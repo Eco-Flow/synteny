@@ -166,6 +166,11 @@
           "default": false,
           "description": "Calculate length in bp of each chromosome."
         },
+        "proportional_chromosomes": {
+          "type": "boolean",
+          "default": false,
+          "description": "Plot chromosomes at sizes proportional to their actual genome sizes, so that larger genomes appear wider than smaller ones."
+        },
         "cutoff": {
           "type": "string",
           "default": "10",
