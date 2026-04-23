@@ -1,6 +1,6 @@
 process SYNTENY {
 
-    stageInMode = 'copy'
+    stageInMode 'copy'
     label 'process_single'
     label 'process_long'
     label 'process_med_memory'
@@ -14,7 +14,7 @@ process SYNTENY {
     publishDir "$params.outdir/figures/karyotype_plots" , mode: "${params.publish_dir_mode}", pattern: "*.karyotype.flipped.svg"
     publishDir "$params.outdir/output_data/last" , mode: "${params.publish_dir_mode}", pattern: "*last.filtered"
     publishDir "$params.outdir/output_data/percentidentity" , mode: "${params.publish_dir_mode}", pattern: "*.percent.similarity"
-    container = 'quay.io/ecoflowucl/jcvi:python-3.10_last-1522_StatisticsBasic'
+    container 'quay.io/ecoflowucl/jcvi:python-3.10_last-1522_StatisticsBasic'
 
     input:
     tuple val(sample_id), path(fasta), path(gff), val(sample_id2), path(fasta2), path(gff2)
