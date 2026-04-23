@@ -2,7 +2,7 @@ process GFFREAD {
 
     label 'process_single'
     tag "$sample_id"
-    container = 'community.wave.seqera.io/library/gffread:0.12.7--33b95f1cfcc0e572'
+    container 'community.wave.seqera.io/library/gffread:0.12.7--33b95f1cfcc0e572'
     publishDir "$params.outdir/output_data/gffread" , mode: "${params.publish_dir_mode}"
 
     input:

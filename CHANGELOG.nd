@@ -1,0 +1,19 @@
+## v4.0.1 - 23.04.26
+
+### `Added`
+
+- New way to plot ribbon ortho plots with actual lengths of genomes
+
+### `Fixed`
+
+- Removed equals signs in module contsiner directive
+
+## Example
+
+### `Added`
+
+### `Fixed`
+
+### `Dependencies`
+
+### `Deprecated`

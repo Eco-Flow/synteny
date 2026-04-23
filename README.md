@@ -31,7 +31,7 @@ Nextflow pipelines require a few prerequisites. There is further documentation o
 
 - [Docker](https://docs.docker.com/engine/install/) or [Singularity](https://docs.sylabs.io/guides/3.11/admin-guide/installation.html).
 - [Java](https://www.java.com/en/download/help/download_options.html) and [openJDK](https://openjdk.org/install/) >= 8 (**Please Note:** When installing Java versions are `1.VERSION` so `Java 8` is `Java 1.8`).
-- [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html) >= `v23.07.0`.
+- [Nextflow](https://www.nextflow.io/docs/latest/getstarted.html) >= `v25`.
 
 ### Install
 
