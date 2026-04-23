@@ -2,7 +2,7 @@ process SCORE_PLOTS_3 {
 
     label 'process_single'
     tag "All genes"
-    container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3_perl-5.38'
+    container 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3_perl-5.38'
     publishDir "$params.outdir/figures/synteny_comparisons_3/" , mode: "${params.publish_dir_mode}", pattern:"Chart_of_break_types.pdf"
     publishDir "$params.outdir/tables/summary_of_junctions/", mode: "copy", pattern:"Summary_of_junctions_version3.tsv"
 

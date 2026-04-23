@@ -19,7 +19,41 @@ my @species=split(",", $line);
 
 my $len=scalar(@species);
 
-# Run through the species in the order they are presented, and run the set up for the karyotype plots. 
+# Read proportional_chromosomes flag written by Nextflow
+my $proportional = 0;
+if (-e "proportional_flag") {
+    open(my $PF, "<", "proportional_flag") or die "Could not open proportional_flag\n";
+    my $flag_val = <$PF>;
+    chomp $flag_val;
+    close $PF;
+    $proportional = ($flag_val eq "true") ? 1 : 0;
+}
+
+# Pre-compute genome sizes from each species' BED file for proportional scaling.
+# Genome size = sum of the maximum gene end coordinate per chromosome.
+my %genome_sizes;
+my $max_genome_size = 1;  # avoid division by zero if something goes wrong
+
+if ($proportional) {
+    foreach my $sp (@species) {
+        chomp $sp;
+        my $bed = "$sp.bed";
+        my %chromo_lens;
+        open(my $BTMP, "<", $bed) or die "Could not open $bed\n";
+        while (my $bl = <$BTMP>) {
+            chomp $bl;
+            my @f = split("\t", $bl);
+            $chromo_lens{$f[0]} = $f[2] if !exists $chromo_lens{$f[0]} || $f[2] > $chromo_lens{$f[0]};
+        }
+        close $BTMP;
+        my $size = 0;
+        foreach my $v (values %chromo_lens) { $size += $v; }
+        $genome_sizes{$sp} = $size;
+        $max_genome_size = $size if $size > $max_genome_size;
+    }
+}
+
+# Run through the species in the order they are presented, and run the set up for the karyotype plots.
 my @store_comparisons;
 my $n=0;
 my $p=90;
@@ -128,14 +162,16 @@ for (@species){
 		
 		
 		$p=$p-$intervals;
-		print $out " .$p,     .1,    .8,      0,      , $_, top, $_.bed.flipped.bed\n";
+		my $xend = $proportional ? sprintf("%.3f", 0.2 + ($genome_sizes{$_} / $max_genome_size) * 0.6) : ".8";
+		print $out " .$p,     .2,    $xend,      0,      , $_, top, $_.bed.flipped.bed\n";
 
 		#Make sure the previous is now set:
 		$previous="$_";
 	}
 	else{
 
-		print $out " .9,     .1,    .8,      0,      , $_, top, $_.bed\n";
+		my $xend_first = $proportional ? sprintf("%.3f", 0.2 + ($genome_sizes{$_} / $max_genome_size) * 0.6) : ".8";
+		print $out " .9,     .2,    $xend_first,      0,      , $_, top, $_.bed\n";
 		#No previous to make a consecutive comparison.
 		$previous=$_;
 	}

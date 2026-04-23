@@ -2,7 +2,7 @@ process GO_SUMMARISE_INDEL_LARGE {
 
     label 'process_single'
     tag "summary of go s"
-    container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+    container 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
     publishDir "$params.outdir/output_data/go_results/summarise/indel_large" , mode: "${params.publish_dir_mode}", pattern:"*.tsv"
 
     input:
