@@ -44,6 +44,9 @@ while ( my $line1 = <$in1> ){
 }
 
 
+# Normalize 'transcript' to 'mRNA' so GFF3_to_SingleLongest_mRNA.pl and JCVI can find transcript features
+`perl -pi -e 's/\\ttranscript\\t/\\tmRNA\\t/g' $outfile`;
+
 my $gff_head=`head -n 1 $sample\.gff_for_jvci.gff3 | cut -f 2`;
 chomp $gff_head;
 if ($gff_head=~  m/AUGUSTUS/g){
