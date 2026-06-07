@@ -13,6 +13,7 @@ process RIBBON {
     path("Ribbon.pdf"), emit: ribbonplot
     path("Ribbon.svg"), emit: ribbonsvg
     path "versions.yml", emit: versions
+    path "chromosome_name_legend.tsv", emit: legend, optional: true
 
     script:
     """
