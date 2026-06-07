@@ -8,6 +8,8 @@ Changes from jcvi default:
     rows and scaled slightly smaller so neighbouring labels don't overlap.
 """
 import sys
+import matplotlib
+matplotlib.rcParams['svg.fonttype'] = 'none'
 import jcvi.graphics.karyotype as _k
 
 
