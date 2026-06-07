@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Drop-in replacement for `python -m jcvi.graphics.karyotype`.
-Removes the nseqids < 5 guard so chromosome labels are shown even when a
-species has fewer than 5 chromosomes (JCVI's default behaviour hides them).
-Accepts all the same arguments as the original command, including --format svg.
+
+Changes from jcvi default:
+  - Always draws chromosome labels, regardless of nseqids count (removes both
+    the nseqids < 5 and the nseqids >= 2*MaxSeqids skip guards).
+  - For dense tracks (nseqids > MaxSeqids), labels are staggered on alternating
+    rows and scaled slightly smaller so neighbouring labels don't overlap.
 """
 import sys
 import jcvi.graphics.karyotype as _k
@@ -20,6 +23,18 @@ def _draw(self, chrstyle="auto", keep_chrlabels=False, plot_label=True,
     va = self.va
     nseqids = len(self.seqids)
     tr = self.tr
+
+    # For dense tracks, scale circles down and stagger labels on two rows so
+    # adjacent chromosome labels sit at different heights instead of overlapping.
+    dense = nseqids > _k.MaxSeqids
+    if dense:
+        scale = max(0.5, _k.MaxSeqids / nseqids)
+        label_size = max(5, round(10 * scale))
+        label_radius = max(0.01, 0.02 * scale)
+    else:
+        label_size = 10
+        label_radius = 0.02
+
     for i, sid in enumerate(self.seqids):
         size = self.sizes[sid]
         rsize = self.ratio * size
@@ -32,13 +47,16 @@ def _draw(self, chrstyle="auto", keep_chrlabels=False, plot_label=True,
         si = sid if keep_chrlabels else _k.make_circle_name(sid, self.rev)
         xx = (xstart + xend) / 2
         xstart = xend + gap
-        step = 2 if nseqids <= 40 else 10
-        if nseqids >= 2 * _k.MaxSeqids and (i + 1) % step != 0:
-            continue
-        # nseqids < 5 guard removed — always label chromosomes
-        hpad = -pad if va == "bottom" else pad
+
+        # Stagger: alternate between 1× and 1.8× pad so adjacent labels sit on
+        # different rows, halving the effective horizontal label density.
+        base_hpad = -pad if va == "bottom" else pad
+        hpad = base_hpad * (1.8 if (dense and i % 2 == 1) else 1.0)
+
         if plot_circles:
-            _k.TextCircle(ax, xx, y + hpad, si, fc="w", color=color, size=10, transform=tr)
+            _k.TextCircle(ax, xx, y + hpad, si, fc="w", color=color,
+                          size=label_size, radius=label_radius, transform=tr)
+
     label = _k.markup(self.label)
     c = color if color != "gainsboro" else "k"
     if plot_label:
