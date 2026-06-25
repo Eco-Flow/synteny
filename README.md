@@ -1,6 +1,6 @@
-# nf-synteny
+# Eco-Flow/synteny
 
-A simple pipeline to run a macro synteny analysis. 
+A simple pipeline to run a macro synteny analysis across more distant phylogenetic distances. 
 
 It is under development, so if you wish to use the pipeline for your own research, please contact us (ecoflow.ucl [at] gmail.com). 
 We can give you the up to date detail for the methods and the up to date figures. When it is published we will release a final version.
