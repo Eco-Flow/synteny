@@ -18,11 +18,11 @@ process SCORE3 {
     path("*junction_details.tsv"), emit: junction_types
     path("*junction_summary.tsv"), emit: junction_summary
     path("versions.yml"), emit: versions
-    tuple env(species_name1), path("*inver.gene_scores.txt"), optional: true, emit: inver_distancescores
-    tuple env(species_name1), path("*inter.gene_scores.txt"), optional: true, emit: inter_distancescores
-    tuple env(species_name1), path("*indel_large.gene_scores.txt"), optional: true, emit: large_indel_distancescores
-    tuple env(species_name1), path("*indel_tiny.gene_scores.txt"), optional: true, emit: tiny_indel_distancescores
-    tuple env(species_name1), path("*indel_small.gene_scores.txt"), optional: true, emit: small_indel_distancescores
+    tuple env('species_name1'), path("*inver.gene_scores.txt"), optional: true, emit: inver_distancescores
+    tuple env('species_name1'), path("*inter.gene_scores.txt"), optional: true, emit: inter_distancescores
+    tuple env('species_name1'), path("*indel_large.gene_scores.txt"), optional: true, emit: large_indel_distancescores
+    tuple env('species_name1'), path("*indel_tiny.gene_scores.txt"), optional: true, emit: tiny_indel_distancescores
+    tuple env('species_name1'), path("*indel_small.gene_scores.txt"), optional: true, emit: small_indel_distancescores
 
     script:
     """

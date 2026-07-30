@@ -1,8 +1,8 @@
 process SUMMARISE_PLOTS {
    
    label 'process_single'
-   tag "$sample_id"
-   container = 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
+   tag "$cutoff"
+   container 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
    publishDir "$params.outdir/figures/go_results/summarise/all" , mode: "${params.publish_dir_mode}"
 
    input:
@@ -12,6 +12,7 @@ process SUMMARISE_PLOTS {
    path( "*.pdf" ), emit: go_summary_pdf
    path "versions.yml", emit: versions
    
+   script:
    """
    # Run R code:
    Summarise_go_plots.R $cutoff

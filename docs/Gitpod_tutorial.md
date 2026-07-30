@@ -37,7 +37,7 @@ On Gitpod my "path/to" is `/workspace/synteny/Drosophila_Refseq_List.csv`
 
 NOTICE: We remove the test profile, and just use docker (our container engine, to get the software).
 
-9. Once completed, explore the `Results` folder to see some of the output.
+9. Once completed, explore the `results` folder to see some of the output.
 
 On the main README.md on this repository you will find full explanation of the output files.
 

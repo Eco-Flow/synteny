@@ -1,23 +1,5 @@
 #!/usr/bin/env nextflow
 
-log.info """\
- =========================================
-
- nf-synteny (v4.0.1)
-
- -----------------------------------------
-
- Authors:
-   - Chris Wyatt <c.wyatt@ucl.ac.uk>
-   - Simon Murray
-
- -----------------------------------------
-
- Copyright (c) 2024
-
- =========================================""".stripIndent()
-
-
 def errorMessage() {
     log.info"""
     =============
@@ -95,31 +77,30 @@ include { SCORE_PLOTS_3 } from './modules/local/score_plot3.nf'
 include { SCORE_PLOT_TREE } from './modules/local/score_plot_tree.nf'
 include { RIBBON } from './modules/local/ribbon.nf'
 
-// Set colours for figures.
-Channel
-    .fromPath(params.hex)
-    .set { in_hex }
-
-// Add input params cutoff for go
-our_cutoff = Channel.from(params.cutoff)
-                    .splitCsv(header: false, sep: ",")
-                    .flatten()
-
-def flattenCutoffGroups(groups) {
-    return groups.collect { tuple ->
-        def (key, nestedList) = tuple
-        def flattenedList = nestedList.collectMany { it }  // collectMany flattens one level
-        [key, flattenedList]
-    }
-}
-
-// Caluclate buffer size, to split GO summarise results correctly.
-import java.util.concurrent.atomic.AtomicInteger
-import java.nio.file.Files
-import java.nio.file.Paths
-import groovy.io.FileType
-
 workflow {
+
+    // Print the pipeline banner
+    log.info """\
+     =========================================
+    
+     nf-synteny (v${workflow.manifest.version})
+    
+     -----------------------------------------
+    
+     Authors:
+       - Chris Wyatt <c.wyatt@ucl.ac.uk>
+       - Simon Murray
+    
+     -----------------------------------------
+    
+     Copyright (c) 2024
+    
+     =========================================""".stripIndent()
+
+    // Set colours for figures.
+    Channel
+        .fromPath(params.hex)
+        .set { in_hex }
 
     // Print help message, supply typical command line usage for the pipeline
     if (params.help) {
@@ -346,8 +327,10 @@ workflow {
     GO_SUMMARISE_INDEL_TINY_DIST ( GO_JUNCTIONS_INDEL_TINY_DIST.out.go_table.groupTuple() )
     SUMMARISE_PLOTS_INDEL_TINY_DIST (GO_SUMMARISE_INDEL_TINY_DIST.out.go_summary_table)
     }
-}
 
-workflow.onComplete {
-    println(workflow.success ? "\nDone! Check results in $params.outdir/ \n" : "Hmmm .. something went wrong\n")
+    def wf = workflow
+    def outdir = params.outdir
+    wf.onComplete {
+        println(wf.success ? "\nDone! Check results in ${outdir}/ \n" : "Hmmm .. something went wrong\n")
+    }
 }

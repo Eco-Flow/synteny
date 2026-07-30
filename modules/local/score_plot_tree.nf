@@ -15,6 +15,7 @@ process SCORE_PLOT_TREE {
     path("*-all_treesort.pdf")
     path("Chart_of_break_types.pdf"), emit: pie
 
+    script:
     """
     #First combine all the results into a single table (filec)
     combine_consensus_scores.pl 

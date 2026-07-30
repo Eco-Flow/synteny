@@ -1,7 +1,7 @@
 process SUMMARISE_PLOTS_INDEL_SMALL {
    
    label 'process_single'
-   tag "$sample_id"
+   tag "$cutoff"
    container 'quay.io/ecoflowucl/chopgo:r-4.3.2_python-3.10_perl-5.38'
    publishDir "$params.outdir/figures/go_results/summarise/indel_small" , mode: "${params.publish_dir_mode}", pattern:"*.pdf"
 
@@ -12,6 +12,7 @@ process SUMMARISE_PLOTS_INDEL_SMALL {
    path( "*.pdf" ), emit: go_summary_pdf
    path "versions.yml", emit: versions
    
+   script:
    """
    # Run R code:
    Summarise_go_plots_junction.R $cutoff

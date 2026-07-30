@@ -19,9 +19,9 @@ process SCORE2 {
     output:
     path("${anchors}.classified"), emit: filec
     path("*Classification_summary.tsv"), emit:classifications
-    tuple env(myValue), path("*.translocation_gene_scores.txt"), emit: genetransdistancescores
-    tuple env(myValue), path("*.inversion_gene_scores.txt"), emit: geneinverdistancescores
-    tuple env(myValue), path("*.other_gene_scores.txt"), emit: geneotherdistancescores
+    tuple env('myValue'), path("*.translocation_gene_scores.txt"), emit: genetransdistancescores
+    tuple env('myValue'), path("*.inversion_gene_scores.txt"), emit: geneinverdistancescores
+    tuple env('myValue'), path("*.other_gene_scores.txt"), emit: geneotherdistancescores
     path("*junction_locations.tsv"), emit:junctionlocations
     path("*_junction_details.tsv"), emit:junction_focused_details
     path "versions.yml", emit: versions

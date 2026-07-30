@@ -45,6 +45,8 @@ process SYNTENY {
     perl ${projectDir}/bin/syntenous_chromosomes.pl ${sample_id}.bed ${sample_id2}.bed ${sample_id}.${sample_id2}.anchors.new
 
     # Shorten chromosome names to last N chars (min 3) ensuring uniqueness across both species
+    # species.csv gives the script the species order matching the seqids_karyotype.txt lines
+    echo "${sample_id},${sample_id2}" > species.csv
     perl ${projectDir}/bin/shorten_chromnames.pl seqids_karyotype.txt ${sample_id}.bed ${sample_id2}.bed ${sample_id2}.bed.flipped.bed
 
     # Compute xend values — proportional to genome size (xstart=.2, xend_max=.8), or fixed at .8
