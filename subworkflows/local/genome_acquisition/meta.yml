@@ -1,0 +1,28 @@
+name: "genome_acquisition"
+description: Download/resolve genomes+annotations from a samplesheet CSV (NCBI accession or local path) and validate them
+keywords:
+  - download
+  - fasta validation
+  - seqkit stats
+components:
+  - download_ncbi
+  - fastavalidator
+  - seqkit/stats
+  - samtools/faidx
+input:
+  - input_csv:
+      type: channel
+      description: "Path to the samplesheet CSV: 2 columns (name, RefSeq accession) or 3 columns (name, fasta, gff), optionally gzipped, local or s3://"
+      pattern: "*.csv"
+output:
+  - genome_annotations:
+      type: channel
+      description: "[ id, fasta, gff ] tuples, one per species"
+  - genome_fastas:
+      type: channel
+      description: "[ id, fasta ] tuples, one per species (genome_annotations with the gff dropped)"
+  - versions:
+      type: channel
+      description: "Channel accumulating tool versions"
+authors:
+  - "@chriswyatt1"

@@ -1,0 +1,29 @@
+nextflow_process {
+
+    name "Test Process ALIGN_SINGLE_COPY"
+    script "modules/local/algo/align_single_copy.nf"
+    process "ALIGN_SINGLE_COPY"
+
+    test("Should align each single-copy orthogroup with MAFFT") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/single_copy_orthogroups_fixture")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert alignments.size() == 1
+                // The 4 sequences in OG0000000.fa are already the same length (point
+                // mutations only, no indels in this fixture), so MAFFT inserts no gaps
+                // and the aligned output matches the unaligned input exactly.
+                assert path("${alignments[0]}/OG0000000.fa").md5 == 'e3495a84d1229180b0136c1ad9c3c298'
+            }
+        }
+    }
+}

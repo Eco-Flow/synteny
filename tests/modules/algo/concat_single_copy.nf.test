@@ -1,0 +1,31 @@
+nextflow_process {
+
+    name "Test Process CONCAT_SINGLE_COPY"
+    script "modules/local/algo/concat_single_copy.nf"
+    process "CONCAT_SINGLE_COPY"
+
+    test("Should build a supermatrix and partition file from aligned single-copy orthogroups") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/orthofinder_output_fixture")
+                input[1] = file("${projectDir}/data/algo_test_input/single_copy_alignments_fixture")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert alignment.size() == 1
+                assert partitions.size() == 1
+                // Expected hashes of data/algo_test_input/{supermatrix,partitions}_fixture.{faa,txt},
+                // produced by running this exact script by hand on the same fixture inputs.
+                assert path(alignment[0]).md5 == '4cd7b636634e23bf1f602837c2de8363'
+                assert path(partitions[0]).md5 == '553f53747d6650f99636451f745c5e3e'
+            }
+        }
+    }
+}

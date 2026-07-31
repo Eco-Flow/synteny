@@ -1,0 +1,42 @@
+nextflow_process {
+
+    name "Test Process ORTHOFINDER"
+    script "modules/nf-core/orthofinder/main.nf"
+    process "ORTHOFINDER"
+
+    test("Should call orthogroups across the 4 tiny synthetic proteomes") {
+
+        when {
+            params {
+                orthofinder_args = "-M dendroblast"
+            }
+            process {
+                """
+                input[0] = Channel.of( [
+                    [id: "algo_species_tree"],
+                    [
+                        file("${projectDir}/data/algo_test_input/tree_proteomes/SpeciesA.fa"),
+                        file("${projectDir}/data/algo_test_input/tree_proteomes/SpeciesB.fa"),
+                        file("${projectDir}/data/algo_test_input/tree_proteomes/SpeciesC.fa"),
+                        file("${projectDir}/data/algo_test_input/tree_proteomes/SpeciesD.fa")
+                    ]
+                ] )
+                input[1] = Channel.of( [ [:], [] ] )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            with(process.out) {
+                assert orthologues.size() == 1
+                // og1-og4 are single-copy and shared by all 4 species (the "_specific"
+                // gene in each fixture proteome is not), so all 4 rows are single-copy
+                // complete orthogroups.
+                def lines = path(orthologues[0]).text.readLines()
+                assert lines.size() == 5 // header + 4 orthogroups
+                assert lines[0].split('\t')[1..-1] as Set == ["SpeciesA", "SpeciesB", "SpeciesC", "SpeciesD"] as Set
+            }
+        }
+    }
+}

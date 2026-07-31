@@ -166,6 +166,148 @@ Subdirectories:
 
 All of the pipeline run information can be found inside `pipeline_info`.
 
+## Ancestral genome reconstruction (`--mode algo`)
+
+`main.nf` is a thin dispatcher: it selects between two named workflows based on `--mode`, both
+living under `workflows/`. `PAIRWISE_SYNTENY` (`workflows/pairwise_synteny.nf`) is the default
+pairwise workflow described above. Alongside it, **ALGO** (`workflows/algo.nf`) reconstructs
+ancestral linkage groups and ancestral gene order across many species at once, rather than
+comparing genomes pairwise. It follows the core comparative-genomics method of Maulana et al. 2026
+(bioRxiv 2026.07.17.739156, "338 coleopteran genomes reveal exceptional rearrangement variation
+compared to other insect orders"):
+
+* Calls single-copy orthologues per genome with **BUSCO** (genome mode, metaeuk) `[BUSCO]`.
+* Filters to `Complete` markers (optionally dropping unlocalised scaffolds or a Y chromosome via
+  `--exclude_scaffolds`) `[BUSCO_FILTER]`.
+* Infers ancestral linkage groups and fission/fusion events across a species tree with
+  **[Syngraph](https://github.com/A-J-F-Mackintosh/syngraph)** `[SYNGRAPH]`.
+* Reconstructs ancestral gene order (contiguous ancestral regions, CARs) for the deepest common
+  ancestor with **[AGORA](https://github.com/DyogenIBENS/Agora)** `[AGORA_PREP]`, `[AGORA]`.
+* Compares extant gene order to those CARs to estimate a per-chromosome gene-order fragmentation
+  index `[FRAGMENTATION_INDEX]`.
+
+This only covers the paper's core reconstruction pipeline. The paper's many downstream statistical
+analyses (chromosome-number evolution models, TE/centromere/repeat enrichment, cross-order
+comparisons, ordination, etc.) are one-off research analyses run on top of this output and are not
+part of the subworkflow.
+
+**Please note:** the ALGO subworkflow shares the pipeline's genome-acquisition step
+(`--input`, same 2-column NCBI-accession / 3-column local-path CSV as the default workflow, via the
+`GENOME_ACQUISITION` subworkflow in `subworkflows/local/`) but otherwise runs independently -- it
+ignores `--score`, `--go`, `--chromopaint`, `--tree` and the other pairwise-workflow flags, and the
+pairwise workflow ignores everything below. ALGO itself is composed of two further local
+subworkflows: `SPECIES_TREE` (optional, see `--iqtree_species_tree` below) and
+`ANCESTRAL_RECONSTRUCTION` (BUSCO -> Syngraph -> AGORA -> fragmentation index).
+
+### ALGO inputs
+
+* `--mode algo` - **Required.** Selects this subworkflow instead of the default pairwise one.
+* `--input` - Same samplesheet as the default workflow. BUSCO only needs the genome FASTA (it calls
+  genes itself), but the GFF column of a 3-column CSV is used too when `--iqtree_species_tree` is
+  set (see below).
+* `--species_tree` / `--iqtree_species_tree` - **Exactly one of these two is required.** Either
+  supply a Newick species tree covering every species in `--input` directly via `--species_tree`
+  (used by both Syngraph and AGORA), or set `--iqtree_species_tree` to build one from the same
+  genomes instead (see "Building the species tree with OrthoFinder + IQ-TREE" below).
+* `--busco_lineage` - **Required.** BUSCO lineage dataset, e.g. `coleoptera_odb12`.
+* `--syngraph_reference` - **Required.** Reference taxon (must be one of the species names in
+  `--input`) that Syngraph records rearrangements against.
+* `--exclude_scaffolds` - Optional TSV of `species<TAB>scaffold_name` rows to drop before Syngraph
+  and AGORA (e.g. unlocalised scaffolds or a Y chromosome).
+* `--syngraph_m` (default `10`) / `--syngraph_r` (default `2`) - Syngraph's marker threshold and
+  rearrangement model (`2` = fissions/fusions only, `3` = adds reciprocal translocations).
+* `--busco_container`, `--syngraph_container`, `--agora_container` - Container images for each tool.
+  BUSCO defaults to the public `ezlabgva/busco` image. **Syngraph and AGORA have no published
+  images yet** -- build them locally first (see below).
+
+### Building the Syngraph and AGORA containers
+
+```
+docker build --platform linux/amd64 -t synteny-syngraph:local containers/syngraph/
+docker build -t synteny-agora:local containers/agora/
+```
+
+Both Dockerfiles are local-only for now (not published to a registry). Syngraph's dependencies
+(graph-tool, pygraphviz, an old pinned numpy/networkx) are only reliably available as linux-64
+conda builds, hence the `--platform linux/amd64` (Docker will emulate this on Apple Silicon).
+
+### Building the species tree with OrthoFinder + IQ-TREE (`--iqtree_species_tree`)
+
+Instead of supplying `--species_tree` yourself, set `--iqtree_species_tree` to build one from the
+same genomes, following the tree-building steps of
+[Eco-Flow/excon (tree_subsampling branch)](https://github.com/Eco-Flow/excon/tree/tree_subsampling):
+
+1. `[LONGEST]`, `[GFFREAD]` (reused from the default pairwise workflow) and `[EXTRACT_PROTEINS]`
+   turn each species' genome + GFF annotation into a single-longest-isoform protein FASTA.
+2. `[ORTHOFINDER]` calls orthogroups across all species (`Orthogroups.tsv`). By default it runs
+   with `-M dendroblast` (`--orthofinder_args`) rather than OrthoFinder's newer MSA-based default,
+   since only the orthogroup assignment is used below -- OrthoFinder's own gene trees/species tree
+   are discarded in favour of the supermatrix tree built in the next steps (and dendroblast is
+   both faster and avoids a `famsa` dependency issue seen with the MSA-based method in this
+   container).
+3. `[EXTRACT_SINGLE_COPY]` writes one FASTA per strictly single-copy, complete orthogroup.
+4. `[ALIGN_SINGLE_COPY]` aligns each with MAFFT (`--mafft_args`, default `--auto`).
+5. `[CONCAT_SINGLE_COPY]` concatenates them into a supermatrix, with a partition file (one
+   partition per orthogroup, model set via `--iqtree_partition_model`, default `AA` lets
+   ModelFinder choose per orthogroup).
+6. `[IQTREE_SPECIES_TREE]` runs IQ-TREE2 under the edge-proportional partition model (`-spp`), with
+   `-m MFP` and 1000 ultrafast bootstrap + 1000 SH-aLRT replicates (`--iqtree_args` appends extra
+   flags, e.g. `-mset LG,WAG,JTT` to narrow ModelFinder's candidates).
+7. `[ROOT_TREE]` roots the resulting unrooted ML tree -- on a named outgroup via
+   `--iqtree_outgroup` (comma-separated tip names matching `--input`), or midpoint-rooted if
+   omitted -- since Syngraph and AGORA both need a rooted tree.
+
+```
+nextflow run main.nf -profile docker --mode algo \
+  --input data/Example-accession.csv \
+  --iqtree_species_tree \
+  --iqtree_outgroup SomeOutgroupSpecies \
+  --busco_lineage coleoptera_odb12 \
+  --syngraph_reference SomeSpecies
+```
+
+Outputs are written under `<outdir>/algo/`: `orthofinder/`, `species_tree/single_copy_orthogroups/`,
+`species_tree/single_copy_alignments/`, `species_tree/supermatrix/`, `species_tree/iqtree/`, and
+the final `species_tree/SpeciesTree_rooted.nwk` used by Syngraph and AGORA.
+
+### Running ALGO
+
+```
+nextflow run main.nf -profile docker --mode algo \
+  --input data/Example-accession.csv \
+  --species_tree tree.nwk \
+  --busco_lineage coleoptera_odb12 \
+  --syngraph_reference SomeSpecies
+```
+
+A small smoke-test profile is available (reuses the same local Drosophila test genomes as
+`-profile test`, with a smaller/faster `diptera_odb10` BUSCO lineage purely to exercise the
+pipeline mechanics -- it is not a biological claim about flies):
+
+```
+nextflow run main.nf -profile docker,test_algo
+```
+
+### ALGO outputs
+
+Written under `<outdir>/algo/`:
+
+* `busco/` - Raw BUSCO `full_table.tsv` per species.
+* `busco_filtered/` - Filtered, 5-column single-copy marker tables per species.
+* `syngraph/` - `algo.rearrangements.tsv` (inferred fission/fusion/translocation events per branch)
+  plus the underlying Syngraph graph pickles.
+* `agora/` - AGORA's reconstructed ancestral gene order (contiguous ancestral regions).
+* `tables/fragmentation_index.tsv` - Per-chromosome `M`/`A`/`B` counts and a **provisional**
+  `FI_placeholder` column. The manuscript's exact fragmentation-index formula was not recoverable
+  as text from the supplied methods (it is a typeset equation); `bin/fragmentation_index.py`
+  documents this and computes a plausible placeholder rescaling pending the real equation.
+
+**Please note:** AGORA's own docs describe its "orthology groups" input as a single flat file, but a
+real run showed it actually expects one file per ancestor node of the species tree, each restricted
+to that node's descendant species (`agora_input/orthologyGroups/orthologyGroups.<ancestor>.list`,
+templated as `orthologyGroups.%s.list` in the `agora-generic.py` call) -- otherwise AGORA's gene-tree
+loader silently misparses the file instead of erroring clearly. `bin/busco_to_agora.py` and
+`modules/local/algo/agora.nf` implement and test this against a real AGORA run.
 
 ## Citation
 

@@ -1,0 +1,52 @@
+nextflow_process {
+
+    name "Test Process ROOT_TREE"
+    script "modules/local/algo/root_tree.nf"
+    process "ROOT_TREE"
+
+    test("Should midpoint-root an unrooted IQ-TREE species tree") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/species_tree_unrooted_fixture.treefile")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert tree.size() == 1
+                assert path(tree[0]).text.contains("SpeciesA")
+                assert path(tree[0]).text.contains("SpeciesD")
+                assert path(tree[0]).text.trim().endsWith(";")
+            }
+        }
+    }
+
+    test("Should root on a named outgroup when --iqtree_outgroup is set") {
+
+        when {
+            params {
+                iqtree_outgroup = "SpeciesA"
+            }
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/species_tree_unrooted_fixture.treefile")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            with(process.out) {
+                // Rooting on SpeciesA puts it in its own clade, sister to everything else:
+                // the tree ends with ",SpeciesA:<length>);" at the top level, rather than
+                // nested inside the ingroup as in the midpoint-rooted case above.
+                assert path(tree[0]).text.trim() ==~ /\(.*,SpeciesA:[0-9.]+\);/
+            }
+        }
+    }
+}

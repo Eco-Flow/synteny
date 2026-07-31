@@ -1,0 +1,48 @@
+nextflow_process {
+
+    name "Test Process FRAGMENTATION_INDEX"
+    script "modules/local/algo/fragmentation_index.nf"
+    process "FRAGMENTATION_INDEX"
+
+    test("Should compute M/A/B and a placeholder FI per chromosome") {
+
+        when {
+            params {
+                agora_container      = "synteny-agora:local"
+                // Scoped to the root ancestor only (AlgoAnc2, the tree's target/last
+                // common ancestor) -- ancestral_output_fixture/ was regenerated from
+                // a real `agora-generic.py` run (see bin/busco_to_agora.py and
+                // modules/local/algo/agora.nf) on this same BUSCO fixture data, and
+                // AGORA also writes an ancGenome for the intermediate AlgoAnc1 node;
+                // a broader glob would let that shallower level's assignment win for
+                // SpeciesA/B genes (sorted-path order), which isn't what the paper's
+                // "last common ancestor" framing means by the ancestral reference.
+                agora_ancgenome_glob = "**/ancGenome.AlgoAnc2.list.bz2"
+            }
+            process {
+                """
+                input[0] = Channel.of(
+                    file("${projectDir}/data/algo_test_input/SpeciesA.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesB.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesC.filtered.tsv")
+                ).collect()
+                input[1] = file("${projectDir}/data/algo_test_input/ancestral_output_fixture")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert table.size() == 1
+                // At the root, none of SpeciesC's markers share an ancestral unit with
+                // more than one gene (its gene order conflicts with SpeciesA/B's), so
+                // every chromosome here comes back with M == A == B and
+                // FI_placeholder == 0 -- a real, honest result from this fixture's
+                // topology, not a fabricated "interesting" case.
+                assert path(table[0]).md5 == 'acd64e8a908dcc8efc7832e973299729'
+            }
+        }
+    }
+}

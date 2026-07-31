@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process EXTRACT_PROTEINS"
+    script "modules/local/algo/extract_proteins.nf"
+    process "EXTRACT_PROTEINS"
+
+    test("Should extract protein sequences with gffread -y") {
+
+        when {
+            process {
+                """
+                input[0] = Channel.of( [
+                    "TinySpecies",
+                    file("${projectDir}/data/algo_test_input/tiny_genome.fa"),
+                    file("${projectDir}/data/algo_test_input/tiny_genome.gff3")
+                ] )
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert proteins.size() == 1
+                assert proteins[0][0] == "TinySpecies"
+                // Filename is "<sample_id>.fa" (single dot), not "<sample_id>.protein.fa" --
+                // OrthoFinder derives each species name by stripping only the last
+                // extension, so a second dot would break that downstream.
+                assert path(proteins[0][1]).getFileName().toString() == "TinySpecies.fa"
+                assert path(proteins[0][1]).md5 == 'b6c939450ac65a0b68fcb67d4a7ccecf'
+            }
+        }
+    }
+}

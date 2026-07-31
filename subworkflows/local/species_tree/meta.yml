@@ -1,0 +1,32 @@
+name: "species_tree"
+description: Build a species tree with OrthoFinder + IQ-TREE from a set of annotated genomes
+keywords:
+  - phylogenomics
+  - orthofinder
+  - iqtree
+  - species tree
+components:
+  - longest
+  - gffread
+  - algo/extract_proteins
+  - orthofinder
+  - algo/extract_single_copy
+  - algo/align_single_copy
+  - algo/concat_single_copy
+  - iqtree
+  - algo/root_tree
+input:
+  - genome_annotations:
+      type: channel
+      description: "Channel of [ id, fasta, gff ] tuples, one per species"
+      pattern: "[ id, *.{fa,fasta,fna}(.gz), *.gff3(.gz) ]"
+output:
+  - tree:
+      type: channel
+      description: "Rooted Newick species tree (SpeciesTree_rooted.nwk)"
+      pattern: "*.nwk"
+  - versions:
+      type: channel
+      description: "Channel accumulating tool versions"
+authors:
+  - "@chriswyatt1"

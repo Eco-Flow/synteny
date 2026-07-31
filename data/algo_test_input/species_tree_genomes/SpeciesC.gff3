@@ -1,0 +1,21 @@
+##gff-version 3
+chr1	test	gene	1	183	.	+	.	ID=gene_SpeciesC_og1
+chr1	test	mRNA	1	183	.	+	.	ID=mrna_SpeciesC_og1;Parent=gene_SpeciesC_og1
+chr1	test	exon	1	183	.	+	.	ID=exon_SpeciesC_og1;Parent=mrna_SpeciesC_og1
+chr1	test	CDS	1	183	.	+	0	ID=cds_SpeciesC_og1;Parent=mrna_SpeciesC_og1
+chr1	test	gene	204	386	.	+	.	ID=gene_SpeciesC_og2
+chr1	test	mRNA	204	386	.	+	.	ID=mrna_SpeciesC_og2;Parent=gene_SpeciesC_og2
+chr1	test	exon	204	386	.	+	.	ID=exon_SpeciesC_og2;Parent=mrna_SpeciesC_og2
+chr1	test	CDS	204	386	.	+	0	ID=cds_SpeciesC_og2;Parent=mrna_SpeciesC_og2
+chr1	test	gene	407	589	.	+	.	ID=gene_SpeciesC_og3
+chr1	test	mRNA	407	589	.	+	.	ID=mrna_SpeciesC_og3;Parent=gene_SpeciesC_og3
+chr1	test	exon	407	589	.	+	.	ID=exon_SpeciesC_og3;Parent=mrna_SpeciesC_og3
+chr1	test	CDS	407	589	.	+	0	ID=cds_SpeciesC_og3;Parent=mrna_SpeciesC_og3
+chr1	test	gene	610	792	.	+	.	ID=gene_SpeciesC_og4
+chr1	test	mRNA	610	792	.	+	.	ID=mrna_SpeciesC_og4;Parent=gene_SpeciesC_og4
+chr1	test	exon	610	792	.	+	.	ID=exon_SpeciesC_og4;Parent=mrna_SpeciesC_og4
+chr1	test	CDS	610	792	.	+	0	ID=cds_SpeciesC_og4;Parent=mrna_SpeciesC_og4
+chr1	test	gene	813	935	.	+	.	ID=gene_SpeciesC_specific
+chr1	test	mRNA	813	935	.	+	.	ID=mrna_SpeciesC_specific;Parent=gene_SpeciesC_specific
+chr1	test	exon	813	935	.	+	.	ID=exon_SpeciesC_specific;Parent=mrna_SpeciesC_specific
+chr1	test	CDS	813	935	.	+	0	ID=cds_SpeciesC_specific;Parent=mrna_SpeciesC_specific

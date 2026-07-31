@@ -1,0 +1,45 @@
+name: "ancestral_reconstruction"
+description: Reconstruct ancestral linkage groups (Syngraph) and ancestral gene order (AGORA) from BUSCO single-copy orthologues and a species tree
+keywords:
+  - busco
+  - syngraph
+  - agora
+  - ancestral linkage groups
+  - ancestral genome reconstruction
+components:
+  - algo/busco
+  - algo/busco_filter
+  - algo/syngraph
+  - algo/agora_prep
+  - algo/agora
+  - algo/fragmentation_index
+input:
+  - genome_fastas:
+      type: channel
+      description: "Channel of [ id, fasta ] tuples, one per species"
+      pattern: "[ id, *.{fa,fasta,fna}(.gz) ]"
+  - tree:
+      type: channel
+      description: "Rooted Newick species tree covering every species in genome_fastas"
+      pattern: "*.nwk"
+  - exclude_scaffolds:
+      type: channel
+      description: "Optional species<TAB>scaffold_name TSV to drop before Syngraph/AGORA, or assets/NO_FILE"
+      pattern: "*.tsv"
+output:
+  - rearrangements:
+      type: channel
+      description: "Syngraph's inferred fission/fusion/translocation events per branch"
+      pattern: "*.rearrangements.tsv"
+  - ancestral_output:
+      type: channel
+      description: "AGORA's reconstructed ancestral gene order (contiguous ancestral regions)"
+  - fragmentation_index:
+      type: channel
+      description: "Per-chromosome M/A/B counts and a provisional gene-order fragmentation index"
+      pattern: "*.tsv"
+  - versions:
+      type: channel
+      description: "Channel accumulating tool versions"
+authors:
+  - "@chriswyatt1"

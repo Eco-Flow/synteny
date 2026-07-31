@@ -1,0 +1,10 @@
+# BUSCO version is: 6.0.0
+# The lineage dataset is: diptera_odb10 (Creation date: 2024-01-08, number of genomes: 1, number of BUSCOs: 3285)
+# Busco id	Status	Sequence	Gene Start	Gene End	Strand	Score	Length	OrthoDB url	Description
+1000at7147	Complete	chr1	1000	2000	+	123.4	500	url	desc1
+1001at7147	Complete	chr1	3000	4000	+	234.5	500	url	desc2
+1002at7147	Complete	chr1	5000	6000	-	345.6	500	url	desc3
+1003at7147	Complete	chr2	1000	2000	+	456.7	500	url	desc4
+1004at7147	Complete	chr2	3000	4000	+	567.8	500	url	desc5
+1005at7147	Fragmented	chr2	5000	5200	+	12.3	200	url	desc6
+1006at7147	Missing

@@ -1,0 +1,33 @@
+nextflow_process {
+
+    name "Test Process BUSCO_FILTER"
+    script "modules/local/algo/busco_filter.nf"
+    process "BUSCO_FILTER"
+
+    test("Should keep only Complete markers and drop excluded scaffolds") {
+
+        when {
+            params {
+                busco_container = "ezlabgva/busco:v6.0.0_cv1"
+            }
+            process {
+                """
+                input[0] = Channel.of( ["SpeciesC", file("${projectDir}/data/algo_test_input/SpeciesC.full_table.tsv")] )
+                input[1] = file("${projectDir}/data/algo_test_input/exclude_scaffolds.tsv")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert filtered.size() == 1
+                assert filtered[0][0] == "SpeciesC"
+                // Drops the 1005/1006 "Missing" rows and the excluded
+                // chrII_unloc_01 scaffold, keeping the 4 Complete markers.
+                assert path(filtered[0][1]).md5 == '594fceaae36f4f17aef4fc6dc7d3e718'
+            }
+        }
+    }
+}

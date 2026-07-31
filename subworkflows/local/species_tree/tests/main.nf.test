@@ -1,0 +1,52 @@
+nextflow_workflow {
+
+    name "Test Subworkflow SPECIES_TREE"
+    script "subworkflows/local/species_tree/main.nf"
+    workflow "SPECIES_TREE"
+
+    test("Should build a rooted species tree from 4 tiny annotated genomes") {
+
+        when {
+            params {
+                orthofinder_args = "-M dendroblast"
+            }
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [
+                        "SpeciesA",
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesA.fa"),
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesA.gff3")
+                    ],
+                    [
+                        "SpeciesB",
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesB.fa"),
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesB.gff3")
+                    ],
+                    [
+                        "SpeciesC",
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesC.fa"),
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesC.gff3")
+                    ],
+                    [
+                        "SpeciesD",
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesD.fa"),
+                        file("${projectDir}/data/algo_test_input/species_tree_genomes/SpeciesD.gff3")
+                    ]
+                )
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            // workflow.out.tree is a single-value emit (ROOT_TREE runs once); nf-test
+            // may hand that back as a bare path rather than a one-element list.
+            def tree_out = workflow.out.tree
+            def tree_path = tree_out instanceof List ? tree_out[0] : tree_out
+            def tree_text = path(tree_path).text
+            ["SpeciesA", "SpeciesB", "SpeciesC", "SpeciesD"].each { sp -> assert tree_text.contains(sp) }
+            assert tree_text.trim().endsWith(";")
+        }
+    }
+}

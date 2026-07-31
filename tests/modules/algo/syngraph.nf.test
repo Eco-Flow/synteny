@@ -1,0 +1,41 @@
+nextflow_process {
+
+    name "Test Process SYNGRAPH"
+    script "modules/local/algo/syngraph.nf"
+    process "SYNGRAPH"
+
+    test("Should detect a fusion event from filtered BUSCO tables") {
+
+        when {
+            params {
+                syngraph_container  = "synteny-syngraph:local"
+                syngraph_m          = 1
+                syngraph_r          = 2
+                syngraph_reference  = "SpeciesA"
+            }
+            process {
+                """
+                input[0] = Channel.of(
+                    file("${projectDir}/data/algo_test_input/SpeciesA.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesB.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesC.filtered.tsv")
+                ).collect()
+                input[1] = file("${projectDir}/data/algo_test_input/tiny_tree.nwk")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert rearrangements.size() == 1
+                // SpeciesB's fixture (data/algo_test_input/SpeciesB.full_table.tsv)
+                // was deliberately built as a fusion of SpeciesA's chr1+chr2 onto a
+                // single chrX -- Syngraph correctly recovers that as the sole event:
+                // "n1  SpeciesB  fusion  1  [['SpeciesA_chr1'], ['SpeciesA_chr2']]"
+                assert path(rearrangements[0]).md5 == '456d96ad2f79a8b15374297894856ee2'
+            }
+        }
+    }
+}

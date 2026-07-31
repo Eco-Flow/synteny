@@ -171,6 +171,93 @@
           "description": "Optionally change the screen flags of jcvi, which sets the minimum number of genes in a syntenic block to plot"
         }
       }
+    },
+    "algo_options": {
+      "title": "ALGO subworkflow options (--mode algo)",
+      "type": "object",
+      "description": "Ancestral linkage group (Syngraph) and ancestral gene order (AGORA) reconstruction from BUSCO single-copy orthologues. Only used when --mode algo is set; the default pairwise workflow ignores these.",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "Set to 'algo' to run the ALGO subworkflow instead of the default pairwise synteny workflow."
+        },
+        "species_tree": {
+          "type": "string",
+          "format": "file-path",
+          "description": "Path to a Newick species tree covering every species in --input, used by both Syngraph and AGORA. Required unless --iqtree_species_tree is set to build one instead."
+        },
+        "busco_lineage": {
+          "type": "string",
+          "description": "BUSCO lineage dataset to use in genome mode, e.g. coleoptera_odb12."
+        },
+        "busco_container": {
+          "type": "string",
+          "default": "ezlabgva/busco:v6.0.0_cv1",
+          "description": "Container image used for BUSCO."
+        },
+        "exclude_scaffolds": {
+          "type": "string",
+          "format": "file-path",
+          "description": "Optional TSV of species<TAB>scaffold_name rows to drop before Syngraph/AGORA (e.g. unlocalised scaffolds or a Y chromosome)."
+        },
+        "syngraph_m": {
+          "type": "integer",
+          "default": 10,
+          "description": "Syngraph -m: minimum number of markers required to support a rearrangement."
+        },
+        "syngraph_r": {
+          "type": "integer",
+          "default": 2,
+          "description": "Syngraph -r: rearrangement model (2 = fissions/fusions only, 3 = adds reciprocal translocations)."
+        },
+        "syngraph_reference": {
+          "type": "string",
+          "description": "Syngraph -s: reference taxon (must match one of the species names in --input) used to record rearrangements."
+        },
+        "syngraph_container": {
+          "type": "string",
+          "default": "synteny-syngraph:local",
+          "description": "Container image used for Syngraph. Built locally from containers/syngraph/Dockerfile -- not yet published."
+        },
+        "agora_container": {
+          "type": "string",
+          "default": "synteny-agora:local",
+          "description": "Container image used for AGORA. Built locally from containers/agora/Dockerfile -- not yet published."
+        },
+        "agora_ancgenome_glob": {
+          "type": "string",
+          "default": "**/ancGenome*",
+          "description": "Glob (relative to AGORA's output directory) matching its ancGenome output file(s), used by the fragmentation index step."
+        },
+        "iqtree_species_tree": {
+          "type": "boolean",
+          "default": false,
+          "description": "Build the species tree with OrthoFinder + IQ-TREE from the same genomes' proteomes, instead of supplying one via --species_tree. Exactly one of the two must be set."
+        },
+        "iqtree_outgroup": {
+          "type": "string",
+          "description": "Comma-separated tip name(s) (matching --input species names) to root the IQ-TREE species tree on. Omit for midpoint rooting. Only used with --iqtree_species_tree."
+        },
+        "iqtree_args": {
+          "type": "string",
+          "description": "Extra arguments appended to the IQ-TREE species-tree command line, e.g. '-mset LG,WAG,JTT' to restrict ModelFinder's candidate matrices. Only used with --iqtree_species_tree."
+        },
+        "iqtree_partition_model": {
+          "type": "string",
+          "default": "AA",
+          "description": "Model written per partition in the supermatrix partition file. 'AA' lets ModelFinder pick one per orthogroup; set e.g. 'LG+F+G4' to fix it and skip model selection. Only used with --iqtree_species_tree."
+        },
+        "mafft_args": {
+          "type": "string",
+          "default": "--auto",
+          "description": "Arguments passed to MAFFT when aligning each single-copy orthogroup. Only used with --iqtree_species_tree."
+        },
+        "orthofinder_args": {
+          "type": "string",
+          "default": "-M dendroblast",
+          "description": "Arguments passed to OrthoFinder. Defaults to the fast dendroblast method rather than the MSA-based default, since only the Orthogroups.tsv assignment is used (OrthoFinder's own gene trees/species tree are discarded in favour of the IQ-TREE supermatrix tree). Only used with --iqtree_species_tree."
+        }
+      }
     }
   },
   "allOf": [
@@ -185,6 +272,9 @@
     },
     {
       "$ref": "#/defs/pipeline_extended_options"
+    },
+    {
+      "$ref": "#/defs/algo_options"
     }
   ]
 }

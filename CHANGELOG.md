@@ -1,3 +1,18 @@
+## Unreleased
+
+### `Added`
+
+- `main.nf` is now a thin dispatcher between two named workflows under `workflows/`, matching standard nf-core layout: `PAIRWISE_SYNTENY` (`workflows/pairwise_synteny.nf`, the existing default workflow, moved out of `main.nf` unchanged) and `ALGO` (`workflows/algo.nf`, new -- see below), selected via `--mode`
+- New `ALGO` subworkflow (`--mode algo`), reconstructing ancestral linkage groups and ancestral gene order across many species from BUSCO single-copy orthologues, following the core method of Maulana et al. 2026 (bioRxiv 2026.07.17.739156): BUSCO -> Syngraph (ALGs + fission/fusion events) -> AGORA (ancestral gene order / CARs) -> a gene-order fragmentation index
+  - Structured as three nf-core-style local subworkflows (`subworkflows/local/`): `GENOME_ACQUISITION` (download/validate genomes -- shared with `PAIRWISE_SYNTENY`, not duplicated), `SPECIES_TREE` (optional, see `--iqtree_species_tree` below), and `ANCESTRAL_RECONSTRUCTION` (BUSCO -> Syngraph -> AGORA -> fragmentation index), wired together by the thin `workflows/algo.nf`
+  - New modules: `BUSCO`, `BUSCO_FILTER`, `SYNGRAPH`, `AGORA_PREP`, `AGORA`, `FRAGMENTATION_INDEX` (`modules/local/algo/`)
+  - New `conf/test_algo.config` smoke-test profile, new `containers/syngraph/` and `containers/agora/` Dockerfiles (local-only, not yet published)
+  - AGORA's real input requirements were confirmed against an actual `agora-generic.py` run (its docs describe a flat orthology-groups file, but it actually expects one file per ancestor node of the species tree, each restricted to that node's descendant species, and its own gene-tree loader silently misparses a single combined file): `bin/busco_to_agora.py` and `modules/local/algo/agora.nf` were corrected accordingly
+  - The manuscript's fragmentation-index formula was a typeset equation not recoverable as text from the supplied methods; `fragmentation_index.tsv` reports the raw `M`/`A`/`B` components plus a documented placeholder `FI_placeholder` column pending the real equation
+- Optional `--iqtree_species_tree` flag for the `ALGO` subworkflow, building the species tree from the same genomes (LONGEST/GFFREAD -> protein extraction -> OrthoFinder -> single-copy supermatrix -> IQ-TREE2 -> rooting) instead of requiring one via `--species_tree`, following the tree-building steps of [Eco-Flow/excon (tree_subsampling branch)](https://github.com/Eco-Flow/excon/tree/tree_subsampling)
+  - New modules: `EXTRACT_PROTEINS`, `EXTRACT_SINGLE_COPY`, `ALIGN_SINGLE_COPY`, `CONCAT_SINGLE_COPY`, `ROOT_TREE` (`modules/local/algo/`), plus vendored nf-core `orthofinder` and `iqtree` modules
+  - New params: `iqtree_species_tree`, `iqtree_outgroup`, `iqtree_args`, `iqtree_partition_model`, `mafft_args`, `orthofinder_args`
+
 ## v4.1.0 - 30.07.26
 
 ### `Added`

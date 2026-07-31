@@ -1,0 +1,47 @@
+nextflow_process {
+
+    name "Test Process AGORA_PREP"
+    script "modules/local/algo/agora_prep.nf"
+    process "AGORA_PREP"
+
+    test("Should build AGORA gene lists, orthology groups and labelled tree") {
+
+        when {
+            params {
+                agora_container = "synteny-agora:local"
+            }
+            process {
+                """
+                input[0] = Channel.of(
+                    file("${projectDir}/data/algo_test_input/SpeciesA.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesB.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesC.filtered.tsv")
+                ).collect()
+                input[1] = file("${projectDir}/data/algo_test_input/tiny_tree.nwk")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert agora_input.size() == 1
+                def dir = agora_input[0]
+                // AGORA needs one orthologyGroups file per internal (ancestor) node,
+                // each restricted to that node's descendant species -- not one flat
+                // file (confirmed against a real AGORA run). Tree: (SpeciesA,SpeciesB)
+                // AlgoAnc1, (AlgoAnc1,SpeciesC) AlgoAnc2 (root). 1004at7147 is a
+                // SpeciesA-only singleton and is correctly excluded everywhere; the
+                // other 4 BUSCO ids are shared by all 3 species.
+                assert path("${dir}/orthologyGroups/orthologyGroups.AlgoAnc1.list").md5 == '7b3d40a57b702c96e667522b80c386f4'
+                assert path("${dir}/orthologyGroups/orthologyGroups.AlgoAnc2.list").md5 == '45a9b1344622900bf2053f24a571cad4'
+                // Unnamed internal nodes get auto-labelled (AlgoAnc1, AlgoAnc2).
+                assert path("${dir}/species_tree.nwk").md5 == 'ef720e25818057dd27a545e47b5b48df'
+                assert path("${dir}/genes/genes.SpeciesA.list").md5 == '300647a6ea2415a3e7367196f86e99a3'
+                assert path("${dir}/genes/genes.SpeciesB.list").md5 == 'e22f43164ea08e96719632d1f5838eeb'
+                assert path("${dir}/genes/genes.SpeciesC.list").md5 == '2e6c9ba3e4f258d9bcefd4c0d0cde65d'
+            }
+        }
+    }
+}

@@ -14,6 +14,17 @@
             "branch": "master",
             "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
             "installed_by": ["modules"]
+          },
+          "orthofinder": {
+            "branch": "master",
+            "git_sha": "1bde3edb5e586e16a4993dac87bc83b494017192",
+            "installed_by": ["modules"]
+          },
+          "iqtree": {
+            "branch": "master",
+            "git_sha": "55ca0738629246b23a84394e94cf50a542f6d72d",
+            "installed_by": ["modules"],
+            "patch": "modules/nf-core/iqtree/iqtree.diff"
           }
         }
       },
