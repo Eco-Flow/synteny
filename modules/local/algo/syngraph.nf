@@ -11,6 +11,7 @@ process SYNGRAPH {
 
     output:
     path("algo.rearrangements.tsv"), emit: rearrangements
+    path("algo.table.tsv"), emit: table
     path("algo*.pickle"), emit: pickles
     path "versions.yml", emit: versions
 
@@ -27,6 +28,7 @@ process SYNGRAPH {
     syngraph tabulate -g algo.with_ancestors.pickle -o algo
 
     md5sum "algo.rearrangements.tsv" > "algo.rearrangements.tsv.md5"
+    md5sum "algo.table.tsv" > "algo.table.tsv.md5"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

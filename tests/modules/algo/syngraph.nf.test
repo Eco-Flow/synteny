@@ -30,11 +30,25 @@ nextflow_process {
             assert process.trace.tasks().size() == 1
             with(process.out) {
                 assert rearrangements.size() == 1
+                assert table.size() == 1
                 // SpeciesB's fixture (data/algo_test_input/SpeciesB.full_table.tsv)
                 // was deliberately built as a fusion of SpeciesA's chr1+chr2 onto a
                 // single chrX -- Syngraph correctly recovers that as the sole event:
                 // "n1  SpeciesB  fusion  1  [['SpeciesA_chr1'], ['SpeciesA_chr2']]"
                 assert path(rearrangements[0]).md5 == '456d96ad2f79a8b15374297894856ee2'
+                // Not asserted by exact md5: Syngraph's own internal taxon-column
+                // ordering in algo.table.tsv is not guaranteed stable between runs
+                // (confirmed empirically -- same inputs, two runs, two different
+                // column orders), even though the row/event-level outputs above are.
+                def table_lines = path(table[0]).text.readLines().findAll { it.trim() }
+                assert table_lines[0].startsWith("#marker")
+                assert table_lines.size() == 5 // header + 4 markers
+                ["SpeciesA_seq", "SpeciesB_seq", "SpeciesC_seq", "n1_seq"].each { col ->
+                    assert table_lines[0].contains(col)
+                }
+                ["1000at7147", "1001at7147", "1002at7147", "1003at7147"].each { marker ->
+                    assert table_lines.any { it.startsWith(marker) }
+                }
             }
         }
     }

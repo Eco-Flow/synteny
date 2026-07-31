@@ -7,6 +7,7 @@
 include { BUSCO } from '../../../modules/local/algo/busco.nf'
 include { BUSCO_FILTER } from '../../../modules/local/algo/busco_filter.nf'
 include { SYNGRAPH } from '../../../modules/local/algo/syngraph.nf'
+include { SUMMARISE_ALG_TABLE } from '../../../modules/local/algo/summarise_alg_table.nf'
 include { AGORA_PREP } from '../../../modules/local/algo/agora_prep.nf'
 include { AGORA } from '../../../modules/local/algo/agora.nf'
 include { FRAGMENTATION_INDEX } from '../../../modules/local/algo/fragmentation_index.nf'
@@ -32,6 +33,12 @@ workflow ANCESTRAL_RECONSTRUCTION {
     SYNGRAPH ( filtered_tables, tree.first() )
     ch_versions = ch_versions.mix(SYNGRAPH.out.versions)
 
+    // Total ALG count per reconstructed ancestral node, plus per-species
+    // intact/split/fused status per ALG -- derived from Syngraph's own
+    // per-marker table, which it produces but doesn't summarise itself.
+    SUMMARISE_ALG_TABLE ( SYNGRAPH.out.table )
+    ch_versions = ch_versions.mix(SUMMARISE_ALG_TABLE.out.versions)
+
     AGORA_PREP ( filtered_tables, tree.first() )
     ch_versions = ch_versions.mix(AGORA_PREP.out.versions)
 
@@ -42,8 +49,10 @@ workflow ANCESTRAL_RECONSTRUCTION {
     ch_versions = ch_versions.mix(FRAGMENTATION_INDEX.out.versions)
 
     emit:
-    rearrangements      = SYNGRAPH.out.rearrangements       // channel: path (algo.rearrangements.tsv)
-    ancestral_output    = AGORA.out.ancestral_output         // channel: path (AGORA CARs directory)
-    fragmentation_index = FRAGMENTATION_INDEX.out.table      // channel: path (fragmentation_index.tsv)
+    rearrangements      = SYNGRAPH.out.rearrangements                  // channel: path (algo.rearrangements.tsv)
+    alg_summary         = SUMMARISE_ALG_TABLE.out.alg_summary          // channel: path (total ALG count per ancestral node)
+    alg_status          = SUMMARISE_ALG_TABLE.out.status_summary       // channel: path (per-species/per-ALG intact/split/fused)
+    ancestral_output    = AGORA.out.ancestral_output                   // channel: path (AGORA CARs directory)
+    fragmentation_index = FRAGMENTATION_INDEX.out.table                // channel: path (fragmentation_index.tsv)
     versions            = ch_versions
 }

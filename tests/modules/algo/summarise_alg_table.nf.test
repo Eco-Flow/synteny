@@ -1,0 +1,33 @@
+nextflow_process {
+
+    name "Test Process SUMMARISE_ALG_TABLE"
+    script "modules/local/algo/summarise_alg_table.nf"
+    process "SUMMARISE_ALG_TABLE"
+
+    test("Should report total ALG count and per-species intact/split/fused status") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/algo_table_fixture.tsv")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert alg_summary.size() == 1
+                assert status_summary.size() == 1
+                // Fixture: node n1 has 2 ALGs (n1_1: markers 1000/1001/1002at7147,
+                // n1_2: marker 1003at7147). SpeciesA and SpeciesC each keep them on
+                // separate chromosomes (intact); SpeciesB has fused both onto chrX
+                // (matches the real Syngraph fusion event this fixture was built
+                // from -- see tests/modules/algo/syngraph.nf.test).
+                assert path(alg_summary[0]).md5 == 'c90ee1035d34f4930e8f0e6762aeabe7'
+                assert path(status_summary[0]).md5 == 'd8231fdfef0fbd98db04ddb47058dc09'
+            }
+        }
+    }
+}

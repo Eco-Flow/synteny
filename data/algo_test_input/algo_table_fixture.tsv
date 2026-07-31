@@ -1,0 +1,5 @@
+#marker	SpeciesA_seq	SpeciesA_start	SpeciesA_end	SpeciesC_seq	SpeciesC_start	SpeciesC_end	SpeciesB_seq	SpeciesB_start	SpeciesB_end	n1_seq	n1_start	n1_end
+1000at7147	SpeciesA_chr1	1000	2000	SpeciesC_chrI	100	200	SpeciesB_chrX	1000	2000	n1_1	NA	NA
+1002at7147	SpeciesA_chr1	5000	6000	SpeciesC_chrI	300	400	SpeciesB_chrX	5000	6000	n1_1	NA	NA
+1001at7147	SpeciesA_chr1	3000	4000	SpeciesC_chrI	500	600	SpeciesB_chrX	3000	4000	n1_1	NA	NA
+1003at7147	SpeciesA_chr2	1000	2000	SpeciesC_chrII	100	200	SpeciesB_chrX	7000	8000	n1_2	NA	NA

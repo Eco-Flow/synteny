@@ -10,6 +10,7 @@ components:
   - algo/busco
   - algo/busco_filter
   - algo/syngraph
+  - algo/summarise_alg_table
   - algo/agora_prep
   - algo/agora
   - algo/fragmentation_index
@@ -31,6 +32,14 @@ output:
       type: channel
       description: "Syngraph's inferred fission/fusion/translocation events per branch"
       pattern: "*.rearrangements.tsv"
+  - alg_summary:
+      type: channel
+      description: "Total number of ancestral linkage groups (ALGs) and markers per reconstructed ancestral node"
+      pattern: "alg_summary.tsv"
+  - alg_status:
+      type: channel
+      description: "Per species, per ALG: intact/split/fused status, which chromosome(s) it's on, and which other ALGs (if any) share a chromosome with it"
+      pattern: "alg_status.tsv"
   - ancestral_output:
       type: channel
       description: "AGORA's reconstructed ancestral gene order (contiguous ancestral regions)"

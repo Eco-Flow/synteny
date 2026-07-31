@@ -294,8 +294,19 @@ Written under `<outdir>/algo/`:
 
 * `busco/` - Raw BUSCO `full_table.tsv` per species.
 * `busco_filtered/` - Filtered, 5-column single-copy marker tables per species.
-* `syngraph/` - `algo.rearrangements.tsv` (inferred fission/fusion/translocation events per branch)
-  plus the underlying Syngraph graph pickles.
+* `syngraph/` - `algo.rearrangements.tsv` (inferred fission/fusion/translocation events per branch,
+  relative to that branch's own inferred ancestor -- not to one fixed base species) plus
+  `algo.table.tsv` (Syngraph's per-marker table: which chromosome each marker is on in every extant
+  species and reconstructed ancestral node) and the underlying Syngraph graph pickles.
+* `tables/alg_summary.tsv` - Total number of ancestral linkage groups (ALGs) and markers at each
+  reconstructed ancestral node, derived from `algo.table.tsv` (Syngraph doesn't report this count
+  itself).
+* `tables/alg_status.tsv` - Per species, per ALG: whether its markers are still all on one
+  chromosome (`intact`), have split across multiple chromosomes (`split`), and/or share a
+  chromosome with another ALG's markers (`fused`) -- an ALG can be both `split` and `fused` at
+  once. Also derived from `algo.table.tsv`. **Note:** Syngraph is order-agnostic (chromosome
+  membership only, not gene order/orientation), so this cannot and does not detect inversions --
+  only inter-chromosomal fission/fusion/translocation is in scope.
 * `agora/` - AGORA's reconstructed ancestral gene order (contiguous ancestral regions).
 * `tables/fragmentation_index.tsv` - Per-chromosome `M`/`A`/`B` counts and a **provisional**
   `FI_placeholder` column. The manuscript's exact fragmentation-index formula was not recoverable
