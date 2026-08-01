@@ -237,6 +237,10 @@
           "default": "AA",
           "description": "Model written per partition in the supermatrix partition file. 'AA' lets ModelFinder pick one per orthogroup; set e.g. 'LG+F+G4' to fix it and skip model selection. Only used with --iqtree_species_tree."
         },
+        "max_orthogroups": {
+          "type": "integer",
+          "description": "Cap the number of single-copy orthogroups carried into the species-tree supermatrix, keeping the longest ones (more sites, more phylogenetic signal). Unset by default (unlimited). Only used with --iqtree_species_tree."
+        },
         "mafft_args": {
           "type": "string",
           "default": "--auto",

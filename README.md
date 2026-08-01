@@ -258,16 +258,28 @@ same genomes, following the tree-building steps of
    arm64) -- the same version [Eco-Flow/excon](https://github.com/Eco-Flow/excon) uses. Only
    `Orthogroups.tsv` is used downstream, and that output is unchanged between the two.
 3. `[EXTRACT_SINGLE_COPY]` writes one FASTA per strictly single-copy, complete orthogroup.
-4. `[ALIGN_SINGLE_COPY]` aligns each with MAFFT (`--mafft_args`, default `--auto`).
-5. `[CONCAT_SINGLE_COPY]` concatenates them into a supermatrix, with a partition file (one
+4. `[SELECT_ORTHOGROUPS]` (optional, see `--max_orthogroups` below) caps the orthogroup count,
+   keeping the longest ones.
+5. `[ALIGN_SINGLE_COPY]` aligns each with MAFFT (`--mafft_args`, default `--auto`).
+6. `[CONCAT_SINGLE_COPY]` concatenates them into a supermatrix, with a partition file (one
    partition per orthogroup, model set via `--iqtree_partition_model`, default `AA` lets
    ModelFinder choose per orthogroup).
-6. `[IQTREE_SPECIES_TREE]` runs IQ-TREE2 under the edge-proportional partition model (`-spp`), with
+7. `[IQTREE_SPECIES_TREE]` runs IQ-TREE2 under the edge-proportional partition model (`-spp`), with
    `-m MFP` and 1000 ultrafast bootstrap + 1000 SH-aLRT replicates (`--iqtree_args` appends extra
    flags, e.g. `-mset LG,WAG,JTT` to narrow ModelFinder's candidates).
-7. `[ROOT_TREE]` roots the resulting unrooted ML tree -- on a named outgroup via
+8. `[ROOT_TREE]` roots the resulting unrooted ML tree -- on a named outgroup via
    `--iqtree_outgroup` (comma-separated tip names matching `--input`), or midpoint-rooted if
    omitted -- since Syngraph and AGORA both need a rooted tree.
+
+**A note on runtime:** step 7's `-m MFP` model selection runs once per partition (one per single-copy
+orthogroup), so its cost tracks partition count far more than species count or total alignment size.
+Counterintuitively, a small set of *closely related* species can produce many more strictly
+single-copy orthogroups than a larger set of *distantly related* ones (the "single copy in every
+species" filter is easier to satisfy the more similar the species are), so a small-species run isn't
+automatically a fast one. Set `--max_orthogroups N` to cap the orthogroup/partition count at a fixed
+number regardless of how many candidates the species set happens to produce, keeping the `N` longest
+(more sites per orthogroup, more phylogenetic signal, and a simple proxy that doesn't need the
+alignment/tree this step precedes). Unset by default (unlimited, matching prior behaviour).
 
 ```
 nextflow run main.nf -profile docker --mode algo \
@@ -279,6 +291,7 @@ nextflow run main.nf -profile docker --mode algo \
 ```
 
 Outputs are written under `<outdir>/algo/`: `orthofinder/`, `species_tree/single_copy_orthogroups/`,
+`species_tree/selected_orthogroups/` (only when `--max_orthogroups` is set),
 `species_tree/single_copy_alignments/`, `species_tree/supermatrix/`, `species_tree/iqtree/`, and
 the final `species_tree/SpeciesTree_rooted.nwk` used by Syngraph and AGORA.
 

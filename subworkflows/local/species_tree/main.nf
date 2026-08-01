@@ -10,6 +10,7 @@ include { EXTRACT_PROTEINS } from '../../../modules/local/algo/extract_proteins.
 include { ORTHOFINDER } from '../../../modules/nf-core/orthofinder/main'
 include { ORTHOFINDER_V2 } from '../../../modules/local/algo/orthofinder_v2.nf'
 include { EXTRACT_SINGLE_COPY } from '../../../modules/local/algo/extract_single_copy.nf'
+include { SELECT_ORTHOGROUPS } from '../../../modules/local/algo/select_orthogroups.nf'
 include { ALIGN_SINGLE_COPY } from '../../../modules/local/algo/align_single_copy.nf'
 include { CONCAT_SINGLE_COPY } from '../../../modules/local/algo/concat_single_copy.nf'
 include { IQTREE as IQTREE_SPECIES_TREE } from '../../../modules/nf-core/iqtree/main'
@@ -69,7 +70,23 @@ workflow SPECIES_TREE {
     EXTRACT_SINGLE_COPY ( orthofinder_dir, proteomes )
     ch_versions = ch_versions.mix(EXTRACT_SINGLE_COPY.out.versions)
 
-    ALIGN_SINGLE_COPY ( EXTRACT_SINGLE_COPY.out.orthogroups )
+    // Strictly single-copy orthogroups get far more numerous the more closely related
+    // the input species are (the "single copy in every species" filter is easier to
+    // satisfy), so an uncapped run can land on wildly different IQ-TREE partition counts
+    // -- and runtime, since -m MFP model selection runs per partition -- purely as a
+    // side effect of how divergent the species happen to be. --max_orthogroups caps
+    // that, keeping the longest orthogroups (more sites, more phylogenetic signal).
+    // Off by default -- unlimited, matching prior behaviour.
+    if (params.max_orthogroups) {
+        SELECT_ORTHOGROUPS ( EXTRACT_SINGLE_COPY.out.orthogroups )
+        ch_versions = ch_versions.mix(SELECT_ORTHOGROUPS.out.versions)
+
+        orthogroups_for_alignment = SELECT_ORTHOGROUPS.out.orthogroups
+    } else {
+        orthogroups_for_alignment = EXTRACT_SINGLE_COPY.out.orthogroups
+    }
+
+    ALIGN_SINGLE_COPY ( orthogroups_for_alignment )
     ch_versions = ch_versions.mix(ALIGN_SINGLE_COPY.out.versions)
 
     CONCAT_SINGLE_COPY ( orthofinder_dir, ALIGN_SINGLE_COPY.out.alignments )

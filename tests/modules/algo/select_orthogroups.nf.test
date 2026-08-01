@@ -1,0 +1,54 @@
+nextflow_process {
+
+    name "Test Process SELECT_ORTHOGROUPS"
+    script "modules/local/algo/select_orthogroups.nf"
+    process "SELECT_ORTHOGROUPS"
+
+    test("Should keep the N longest orthogroups and drop the rest") {
+
+        when {
+            params {
+                max_orthogroups = 2
+            }
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/orthogroup_length_fixture")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert orthogroups.size() == 1
+                // Fixture: OG0000000.fa (50aa), OG0000001.fa (23aa), OG0000002.fa (8aa).
+                // --max_orthogroups 2 should keep the two longest and drop the shortest.
+                def kept = path(orthogroups[0]).list().collect { it.name }.sort()
+                assert kept == ["OG0000000.fa", "OG0000001.fa"]
+            }
+        }
+    }
+
+    test("Should keep everything when max exceeds the available orthogroup count") {
+
+        when {
+            params {
+                max_orthogroups = 100
+            }
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/orthogroup_length_fixture")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            with(process.out) {
+                def kept = path(orthogroups[0]).list().collect { it.name }.sort()
+                assert kept == ["OG0000000.fa", "OG0000001.fa", "OG0000002.fa"]
+            }
+        }
+    }
+}
