@@ -21,6 +21,24 @@ import sys
 from collections import OrderedDict
 
 
+def sanitise_id(name):
+    """Match OrthoFinder's own sequence ID sanitisation.
+
+    Orthogroups.tsv reports IDs with ':', ',', '(', ')' and ';' replaced by '_' --
+    OrthoFinder embeds these IDs directly in the gene/species trees it builds, and
+    those characters have special meaning in Newick format. A proteome's raw FASTA
+    headers don't go through this, so e.g. Ensembl's "transcript:ENSXXXT..." IDs
+    silently fail to match Orthogroups.tsv's "transcript_ENSXXXT..." unless the same
+    substitution is applied here first (confirmed against a real OrthoFinder run
+    mixing Ensembl-derived and BRAKER-derived proteomes -- BRAKER's plain "geneN.t1"
+    IDs contain none of these characters, so this only bites some species, not all,
+    which is why it isn't caught by an all-or-nothing failure on every orthogroup).
+    """
+    for ch in ':,();':
+        name = name.replace(ch, '_')
+    return name
+
+
 def read_fasta(path, wanted=None):
     """Read a FASTA file into an OrderedDict of {header_first_token: sequence}.
 
@@ -40,7 +58,7 @@ def read_fasta(path, wanted=None):
             if line.startswith('>'):
                 if name is not None and keep:
                     seqs[name] = ''.join(chunks)
-                name = line[1:].strip().split()[0]
+                name = sanitise_id(line[1:].strip().split()[0])
                 keep = wanted is None or name in wanted
                 chunks = []
             elif keep:

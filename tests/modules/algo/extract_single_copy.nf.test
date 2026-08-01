@@ -31,4 +31,37 @@ nextflow_process {
             }
         }
     }
+
+    test("Should match a gene ID that OrthoFinder sanitised for Newick safety") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/orthofinder_output_fixture_colon_ids")
+                input[1] = Channel.of(
+                    file("${projectDir}/data/algo_test_input/colon_id_proteomes/SpeciesE.fa"),
+                    file("${projectDir}/data/algo_test_input/colon_id_proteomes/SpeciesF.fa")
+                ).collect()
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            with(process.out) {
+                // SpeciesE's real header is ">transcript:ENSXXXT00000001", but
+                // OrthoFinder writes ":" as "_" in Orthogroups.tsv (colons have special
+                // meaning in Newick format, which OrthoFinder embeds sequence IDs into)
+                // -- confirmed against a real run mixing Ensembl-derived (colon-bearing)
+                // and BRAKER-derived (plain) proteomes. Without sanitising the raw
+                // header the same way before comparing, this lookup silently fails.
+                assert orthogroups.size() == 1
+                def fasta_text = path("${orthogroups[0]}/OG0000000.fa").text
+                assert fasta_text.contains(">SpeciesE")
+                assert fasta_text.contains("MARNDCQEG")
+                assert fasta_text.contains(">SpeciesF")
+                assert fasta_text.contains("MHDCILDAR")
+            }
+        }
+    }
 }
