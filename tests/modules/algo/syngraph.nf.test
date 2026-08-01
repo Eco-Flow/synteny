@@ -8,7 +8,6 @@ nextflow_process {
 
         when {
             params {
-                syngraph_container  = "synteny-syngraph:local"
                 syngraph_m          = 1
                 syngraph_r          = 2
                 syngraph_reference  = "SpeciesA"

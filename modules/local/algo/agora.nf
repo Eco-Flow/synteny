@@ -2,7 +2,7 @@ process AGORA {
 
     label 'process_medium'
     tag "agora"
-    container "${params.agora_container}"
+    container 'quay.io/ecoflowucl/agora:v1.0'
     publishDir "$params.outdir/algo/agora" , mode: "${params.publish_dir_mode}"
 
     input:

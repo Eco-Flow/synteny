@@ -2,7 +2,7 @@ process SYNGRAPH {
 
     label 'process_low'
     tag "syngraph"
-    container "${params.syngraph_container}"
+    container 'quay.io/ecoflowucl/syngraph:v1.0'
     publishDir "$params.outdir/algo/syngraph" , mode: "${params.publish_dir_mode}"
 
     input:

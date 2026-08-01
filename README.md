@@ -216,20 +216,27 @@ subworkflows: `SPECIES_TREE` (optional, see `--iqtree_species_tree` below) and
   and AGORA (e.g. unlocalised scaffolds or a Y chromosome).
 * `--syngraph_m` (default `10`) / `--syngraph_r` (default `2`) - Syngraph's marker threshold and
   rearrangement model (`2` = fissions/fusions only, `3` = adds reciprocal translocations).
-* `--busco_container`, `--syngraph_container`, `--agora_container` - Container images for each tool.
-  BUSCO defaults to the public `ezlabgva/busco` image. **Syngraph and AGORA have no published
-  images yet** -- build them locally first (see below).
+
+BUSCO, Syngraph and AGORA's containers (`ezlabgva/busco:v6.0.0_cv1`, `quay.io/ecoflowucl/syngraph:v1.0`,
+`quay.io/ecoflowucl/agora:v1.0`) are hardcoded in their respective modules under `modules/local/algo/`,
+the same way every other tool's container is set in this pipeline -- there is no `--*_container`
+override param. To use a different image, edit the `container` line in the relevant module directly.
 
 ### Building the Syngraph and AGORA containers
+
+The published images are built from `containers/syngraph/Dockerfile` and `containers/agora/Dockerfile`
+via [Eco-Flow/docker-build](https://github.com/Eco-Flow/docker-build). To build your own (e.g. after
+changing a Dockerfile), then update the `container` line in `modules/local/algo/syngraph.nf` /
+`agora.nf` (and `agora_prep.nf` / `fragmentation_index.nf`, which reuse the AGORA image) to match:
 
 ```
 docker build --platform linux/amd64 -t synteny-syngraph:local containers/syngraph/
 docker build -t synteny-agora:local containers/agora/
 ```
 
-Both Dockerfiles are local-only for now (not published to a registry). Syngraph's dependencies
-(graph-tool, pygraphviz, an old pinned numpy/networkx) are only reliably available as linux-64
-conda builds, hence the `--platform linux/amd64` (Docker will emulate this on Apple Silicon).
+Syngraph's dependencies (graph-tool, pygraphviz, an old pinned numpy/networkx) are only reliably
+available as linux-64 conda builds, hence the `--platform linux/amd64` (Docker will emulate this on
+Apple Silicon).
 
 ### Building the species tree with OrthoFinder + IQ-TREE (`--iqtree_species_tree`)
 
@@ -244,7 +251,10 @@ same genomes, following the tree-building steps of
    since only the orthogroup assignment is used below -- OrthoFinder's own gene trees/species tree
    are discarded in favour of the supermatrix tree built in the next steps (and dendroblast is
    both faster and avoids a `famsa` dependency issue seen with the MSA-based method in this
-   container).
+   container). Set `--orthofinder_v2` to use OrthoFinder 2.5.5 (`[ORTHOFINDER_V2]`) instead of the
+   default vendored v3.x module, on machines where v3's biocontainers image doesn't run (e.g.
+   arm64) -- the same version [Eco-Flow/excon](https://github.com/Eco-Flow/excon) uses. Only
+   `Orthogroups.tsv` is used downstream, and that output is unchanged between the two.
 3. `[EXTRACT_SINGLE_COPY]` writes one FASTA per strictly single-copy, complete orthogroup.
 4. `[ALIGN_SINGLE_COPY]` aligns each with MAFFT (`--mafft_args`, default `--auto`).
 5. `[CONCAT_SINGLE_COPY]` concatenates them into a supermatrix, with a partition file (one

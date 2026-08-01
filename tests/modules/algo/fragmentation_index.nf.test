@@ -8,7 +8,6 @@ nextflow_process {
 
         when {
             params {
-                agora_container      = "synteny-agora:local"
                 // Scoped to the root ancestor only (AlgoAnc2, the tree's target/last
                 // common ancestor) -- ancestral_output_fixture/ was regenerated from
                 // a real `agora-generic.py` run (see bin/busco_to_agora.py and

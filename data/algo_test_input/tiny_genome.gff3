@@ -1,9 +1,9 @@
 ##gff-version 3
-chr1	test	gene	1	90	.	+	.	ID=gene1
-chr1	test	mRNA	1	90	.	+	.	ID=mrna1;Parent=gene1
-chr1	test	exon	1	90	.	+	.	ID=exon1;Parent=mrna1
-chr1	test	CDS	1	90	.	+	0	ID=cds1;Parent=mrna1
-chr1	test	gene	150	260	.	+	.	ID=gene2
-chr1	test	mRNA	150	260	.	+	.	ID=mrna2;Parent=gene2
-chr1	test	exon	150	260	.	+	.	ID=exon2;Parent=mrna2
-chr1	test	CDS	150	260	.	+	0	ID=cds2;Parent=mrna2
+chr1	test	gene	11	40	.	+	.	ID=gene_clean_gene
+chr1	test	mRNA	11	40	.	+	.	ID=mrna_clean_gene;Parent=gene_clean_gene
+chr1	test	exon	11	40	.	+	.	ID=exon_clean_gene;Parent=mrna_clean_gene
+chr1	test	CDS	11	40	.	+	0	ID=cds_clean_gene;Parent=mrna_clean_gene
+chr1	test	gene	61	90	.	+	.	ID=gene_broken_gene
+chr1	test	mRNA	61	90	.	+	.	ID=mrna_broken_gene;Parent=gene_broken_gene
+chr1	test	exon	61	90	.	+	.	ID=exon_broken_gene;Parent=mrna_broken_gene
+chr1	test	CDS	61	90	.	+	0	ID=cds_broken_gene;Parent=mrna_broken_gene

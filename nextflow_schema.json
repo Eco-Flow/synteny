@@ -190,11 +190,6 @@
           "type": "string",
           "description": "BUSCO lineage dataset to use in genome mode, e.g. coleoptera_odb12."
         },
-        "busco_container": {
-          "type": "string",
-          "default": "ezlabgva/busco:v6.0.0_cv1",
-          "description": "Container image used for BUSCO."
-        },
         "exclude_scaffolds": {
           "type": "string",
           "format": "file-path",
@@ -213,16 +208,6 @@
         "syngraph_reference": {
           "type": "string",
           "description": "Syngraph -s: reference taxon (must match one of the species names in --input) used to record rearrangements."
-        },
-        "syngraph_container": {
-          "type": "string",
-          "default": "synteny-syngraph:local",
-          "description": "Container image used for Syngraph. Built locally from containers/syngraph/Dockerfile -- not yet published."
-        },
-        "agora_container": {
-          "type": "string",
-          "default": "synteny-agora:local",
-          "description": "Container image used for AGORA. Built locally from containers/agora/Dockerfile -- not yet published."
         },
         "agora_ancgenome_glob": {
           "type": "string",
@@ -256,6 +241,11 @@
           "type": "string",
           "default": "-M dendroblast",
           "description": "Arguments passed to OrthoFinder. Defaults to the fast dendroblast method rather than the MSA-based default, since only the Orthogroups.tsv assignment is used (OrthoFinder's own gene trees/species tree are discarded in favour of the IQ-TREE supermatrix tree). Only used with --iqtree_species_tree."
+        },
+        "orthofinder_v2": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use OrthoFinder 2.5.5 instead of the default vendored v3.x module, for machines where v3's biocontainers image doesn't run (e.g. arm64). Only used with --iqtree_species_tree."
         }
       }
     }

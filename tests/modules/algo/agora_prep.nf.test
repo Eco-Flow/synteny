@@ -7,9 +7,6 @@ nextflow_process {
     test("Should build AGORA gene lists, orthology groups and labelled tree") {
 
         when {
-            params {
-                agora_container = "synteny-agora:local"
-            }
             process {
                 """
                 input[0] = Channel.of(

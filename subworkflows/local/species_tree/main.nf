@@ -8,6 +8,7 @@ include { LONGEST } from '../../../modules/local/longest.nf'
 include { GFFREAD } from '../../../modules/local/gffread.nf'
 include { EXTRACT_PROTEINS } from '../../../modules/local/algo/extract_proteins.nf'
 include { ORTHOFINDER } from '../../../modules/nf-core/orthofinder/main'
+include { ORTHOFINDER_V2 } from '../../../modules/local/algo/orthofinder_v2.nf'
 include { EXTRACT_SINGLE_COPY } from '../../../modules/local/algo/extract_single_copy.nf'
 include { ALIGN_SINGLE_COPY } from '../../../modules/local/algo/align_single_copy.nf'
 include { CONCAT_SINGLE_COPY } from '../../../modules/local/algo/concat_single_copy.nf'
@@ -41,18 +42,29 @@ workflow SPECIES_TREE {
     // OrthoFinder is run with its default (fast) gene-tree method: only the
     // orthogroup calls (Orthogroups.tsv) are used below, not OrthoFinder's own
     // species tree or per-orthogroup gene trees.
-    ORTHOFINDER (
-        proteomes.map { files -> [[id: 'algo_species_tree'], files] },
-        [[:], []]
-    )
-    // Not mixed into ch_versions: ORTHOFINDER.out.versions_orthofinder uses the newer
-    // nf-core "topic: versions" convention (a [process, tool, version] tuple), a
-    // different shape from the plain path("versions.yml") every other module here
-    // emits -- mixing the two shapes into one channel breaks consumers that expect a
-    // single type. It's still captured automatically via Channel.topic('versions') if
-    // ever needed.
+    //
+    // --orthofinder_v2 switches to the vendored v3.x module's OrthoFinder 2.5.5
+    // alternative (modules/local/algo/orthofinder_v2.nf) for machines where v3's
+    // biocontainers image doesn't run (confirmed on real hardware -- e.g. arm64).
+    if (params.orthofinder_v2) {
+        ORTHOFINDER_V2 ( proteomes )
+        ch_versions = ch_versions.mix(ORTHOFINDER_V2.out.versions)
 
-    orthofinder_dir = ORTHOFINDER.out.orthofinder.map { meta, dir -> dir }
+        orthofinder_dir = ORTHOFINDER_V2.out.orthofinder
+    } else {
+        ORTHOFINDER (
+            proteomes.map { files -> [[id: 'algo_species_tree'], files] },
+            [[:], []]
+        )
+        // Not mixed into ch_versions: ORTHOFINDER.out.versions_orthofinder uses the newer
+        // nf-core "topic: versions" convention (a [process, tool, version] tuple), a
+        // different shape from the plain path("versions.yml") every other module here
+        // emits -- mixing the two shapes into one channel breaks consumers that expect a
+        // single type. It's still captured automatically via Channel.topic('versions') if
+        // ever needed.
+
+        orthofinder_dir = ORTHOFINDER.out.orthofinder.map { meta, dir -> dir }
+    }
 
     EXTRACT_SINGLE_COPY ( orthofinder_dir, proteomes )
     ch_versions = ch_versions.mix(EXTRACT_SINGLE_COPY.out.versions)
@@ -72,9 +84,12 @@ workflow SPECIES_TREE {
         CONCAT_SINGLE_COPY.out.partitions,
         [], [], [], [], [], [], []
     )
-    // Not mixed into ch_versions -- see the ORTHOFINDER versions comment above;
-    // IQTREE_SPECIES_TREE.out.versions_iqtree is the same newer tuple-shaped "topic"
-    // emit.
+    // Not mixed into ch_versions: IQTREE_SPECIES_TREE.out.versions_iqtree uses the
+    // newer nf-core "topic: versions" convention (a [process, tool, version] tuple), a
+    // different shape from the plain path("versions.yml") every other module here
+    // emits -- mixing the two shapes into one channel breaks consumers that expect a
+    // single type. It's still captured automatically via Channel.topic('versions') if
+    // ever needed.
 
     // IQ-TREE returns an unrooted tree; ANCESTRAL_RECONSTRUCTION needs a rooted one.
     ROOT_TREE ( IQTREE_SPECIES_TREE.out.phylogeny.map { meta, phylo -> phylo } )

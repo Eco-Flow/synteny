@@ -7,9 +7,6 @@ nextflow_process {
     test("Should keep only Complete markers and drop excluded scaffolds") {
 
         when {
-            params {
-                busco_container = "ezlabgva/busco:v6.0.0_cv1"
-            }
             process {
                 """
                 input[0] = Channel.of( ["SpeciesC", file("${projectDir}/data/algo_test_input/SpeciesC.full_table.tsv")] )

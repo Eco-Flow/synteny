@@ -2,7 +2,7 @@ process FRAGMENTATION_INDEX {
 
     label 'process_single'
     tag "fragmentation_index"
-    container "${params.agora_container}"
+    container 'quay.io/ecoflowucl/agora:v1.0'
     publishDir "$params.outdir/algo/tables" , mode: "${params.publish_dir_mode}"
 
     input:

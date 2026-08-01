@@ -7,9 +7,6 @@ nextflow_process {
     test("Should reconstruct ancestral gene order from a real AGORA_PREP-shaped input") {
 
         when {
-            params {
-                agora_container = "synteny-agora:local"
-            }
             process {
                 """
                 input[0] = file("${projectDir}/data/algo_test_input/agora_input_fixture")

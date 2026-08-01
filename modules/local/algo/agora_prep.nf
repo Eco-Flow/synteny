@@ -2,7 +2,7 @@ process AGORA_PREP {
 
     label 'process_single'
     tag "agora_prep"
-    container "${params.agora_container}"
+    container 'quay.io/ecoflowucl/agora:v1.0'
 
     input:
     path(filtered_tables)

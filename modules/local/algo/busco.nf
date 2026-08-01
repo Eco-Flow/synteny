@@ -2,7 +2,7 @@ process BUSCO {
 
     label 'process_medium'
     tag "$sample_id"
-    container "${params.busco_container}"
+    container 'ezlabgva/busco:v6.0.0_cv1'
 
     input:
     tuple val(sample_id), path(fasta)

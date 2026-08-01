@@ -4,7 +4,7 @@ nextflow_process {
     script "modules/local/algo/extract_proteins.nf"
     process "EXTRACT_PROTEINS"
 
-    test("Should extract protein sequences with gffread -y") {
+    test("Should extract protein sequences with gffread -y -J") {
 
         when {
             process {
@@ -28,7 +28,18 @@ nextflow_process {
                 // OrthoFinder derives each species name by stripping only the last
                 // extension, so a second dot would break that downstream.
                 assert path(proteins[0][1]).getFileName().toString() == "TinySpecies.fa"
-                assert path(proteins[0][1]).md5 == 'b6c939450ac65a0b68fcb67d4a7ccecf'
+                // Fixture has two genes: "clean_gene" has a complete ORF and must survive;
+                // "broken_gene" has a deliberate premature in-frame stop codon and must be
+                // dropped entirely by -J (the fix for the real diamond/OrthoFinder crash on
+                // an in-frame-stop translation containing a literal "."). Asserting on
+                // content rather than just the md5, so a future reader can see what this
+                // is actually guarding without needing to decode the fixture by hand.
+                def fasta_text = path(proteins[0][1]).text
+                assert fasta_text.contains(">mrna_clean_gene")
+                assert fasta_text.contains("MARNDCQEG")
+                assert !fasta_text.contains("broken_gene")
+                assert !fasta_text.contains(".")
+                assert path(proteins[0][1]).md5 == '655a527e776920865588a63bf204e6fe'
             }
         }
     }

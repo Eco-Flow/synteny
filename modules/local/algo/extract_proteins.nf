@@ -27,7 +27,12 @@ process EXTRACT_PROTEINS {
         cp staged_genome_input genome_for_extraction.fa
     fi
 
-    gffread -y ${sample_id}.fa -g genome_for_extraction.fa ${gff}
+    # -J: only emit mRNAs with a complete CDS (start + stop codon present, no
+    # in-frame stop). Without it, a premature stop in a gene model -- routine
+    # in real (e.g. BRAKER) annotations -- gets translated to a literal "."
+    # in the protein, which diamond's parser inside OrthoFinder rejects with
+    # "Error: Invalid character in sequence: '.'" and aborts the whole run.
+    gffread -J -y ${sample_id}.fa -g genome_for_extraction.fa ${gff}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

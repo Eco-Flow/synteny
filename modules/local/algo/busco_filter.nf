@@ -2,7 +2,7 @@ process BUSCO_FILTER {
 
     label 'process_single'
     tag "$sample_id"
-    container "${params.busco_container}"
+    container 'ezlabgva/busco:v6.0.0_cv1'
     publishDir "$params.outdir/algo/busco_filtered" , mode: "${params.publish_dir_mode}", pattern: "*.filtered.tsv"
 
     input:

@@ -49,4 +49,14 @@ nextflow_workflow {
             assert tree_text.trim().endsWith(";")
         }
     }
+
+    // --orthofinder_v2's dispatch to ORTHOFINDER_V2 is covered directly by
+    // tests/modules/algo/orthofinder_v2.nf.test. Not duplicated as a second
+    // full-pipeline case here: OrthoFinder 2.5.5's dendroblast clustering is
+    // coarser than v3's on this fixture's short synthetic sequences and lumps all
+    // 4 orthogroups into one multi-copy group, leaving nothing single-copy for
+    // EXTRACT_SINGLE_COPY -- a real version-specific clustering-sensitivity
+    // difference on tiny synthetic data, not a wiring bug (confirmed: the process
+    // log shows SPECIES_TREE:ORTHOFINDER_V2 completes successfully; only the
+    // later, independent EXTRACT_SINGLE_COPY step fails, for the reason above).
 }
