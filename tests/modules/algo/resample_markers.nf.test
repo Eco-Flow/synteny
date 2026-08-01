@@ -1,0 +1,44 @@
+nextflow_process {
+
+    name "Test Process RESAMPLE_MARKERS"
+    script "modules/local/algo/resample_markers.nf"
+    process "RESAMPLE_MARKERS"
+
+    test("Should resample markers with replacement, reproducibly per replicate seed") {
+
+        when {
+            process {
+                """
+                input[0] = 1
+                input[1] = Channel.of(
+                    file("${projectDir}/data/algo_test_input/SpeciesA.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesB.filtered.tsv"),
+                    file("${projectDir}/data/algo_test_input/SpeciesC.filtered.tsv")
+                ).collect()
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert resampled.size() == 1
+                def replicate = resampled[0][0]
+                def dir = resampled[0][1]
+                assert replicate == 1
+                // Seeded on the replicate index (1), so this is deterministic: markers
+                // are drawn with replacement from the union of all 5 BUSCO IDs across
+                // the three fixtures (1000-1004at7147), then deduplicated. With this
+                // seed, 1003at7147 is never drawn and is absent from every species'
+                // resampled table below.
+                def species_a = "${dir}/SpeciesA.filtered.tsv"
+                def species_b = "${dir}/SpeciesB.filtered.tsv"
+                def species_c = "${dir}/SpeciesC.filtered.tsv"
+                assert path(species_a).md5 == '64cbe25d9f3c50c6af38a70d4b6eaeb5'
+                assert path(species_b).md5 == '8942b7d1db9599e9401d48cb9b08f36d'
+                assert path(species_c).md5 == '7430afe1e5a91b0d90002324cac75eec'
+            }
+        }
+    }
+}

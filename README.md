@@ -216,6 +216,8 @@ subworkflows: `SPECIES_TREE` (optional, see `--iqtree_species_tree` below) and
   and AGORA (e.g. unlocalised scaffolds or a Y chromosome).
 * `--syngraph_m` (default `10`) / `--syngraph_r` (default `2`) - Syngraph's marker threshold and
   rearrangement model (`2` = fissions/fusions only, `3` = adds reciprocal translocations).
+* `--syngraph_bootstraps` (default `0`, disabled) - Number of marker-resampling bootstrap
+  replicates to run for Syngraph ALG-call support (see "Bootstrap support for ALG calls" below).
 
 BUSCO, Syngraph and AGORA's containers (`ezlabgva/busco:v6.0.0_cv1`, `quay.io/ecoflowucl/syngraph:v1.0`,
 `quay.io/ecoflowucl/agora:v1.0`) are hardcoded in their respective modules under `modules/local/algo/`,
@@ -280,6 +282,31 @@ Outputs are written under `<outdir>/algo/`: `orthofinder/`, `species_tree/single
 `species_tree/single_copy_alignments/`, `species_tree/supermatrix/`, `species_tree/iqtree/`, and
 the final `species_tree/SpeciesTree_rooted.nwk` used by Syngraph and AGORA.
 
+### Bootstrap support for ALG calls (`--syngraph_bootstraps`)
+
+Set `--syngraph_bootstraps N` to estimate how robust each ALG-marker assignment is to the input
+marker set, following the same gene-resampling bootstrap logic used for concatenated phylogenetic
+loci: for each of `N` replicates, markers are drawn with replacement (from the union of BUSCO IDs
+across all species, up to that union's size) and deduplicated to a set, each species' filtered
+BUSCO table is restricted to that set, and Syngraph's `build`/`infer`/`tabulate` are rerun on the
+result (`--syngraph_m`/`--syngraph_r`/`--syngraph_reference` apply the same as the main run).
+
+Because Syngraph assigns ALG labels independently in each run (e.g. `n5_2` in one replicate has no
+relationship to `n5_2` in another), replicate ALGs are matched back to the reference (unresampled)
+run's ALGs by maximum marker overlap before comparing calls -- this happens automatically in
+`tables/bootstrap_support.tsv` (see below). This is disabled by default (`--syngraph_bootstraps 0`)
+since it reruns the full Syngraph inference `N` times; each replicate is comparatively cheap
+(`process_low`), but the cost is still `N`x Syngraph's own runtime.
+
+```
+nextflow run main.nf -profile docker --mode algo \
+  --input data/Example-accession.csv \
+  --species_tree tree.nwk \
+  --busco_lineage coleoptera_odb12 \
+  --syngraph_reference SomeSpecies \
+  --syngraph_bootstraps 100
+```
+
 ### Running ALGO
 
 ```
@@ -317,6 +344,10 @@ Written under `<outdir>/algo/`:
   once. Also derived from `algo.table.tsv`. **Note:** Syngraph is order-agnostic (chromosome
   membership only, not gene order/orientation), so this cannot and does not detect inversions --
   only inter-chromosomal fission/fusion/translocation is in scope.
+* `tables/bootstrap_support.tsv` - Only written when `--syngraph_bootstraps` is set. Per
+  reconstructed ancestral node and marker: which ALG the reference (unresampled) run assigned it
+  to, how many bootstrap replicates retained that marker, and what fraction of those replicates
+  placed it back with the same group of markers. See "Bootstrap support for ALG calls" above.
 * `agora/` - AGORA's reconstructed ancestral gene order (contiguous ancestral regions).
 * `tables/fragmentation_index.tsv` - Per-chromosome `M`/`A`/`B` counts and a **provisional**
   `FI_placeholder` column. The manuscript's exact fragmentation-index formula was not recoverable
@@ -335,6 +366,19 @@ loader silently misparses the file instead of erroring clearly. `bin/busco_to_ag
 This pipeline is not yet published. If you use this pipeline for your research please cite the main tool set we use (JCVI):
 
 "Tang et al. (2008) Synteny and Collinearity in Plant Genomes. Science".
+
+If you use **ALGO** (`--mode algo`), also cite the paper whose core reconstruction method it follows
+(BUSCO -> Syngraph -> AGORA -> fragmentation index, see "Ancestral genome reconstruction" above):
+
+"Maulana et al. 2026. 338 coleopteran genomes reveal exceptional rearrangement variation compared
+to other insect orders. bioRxiv 2026.07.17.739156."
+
+If you additionally use `--syngraph_bootstraps`, note that the resampling approach follows the
+`boot10k` bootstrap robustness check in that paper's companion repository,
+[Obscuromics/coleoptera-ALGs](https://github.com/Obscuromics/coleoptera-ALGs)
+(`scripts/FigS8.plot.syngraph.boot10k.R`) -- `bin/resample_markers.py` and
+`bin/summarise_bootstrap_support.py` are original implementations (that script was not consulted;
+Syngraph itself has no built-in bootstrap flag), but the same citation applies to the method.
 
 Ensure you record the *release* of the pipeline that you ran, as versions will change over time, so it is important to record exact releases. 
 

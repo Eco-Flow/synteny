@@ -209,6 +209,11 @@
           "type": "string",
           "description": "Syngraph -s: reference taxon (must match one of the species names in --input) used to record rearrangements."
         },
+        "syngraph_bootstraps": {
+          "type": "integer",
+          "default": 0,
+          "description": "Number of marker-resampling bootstrap replicates to run for Syngraph ALG-call support (0 disables). Each replicate reruns build/infer/tabulate on a resampled marker set; --tables/bootstrap_support.tsv reports, per ancestral node and marker, the fraction of replicates that agree with the reference (unresampled) ALG call."
+        },
         "agora_ancgenome_glob": {
           "type": "string",
           "default": "**/ancGenome*",

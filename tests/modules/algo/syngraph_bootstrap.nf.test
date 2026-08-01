@@ -1,0 +1,44 @@
+nextflow_process {
+
+    name "Test Process SYNGRAPH_BOOTSTRAP"
+    script "modules/local/algo/syngraph_bootstrap.nf"
+    process "SYNGRAPH_BOOTSTRAP"
+
+    test("Should build, infer, and tabulate on a replicate's marker set, tagged by replicate index") {
+
+        when {
+            params {
+                syngraph_m          = 1
+                syngraph_r          = 2
+                syngraph_reference  = "SpeciesA"
+            }
+            process {
+                """
+                input[0] = [1, file("${projectDir}/data/algo_test_input")]
+                input[1] = file("${projectDir}/data/algo_test_input/tiny_tree.nwk")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert table.size() == 1
+                def replicate = table[0][0]
+                def table_path = table[0][1]
+                assert replicate == 1
+                assert table_path.toString().endsWith("algo.replicate_1.table.tsv")
+                // Same fixtures and fusion event as syngraph.nf.test; column ordering
+                // isn't guaranteed stable between runs (see that test's own note), so
+                // only shape/content is asserted here, not an exact md5.
+                def lines = path(table_path).text.readLines().findAll { it.trim() }
+                assert lines[0].startsWith("#marker")
+                assert lines.size() == 5 // header + 4 markers
+                ["SpeciesA_seq", "SpeciesB_seq", "SpeciesC_seq", "n1_seq"].each { col ->
+                    assert lines[0].contains(col)
+                }
+            }
+        }
+    }
+}

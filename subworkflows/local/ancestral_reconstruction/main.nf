@@ -8,6 +8,9 @@ include { BUSCO } from '../../../modules/local/algo/busco.nf'
 include { BUSCO_FILTER } from '../../../modules/local/algo/busco_filter.nf'
 include { SYNGRAPH } from '../../../modules/local/algo/syngraph.nf'
 include { SUMMARISE_ALG_TABLE } from '../../../modules/local/algo/summarise_alg_table.nf'
+include { RESAMPLE_MARKERS } from '../../../modules/local/algo/resample_markers.nf'
+include { SYNGRAPH_BOOTSTRAP } from '../../../modules/local/algo/syngraph_bootstrap.nf'
+include { SUMMARISE_BOOTSTRAP_SUPPORT } from '../../../modules/local/algo/summarise_bootstrap_support.nf'
 include { AGORA_PREP } from '../../../modules/local/algo/agora_prep.nf'
 include { AGORA } from '../../../modules/local/algo/agora.nf'
 include { FRAGMENTATION_INDEX } from '../../../modules/local/algo/fragmentation_index.nf'
@@ -39,6 +42,30 @@ workflow ANCESTRAL_RECONSTRUCTION {
     SUMMARISE_ALG_TABLE ( SYNGRAPH.out.table )
     ch_versions = ch_versions.mix(SUMMARISE_ALG_TABLE.out.versions)
 
+    // Bootstrap support for Syngraph's ALG calls (opt-in via --syngraph_bootstraps):
+    // rerun build -> infer -> tabulate on N marker-resampled replicates, then, per
+    // ancestral node, report what fraction of replicates place each marker back with
+    // the same group of markers as the reference (unresampled) run above.
+    if (params.syngraph_bootstraps > 0) {
+        replicate_ids = Channel.of(1..params.syngraph_bootstraps)
+
+        RESAMPLE_MARKERS ( replicate_ids, filtered_tables )
+        ch_versions = ch_versions.mix(RESAMPLE_MARKERS.out.versions.first())
+
+        SYNGRAPH_BOOTSTRAP ( RESAMPLE_MARKERS.out.resampled, tree.first() )
+        ch_versions = ch_versions.mix(SYNGRAPH_BOOTSTRAP.out.versions.first())
+
+        SUMMARISE_BOOTSTRAP_SUPPORT (
+            SYNGRAPH.out.table,
+            SYNGRAPH_BOOTSTRAP.out.table.map { replicate, table -> table }.collect()
+        )
+        ch_versions = ch_versions.mix(SUMMARISE_BOOTSTRAP_SUPPORT.out.versions)
+
+        bootstrap_support = SUMMARISE_BOOTSTRAP_SUPPORT.out.support
+    } else {
+        bootstrap_support = Channel.empty()
+    }
+
     AGORA_PREP ( filtered_tables, tree.first() )
     ch_versions = ch_versions.mix(AGORA_PREP.out.versions)
 
@@ -52,6 +79,7 @@ workflow ANCESTRAL_RECONSTRUCTION {
     rearrangements      = SYNGRAPH.out.rearrangements                  // channel: path (algo.rearrangements.tsv)
     alg_summary         = SUMMARISE_ALG_TABLE.out.alg_summary          // channel: path (total ALG count per ancestral node)
     alg_status          = SUMMARISE_ALG_TABLE.out.status_summary       // channel: path (per-species/per-ALG intact/split/fused)
+    bootstrap_support   = bootstrap_support                            // channel: path (bootstrap_support.tsv), empty unless --syngraph_bootstraps is set
     ancestral_output    = AGORA.out.ancestral_output                   // channel: path (AGORA CARs directory)
     fragmentation_index = FRAGMENTATION_INDEX.out.table                // channel: path (fragmentation_index.tsv)
     versions            = ch_versions
