@@ -6,6 +6,7 @@
 
 include { BUSCO } from '../../../modules/local/algo/busco.nf'
 include { BUSCO_FILTER } from '../../../modules/local/algo/busco_filter.nf'
+include { STRIP_TREE_SUPPORT } from '../../../modules/local/algo/strip_tree_support.nf'
 include { SYNGRAPH } from '../../../modules/local/algo/syngraph.nf'
 include { SUMMARISE_ALG_TABLE } from '../../../modules/local/algo/summarise_alg_table.nf'
 include { RESAMPLE_MARKERS } from '../../../modules/local/algo/resample_markers.nf'
@@ -33,7 +34,17 @@ workflow ANCESTRAL_RECONSTRUCTION {
 
     filtered_tables = BUSCO_FILTER.out.filtered.map { id, tsv -> tsv }.collect()
 
-    SYNGRAPH ( filtered_tables, tree.first() )
+    // Syngraph's tree loader (ete3) parses an internal-node label as a single plain
+    // support value and rejects IQ-TREE's combined SH-aLRT/UFBoot "100/100" format
+    // outright. Syngraph doesn't use support values for anything (only topology and
+    // branch lengths), so strip them for Syngraph's own consumption -- AGORA_PREP
+    // still gets the original tree (unaffected: it already treats a support-only
+    // label the same as a blank one when assigning ancestor names).
+    STRIP_TREE_SUPPORT ( tree )
+    ch_versions = ch_versions.mix(STRIP_TREE_SUPPORT.out.versions)
+    syngraph_tree = STRIP_TREE_SUPPORT.out.tree.first()
+
+    SYNGRAPH ( filtered_tables, syngraph_tree )
     ch_versions = ch_versions.mix(SYNGRAPH.out.versions)
 
     // Total ALG count per reconstructed ancestral node, plus per-species
@@ -52,7 +63,7 @@ workflow ANCESTRAL_RECONSTRUCTION {
         RESAMPLE_MARKERS ( replicate_ids, filtered_tables )
         ch_versions = ch_versions.mix(RESAMPLE_MARKERS.out.versions.first())
 
-        SYNGRAPH_BOOTSTRAP ( RESAMPLE_MARKERS.out.resampled, tree.first() )
+        SYNGRAPH_BOOTSTRAP ( RESAMPLE_MARKERS.out.resampled, syngraph_tree )
         ch_versions = ch_versions.mix(SYNGRAPH_BOOTSTRAP.out.versions.first())
 
         SUMMARISE_BOOTSTRAP_SUPPORT (

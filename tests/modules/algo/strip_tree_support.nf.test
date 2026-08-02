@@ -1,0 +1,32 @@
+nextflow_process {
+
+    name "Test Process STRIP_TREE_SUPPORT"
+    script "modules/local/algo/strip_tree_support.nf"
+    process "STRIP_TREE_SUPPORT"
+
+    test("Should strip IQ-TREE's combined SH-aLRT/UFBoot support values, keeping branch lengths") {
+
+        when {
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/tiny_tree_iqtree_support.nwk")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert tree.size() == 1
+                // Fixture: ((SpeciesA:0.1,SpeciesB:0.1)100/100:0.05,SpeciesC:0.15);
+                // Syngraph's ete3-based tree loader rejects the "100/100" combined
+                // support value outright (NewickError) since it expects a single
+                // plain numeric support per internal node -- and Syngraph doesn't use
+                // support values for anything anyway, so they're dropped rather than
+                // reduced to one number. Branch lengths must survive untouched.
+                assert path(tree[0]).text.trim() == '((SpeciesA:0.1,SpeciesB:0.1):0.05,SpeciesC:0.15);'
+            }
+        }
+    }
+}
