@@ -214,6 +214,27 @@
           "default": 0,
           "description": "Number of marker-resampling bootstrap replicates to run for Syngraph ALG-call support (0 disables). Each replicate reruns build/infer/tabulate on a resampled marker set; --tables/bootstrap_support.tsv reports, per ancestral node and marker, the fraction of replicates that agree with the reference (unresampled) ALG call."
         },
+        "tree_calibrations": {
+          "type": "string",
+          "format": "file-path",
+          "description": "TSV of node-age calibrations used to time-calibrate the species tree with ape::chronos (ported from Eco-Flow/excon). Columns: clade (label), tips (comma-separated tip names whose MRCA defines the node), age_min and age_max in millions of years (equal values fix the age). Applies to whichever species tree is in use, including one built by --iqtree_species_tree. Off by default -- the tree is used as-is (substitution branch lengths, or already time-calibrated if a --species_tree that's already dated was supplied)."
+        },
+        "chronos_model": {
+          "type": "string",
+          "enum": ["discrete", "correlated", "relaxed"],
+          "default": "discrete",
+          "description": "Substitution-rate model used by ape::chronos. Only used with --tree_calibrations."
+        },
+        "chronos_lambda": {
+          "type": "number",
+          "default": 1,
+          "description": "Rate-smoothing parameter for ape::chronos. Only used with --tree_calibrations."
+        },
+        "chronos_rate_categories": {
+          "type": "integer",
+          "default": 10,
+          "description": "Number of rate categories for the 'discrete' chronos model. Only used with --tree_calibrations."
+        },
         "agora_ancgenome_glob": {
           "type": "string",
           "default": "**/ancGenome*",

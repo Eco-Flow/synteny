@@ -2,6 +2,7 @@
 
 include { GENOME_ACQUISITION } from '../subworkflows/local/genome_acquisition/main.nf'
 include { SPECIES_TREE } from '../subworkflows/local/species_tree/main.nf'
+include { DATE_TREE } from '../modules/local/algo/date_tree.nf'
 include { ANCESTRAL_RECONSTRUCTION } from '../subworkflows/local/ancestral_reconstruction/main.nf'
 
 def algoErrorMessage() {
@@ -39,6 +40,7 @@ workflow ALGO {
      -----------------------------------------
 
      SPECIES_TREE (--species_tree, or OrthoFinder + IQ-TREE via --iqtree_species_tree)
+           -> [DATE_TREE] (optional fossil calibration, --tree_calibrations)
            -> ANCESTRAL_RECONSTRUCTION (BUSCO -> Syngraph -> AGORA -> fragmentation index)
 
      =========================================""".stripIndent()
@@ -73,6 +75,17 @@ workflow ALGO {
         ch_versions = ch_versions.mix(SPECIES_TREE.out.versions)
     } else {
         tree = Channel.fromPath(params.species_tree)
+    }
+
+    // Optional fossil calibration (--tree_calibrations): time-calibrates whichever
+    // tree is in use, built-in or supplied, with ape::chronos -- ported from
+    // Eco-Flow/excon (tree_subsampling branch). Off by default; the tree is used
+    // as-is (substitution branch lengths, or already time-calibrated if the
+    // supplied --species_tree already is one) when unset.
+    if (params.tree_calibrations) {
+        DATE_TREE ( tree, Channel.fromPath(params.tree_calibrations) )
+        ch_versions = ch_versions.mix(DATE_TREE.out.versions)
+        tree = DATE_TREE.out.dated_tree
     }
 
     ANCESTRAL_RECONSTRUCTION ( genome_fastas, tree, exclude_ch )

@@ -209,6 +209,8 @@ subworkflows: `SPECIES_TREE` (optional, see `--iqtree_species_tree` below) and
   supply a Newick species tree covering every species in `--input` directly via `--species_tree`
   (used by both Syngraph and AGORA), or set `--iqtree_species_tree` to build one from the same
   genomes instead (see "Building the species tree with OrthoFinder + IQ-TREE" below).
+* `--tree_calibrations` - Optional fossil-calibration table to time-calibrate whichever tree is in
+  use with `ape::chronos` (see "Fossil-calibrating the species tree" below).
 * `--busco_lineage` - **Required.** BUSCO lineage dataset, e.g. `coleoptera_odb12`.
 * `--syngraph_reference` - **Required.** Reference taxon (must be one of the species names in
   `--input`) that Syngraph records rearrangements against.
@@ -294,6 +296,45 @@ Outputs are written under `<outdir>/algo/`: `orthofinder/`, `species_tree/single
 `species_tree/selected_orthogroups/` (only when `--max_orthogroups` is set),
 `species_tree/single_copy_alignments/`, `species_tree/supermatrix/`, `species_tree/iqtree/`, and
 the final `species_tree/SpeciesTree_rooted.nwk` used by Syngraph and AGORA.
+
+### Fossil-calibrating the species tree (`--tree_calibrations`)
+
+Set `--tree_calibrations calibrations.tsv` to time-calibrate the species tree with `ape::chronos`,
+converting branch lengths from substitutions/site to millions of years. This applies to whichever
+tree ends up in use -- one built by `--iqtree_species_tree`, or one supplied directly via
+`--species_tree` -- and runs after that tree is resolved (and, for the built one, after rooting),
+via a new `[DATE_TREE]` step. Ported from
+[Eco-Flow/excon (tree_subsampling branch)](https://github.com/Eco-Flow/excon/tree/tree_subsampling),
+whose `bin/date_tree.R` this pipeline's copy is adapted from (see that file for the full
+provenance). Off by default -- the tree is used as-is (substitution branch lengths) when unset.
+
+If you already have a time-calibrated tree from elsewhere (e.g. dated separately with `treePL`,
+`MCMCtree`, or downloaded from a published time-tree), just pass it via `--species_tree` and don't
+set `--tree_calibrations` -- it's used unchanged, no separate "already dated" flag needed.
+
+The calibration table is a TSV with a header and these columns:
+
+* `clade` - a label for the calibration, used in the report (not matched against anything).
+* `tips` - comma-separated tip names (must match `--input` species names exactly); their MRCA is
+  the node this calibration applies to.
+* `age_min` / `age_max` - the node's age bounds in millions of years. Set them equal to fix the age
+  exactly.
+
+```
+clade         tips                          age_min  age_max
+Vespidae      Polistes_dominula,Vespa_crabro  90       110
+```
+
+`--chronos_model` (default `discrete`), `--chronos_lambda` (default `1`) and
+`--chronos_rate_categories` (default `10`, only used by the `discrete` model) control `ape::chronos`
+itself -- see its documentation for what these change. The input tree must already be rooted (true
+for anything built by `--iqtree_species_tree`; a directly-supplied `--species_tree` needs to already
+be rooted too, which Syngraph and AGORA both already require regardless of dating).
+
+Outputs, under `<outdir>/algo/species_tree/`: `SpeciesTree_dated.nwk` (the calibrated tree, used
+downstream by Syngraph and AGORA in place of the uncalibrated one), `dating_calibrations.tsv`
+(each calibration's requested vs. fitted age, so you can check they were actually honoured), and
+`dating_qc.tsv` (tip/calibration counts, root age, and ultrametric/binary sanity checks).
 
 ### Bootstrap support for ALG calls (`--syngraph_bootstraps`)
 

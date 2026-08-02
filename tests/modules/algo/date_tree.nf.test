@@ -1,0 +1,60 @@
+nextflow_process {
+
+    name "Test Process DATE_TREE"
+    script "modules/local/algo/date_tree.nf"
+    process "DATE_TREE"
+
+    test("Should time-calibrate a tree with ape::chronos") {
+
+        when {
+            params {
+                // Default chronos_rate_categories (10) exceeds the number of branches
+                // in this tiny 3-tip fixture (chronos treats that as fatal here, since
+                // ape reports it as a warning and this script treats any chronos
+                // warning as fatal by design -- see bin/date_tree.R). Real trees have
+                // far more branches than this test fixture and would never hit it.
+                chronos_rate_categories = 1
+            }
+            process {
+                """
+                input[0] = file("${projectDir}/data/algo_test_input/tiny_tree.nwk")
+                input[1] = file("${projectDir}/data/algo_test_input/date_tree_calibrations.tsv")
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert process.trace.tasks().size() == 1
+            with(process.out) {
+                assert dated_tree.size() == 1
+                assert calibrations.size() == 1
+                assert qc.size() == 1
+
+                // Fixture: ((SpeciesA:0.1,SpeciesB:0.1):0.05,SpeciesC:0.15), calibrated
+                // with SpeciesA+SpeciesB's MRCA fixed at 10 Ma. chronos is an iterative
+                // optimizer (not guaranteed bit-identical across platforms/BLAS builds),
+                // so assert on parsed values with tolerance rather than exact text/md5.
+                def tree_text = path(dated_tree[0]).text
+                assert tree_text.contains("SpeciesA")
+                assert tree_text.contains("SpeciesB")
+                assert tree_text.contains("SpeciesC")
+
+                def qc_row = path(qc[0]).text.readLines()[1].split("\t")
+                def qc_cols = path(qc[0]).text.readLines()[0].split("\t")
+                def qc_map = [qc_cols, qc_row].transpose().collectEntries { k, v -> [k, v] }
+                assert qc_map.n_tips == "3"
+                assert qc_map.n_calibrations == "1"
+                assert qc_map.ultrametric == "TRUE"
+                assert qc_map.binary == "TRUE"
+                assert Math.abs(Double.parseDouble(qc_map.root_age_Ma) - 15.0) < 0.01
+
+                def calib_row = path(calibrations[0]).text.readLines()[1].split("\t")
+                def calib_cols = path(calibrations[0]).text.readLines()[0].split("\t")
+                def calib_map = [calib_cols, calib_row].transpose().collectEntries { k, v -> [k, v] }
+                assert calib_map.within_bounds == "TRUE"
+                assert Math.abs(Double.parseDouble(calib_map.fitted_age_Ma) - 10.0) < 0.01
+            }
+        }
+    }
+}
