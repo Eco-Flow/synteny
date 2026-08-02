@@ -24,6 +24,11 @@
   - `--orthofinder_v2` switches `SPECIES_TREE` to a local OrthoFinder 2.5.5 module (`ORTHOFINDER_V2`) instead of the default vendored v3.x one, for machines where v3's biocontainers image doesn't run (confirmed on real hardware -- e.g. arm64); matches the version [Eco-Flow/excon](https://github.com/Eco-Flow/excon) already relies on. Only `Orthogroups.tsv` is used downstream, unchanged between the two versions
   - `EXTRACT_SINGLE_COPY` (`bin/extract_single_copy.py`) now sanitises proteome FASTA headers the same way OrthoFinder sanitises `Orthogroups.tsv` (`:`, `,`, `(`, `)`, `;` -> `_`, since OrthoFinder embeds sequence IDs directly in the Newick gene/species trees it builds): confirmed against a real 17-species run mixing Ensembl-derived proteomes (`transcript:ENSXXXT...`) with BRAKER-derived ones (`geneN.t1`, no special characters, unaffected) that without this, every orthogroup containing an Ensembl-style ID silently failed to match, up to and including "no single-copy orthogroups found across N species"
 
+### `Fixed`
+
+- `bin/busco_to_agora.py`'s `label_internal_nodes()` no longer mistakes an IQ-TREE branch-support value (e.g. `97.3/100`, as re-emitted on every internal node by `root_tree.py`) for a real node name and leaves it unrelabelled: confirmed against a real 17-species `--iqtree_species_tree` run that this made AGORA's own tree loader (which correctly treats a purely-numeric label as a support value, not a name) invent its own placeholder node names (`NAME_0`, `NAME_1`, ...) that this script had no matching `orthologyGroups.NAME_0.list` file for, crashing `AGORA` with `FileNotFoundError` on its very first step. Numeric-only and `<value>/<value>` labels are now treated the same as a blank one and replaced with `AlgoAncN`; genuinely-named nodes (e.g. from a user-supplied `--species_tree`) are untouched
+  - Also fixed, found while tracing the above: the same function was silently dropping the branch length on every internal node it left unrelabelled (contrary to its own docstring), including on genuinely-named nodes -- it now always preserves the branch length regardless of which naming branch is taken
+
 ## v4.1.0 - 30.07.26
 
 ### `Added`

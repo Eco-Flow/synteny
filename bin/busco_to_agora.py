@@ -22,10 +22,20 @@ def strand_to_agora(strand):
     return "1" if strand == "+" else "-1"
 
 
+_SUPPORT_VALUE_RE = re.compile(r"^[0-9]+(\.[0-9]+)?(/[0-9]+(\.[0-9]+)?)?$")
+
+
 def label_internal_nodes(newick):
     """AGORA requires unique names on every internal node. Auto-name any that
-    are missing (Nx, incrementing) without touching already-named nodes or
-    branch lengths/support values."""
+    are missing OR that carry only a branch-support value (e.g. IQ-TREE's
+    "97.3/100" SH-aLRT/UFBoot label, as re-emitted by root_tree.py) -- a
+    support value labels a bipartition, not a node, so AGORA's own tree
+    loader treats it the same as no name and invents its own placeholder
+    ("NAME_0", "NAME_1", ...) that this script would otherwise never learn
+    about, leaving no matching orthologyGroups.NAME_0.list file for it to
+    read. Genuinely-named nodes (a real ancestor name already present, e.g.
+    from a user-supplied --species_tree, or an AlgoAncN name from a prior
+    run of this function) are left untouched, as are branch lengths."""
     counter = [0]
 
     def next_name():
@@ -49,8 +59,12 @@ def label_internal_nodes(newick):
                 j += 1
             label = "".join(label_chars)
             name_part = re.match(r"^[^:]*", label).group(0)
-            if name_part.strip() == "":
+            rest = label[len(name_part):]  # ':branch_length', if present
+            if name_part.strip() == "" or _SUPPORT_VALUE_RE.match(name_part.strip()):
                 out.append(next_name())
+                out.append(rest)
+            else:
+                out.append(label)
             i = j
             continue
         out.append(c)
